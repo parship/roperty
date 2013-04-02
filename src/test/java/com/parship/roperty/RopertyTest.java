@@ -23,6 +23,12 @@ public class RopertyTest {
 	};
 
 	@Test
+	public void gettingAPropertyThatDoesNotExistGivesNull() {
+		String value = roperty.get("key");
+		assertThat(value, nullValue());
+	}
+
+	@Test
 	public void gettingAPropertyThatDoesNotExistGivesDefaultValue() {
 		String text = "default";
 		String value = roperty.get("key", text);
