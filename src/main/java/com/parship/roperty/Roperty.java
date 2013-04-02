@@ -1,7 +1,5 @@
 package com.parship.roperty;
 
-import com.parship.commons.util.Ensure;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,15 +28,6 @@ public class Roperty {
 		return get(key, null);
 	}
 
-	public void set(final String key, final Object value) {
-		KeyValues keyValues = map.get(key);
-		if (keyValues == null) {
-			map.put(key, new KeyValues(value));
-		} else {
-			keyValues.put("", value);
-		}
-	}
-
 	public <T> T getOrDefine(final String key, final T defaultValue) {
 		T value = get(key);
 		if (value != null) {
@@ -53,13 +42,27 @@ public class Roperty {
 		return this;
 	}
 
-	public void set(final String key, final Object value, final String domain) {
+	public void set(final String key, final Object value, final String... domains) {
 		KeyValues keyValues = map.get(key);
 		if (keyValues == null) {
 			keyValues = new KeyValues();
 			map.put(key, keyValues);
 		}
-		keyValues.put(domain, value);
+		keyValues.put(buildDomain(domains), value);
+	}
+
+	private String buildDomain(final String[] domains) {
+		if (domains.length == 0) {
+			return "";
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String domain : domains) {
+			if (builder.length() > 0) {
+				builder.append("|");
+			}
+			builder.append(domain);
+		}
+		return builder.toString();
 	}
 
 	public void setResolver(final Resolver resolver) {

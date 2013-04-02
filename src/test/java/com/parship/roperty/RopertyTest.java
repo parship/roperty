@@ -128,8 +128,8 @@ public class RopertyTest {
 		String overriddenValue = "overridden value";
 		roperty.set("key", "other value", "other");
 		roperty.set("key", "domVal1", "domVal1");
-		roperty.set("key", overriddenValue, "domVal1|domVal2");
-		roperty.set("key", "yet another value", "domVal1|other");
+		roperty.set("key", overriddenValue, "domVal1", "domVal2");
+		roperty.set("key", "yet another value", "domVal1", "other");
 		String value = roperty.get("key");
 		assertThat(value, is(overriddenValue));
 	}
