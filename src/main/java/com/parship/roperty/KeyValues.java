@@ -1,6 +1,7 @@
 package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
+import com.sun.org.apache.xml.internal.security.keys.keyresolver.implementations.DSAKeyValueResolver;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +24,28 @@ public class KeyValues {
 		values.put("", value);
 	}
 
-	public void put(String domain, Object value) {
-		Ensure.notNull(domain, "domain");
+	public void put(Object value, String... domains) {
+		Ensure.notNull(domains, "domain");
 		Ensure.notNull(value, "value");
-		values.put(domain, value);
+		values.put(buildDomain(domains), value);
+//		for (String domain : domains) {
+//			domainResolvers.put(new DomainResolver());
+//		}
+//		values.put(domain, value);
+	}
+
+	private String buildDomain(final String[] domains) {
+		if (domains.length == 0) {
+			return "";
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String domain : domains) {
+			if (builder.length() > 0) {
+				builder.append("|");
+			}
+			builder.append(domain);
+		}
+		return builder.toString();
 	}
 
 	public <T> T get(List<String> domains, final Resolver resolver) {

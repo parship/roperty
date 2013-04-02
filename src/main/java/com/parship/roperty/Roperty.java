@@ -48,21 +48,7 @@ public class Roperty {
 			keyValues = new KeyValues();
 			map.put(key, keyValues);
 		}
-		keyValues.put(buildDomain(domains), value);
-	}
-
-	private String buildDomain(final String[] domains) {
-		if (domains.length == 0) {
-			return "";
-		}
-		StringBuilder builder = new StringBuilder();
-		for (String domain : domains) {
-			if (builder.length() > 0) {
-				builder.append("|");
-			}
-			builder.append(domain);
-		}
-		return builder.toString();
+		keyValues.put(value, domains);
 	}
 
 	public void setResolver(final Resolver resolver) {

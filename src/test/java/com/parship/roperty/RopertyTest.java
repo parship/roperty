@@ -1,5 +1,6 @@
 package com.parship.roperty;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -179,5 +180,15 @@ public class RopertyTest {
 		roperty.setResolver(mockResolver);
 		roperty.get("key");
 		verifyNoMoreInteractions(mockResolver);
+	}
+
+	@Ignore
+	@Test
+	public void wildcard() {
+		roperty.addDomain("domain1").addDomain("domain2");
+		roperty.setResolver(resolver);
+		String value = "overridden value";
+		roperty.set("key", value, "*", "domain2");
+		assertThat((String)roperty.get("key"), is(value));
 	}
 }
