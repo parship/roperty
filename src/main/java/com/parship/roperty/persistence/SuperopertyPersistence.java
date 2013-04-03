@@ -25,17 +25,28 @@ public class SuperopertyPersistence {
 	}
 
 	public void loadAll() {
+		long start = System.currentTimeMillis();
 		try {
 			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value " +
-				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property limit 1000",
+				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property",
 				new Persistence.ResultSetHandler() {
 					@Override
 					public void handle(final ResultSet rs) throws SQLException {
 						while (rs.next()) {
-							roperty.set(rs.getString(1), rs.getString(2));
+							String key = rs.getString(1);
+							String defaultValue = rs.getString(2);
+							String domain = rs.getString(4);
 							String overriddenValue = rs.getString(5);
-							if (overriddenValue != null) {
-								roperty.set(rs.getString(1), overriddenValue, domain(rs.getString(3), rs.getString(4)));
+							if (defaultValue != null) {
+								roperty.set(key, defaultValue);
+							}
+							if (overriddenValue != null && domain != null) {
+								String container = rs.getString(3);
+								try {
+									roperty.set(key, overriddenValue, buildDomainKey(container, domain));
+								} catch (Exception ex) {
+									System.out.println("Could not build domain key for: " + domain);
+								}
 							}
 						}
 					}
@@ -43,25 +54,27 @@ public class SuperopertyPersistence {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		long end = System.currentTimeMillis();
+		System.out.println("Loading took: " + (end - start) + "ms");
 	}
 
-	String domain(final String container, final String domain) {
+	String[] buildDomainKey(final String container, final String domain) {
 		if (domain == null || domain.length() == 0) {
-			return container;
+			return new String[]{container};
 		}
 		if (domain.startsWith("COUNTRY")) {
-			return container + "|" + stripPrefix(domain);
+			return new String[]{container, stripPrefix(domain)};
 		}
 		if (domain.startsWith("LOCALE")) {
-			return container + "|" + suffix(domain) + "|" + stripPrefix(domain);
+			return new String[]{container, suffix(domain), stripPrefix(domain)};
 		}
 		if (domain.startsWith("ORIENTATION")) {
-			return container + "|" + suffix(domain) + "|" + stripPrefix(stripPrefix(domain)) + "|" + prefix(stripPrefix(domain));
+			return new String[]{container, suffix(domain), stripPrefix(stripPrefix(domain)), prefix(stripPrefix(domain))};
 		}
 		if (domain.startsWith("PARTNER")) {
-			return container + "|" + suffix(domain) + "|" + stripPrefix(stripPrefix(domain)) + "|*|" + prefix(stripPrefix(domain));
+			return new String[]{container, suffix(domain), stripPrefix(stripPrefix(domain)), "*", prefix(stripPrefix(domain))};
 		}
-		return null;
+		throw new RuntimeException("Could not find mapping for domain key: " + domain);
 	}
 
 	String prefix(final String domain) {

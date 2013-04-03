@@ -165,6 +165,7 @@ public class RopertyTest {
 	public void domainValuesAreRequestedFromAResolver() {
 		roperty.addDomain("domain1").addDomain("domain2");
 		Resolver mockResolver = mock(Resolver.class);
+		when(mockResolver.getDomainValue(anyString())).thenReturn("x");
 		roperty.setResolver(mockResolver);
 		roperty.set("key", "value");
 		roperty.get("key");
@@ -182,7 +183,6 @@ public class RopertyTest {
 		verifyNoMoreInteractions(mockResolver);
 	}
 
-	@Ignore
 	@Test
 	public void wildcard() {
 		roperty.addDomain("domain1").addDomain("domain2");

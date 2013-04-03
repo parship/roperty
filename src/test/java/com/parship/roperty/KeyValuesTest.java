@@ -28,4 +28,18 @@ public class KeyValuesTest {
 		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value"));
 	}
 
+	@Test
+	public void getAWildcardOverriddenValueIsReturned_2() {
+		keyValues.put("value_1", "*", "*", "domain3");
+		keyValues.put("value_2", "domain1", "*", "domain3");
+		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+	}
+
+	@Test
+	public void getAWildcardOverriddenValueIsReturned_3() {
+		keyValues.put("value_1", "aaa", "*", "domain3");
+		keyValues.put("value_2", "domain1", "*", "domain3");
+		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+	}
+
 }

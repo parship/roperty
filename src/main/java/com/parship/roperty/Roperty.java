@@ -54,4 +54,12 @@ public class Roperty {
 	public void setResolver(final Resolver resolver) {
 		this.resolver = resolver;
 	}
+
+	@Override
+	public String toString() {
+		return "Roperty{" +
+			"domains=" + domains +
+			", map=" + map +
+			'}';
+	}
 }

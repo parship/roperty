@@ -1,7 +1,5 @@
 package com.parship.roperty.persistence;
 
-import com.ibatis.sqlmap.client.event.RowHandler;
-
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -77,39 +75,40 @@ public class Persistence {
 	}
 
 	public synchronized void executeSql(final String sql) throws SQLException {
-		Connection conn = dataSource.getConnection();
+		Connection con = dataSource.getConnection();
 		try {
-			executeSql(conn, sql);
+			executeSql(con, sql);
 		} finally {
-			close(conn);
+			close(con);
 		}
 	}
 
 	static void executeSql(final Connection conn, final String sql) throws SQLException {
-		Statement st = conn.createStatement();
+		Statement stmt = conn.createStatement();
 		try {
-			st.execute(sql);
+			stmt.execute(sql);
 		} finally {
-			close(st);
+			close(stmt);
 		}
 	}
 
 	public synchronized void executeQuery(final String sql, final ResultSetHandler rsh) throws SQLException {
-		Connection conn = dataSource.getConnection();
+		Connection con = dataSource.getConnection();
 		try {
-			Statement st = conn.createStatement();
+			Statement stmt = con.createStatement();
+			stmt.setFetchSize(1000);
 			try {
-				final ResultSet rs = st.executeQuery(sql);
+				final ResultSet rs = stmt.executeQuery(sql);
 				try {
 					rsh.handle(rs);
 				} finally {
 					close(rs);
 				}
 			} finally {
-				close(st);
+				close(stmt);
 			}
 		} finally {
-			close(conn);
+			close(con);
 		}
 	}
 

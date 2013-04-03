@@ -2,7 +2,6 @@ package com.parship.roperty.persistence;
 
 import com.parship.roperty.Resolver;
 import com.parship.roperty.Roperty;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -10,7 +9,6 @@ import java.sql.SQLException;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -71,7 +69,7 @@ public class SuperopertyPersistenceTest {
 	@Test
 	public void domainPropertiesAreRead() throws SQLException {
 		PERSISTENCE.executeSql("INSERT INTO base_property (id, property_name, container_name, default_value) VALUES (1, 'key', 'container', 'value')");
-		PERSISTENCE.executeSql("INSERT INTO domain_property (base_property, domain, overridden_value) VALUES (1, 'LOCALE_de_DE', 'overridden')");
+		PERSISTENCE.executeSql("INSERT INTO domain_property (base_property, buildDomainKey, overridden_value) VALUES (1, 'LOCALE_de_DE', 'overridden')");
 		this.persistence = new SuperopertyPersistence(roperty, PERSISTENCE);
 		this.persistence.loadAll();
 		Resolver resolverMock = mock(Resolver.class);
@@ -107,21 +105,21 @@ public class SuperopertyPersistenceTest {
 
 	@Test
 	public void countryDomain() {
-		assertThat(persistence.domain("container", "COUNTRY_DE"), is("container|DE"));
+		assertThat(persistence.buildDomainKey("container", "COUNTRY_DE"), is(new String[]{"container", "DE"}));
 	}
 
 	@Test
 	public void localeDomain() {
-		assertThat(persistence.domain("container", "LOCALE_de_DE"), is("container|DE|de_DE"));
+		assertThat(persistence.buildDomainKey("container", "LOCALE_de_DE"), is(new String[]{"container", "DE", "de_DE"}));
 	}
 
 	@Test
 	public void orientationDomain() {
-		assertThat(persistence.domain("container", "ORIENTATION_GAY_es_MX"), is("container|MX|es_MX|GAY"));
+		assertThat(persistence.buildDomainKey("container", "ORIENTATION_GAY_es_MX"), is(new String[]{"container", "MX", "es_MX", "GAY"}));
 	}
 
 	@Test
 	public void partnerDomain() {
-		assertThat(persistence.domain("container", "PARTNER_103_de_AT"), is("container|AT|de_AT|*|103"));
+		assertThat(persistence.buildDomainKey("container", "PARTNER_103_de_AT"), is(new String[]{"container", "AT", "de_AT", "*", "103"}));
 	}
 }
