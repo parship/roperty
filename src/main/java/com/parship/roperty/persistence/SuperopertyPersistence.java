@@ -15,10 +15,6 @@ public class SuperopertyPersistence {
 	private final Roperty roperty;
 	private final Persistence persistence;
 
-	public SuperopertyPersistence(final Roperty roperty) {
-		this(roperty, new Persistence("jdbc:postgresql://localhost/superoperty", "parship", "freiheit"));
-	}
-
 	public SuperopertyPersistence(final Roperty roperty, Persistence persistence) {
 		this.roperty = roperty;
 		this.persistence = persistence;

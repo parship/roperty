@@ -2,6 +2,7 @@ package com.parship.roperty.persistence;
 
 import com.parship.roperty.Resolver;
 import com.parship.roperty.Roperty;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class SuperopertyPersistenceTest {
 	private static final String PASSWORD = "freiheit";
 
 	private Roperty roperty = new Roperty();
-	private SuperopertyPersistence persistence = new SuperopertyPersistence(roperty);
+	private SuperopertyPersistence persistence;
 
 	private static final String CREATE_BASE_TABLE = "CREATE TABLE base_property ( " +
 		"id bigint, " +
@@ -58,10 +59,14 @@ public class SuperopertyPersistenceTest {
 		PERSISTENCE = getPersistence();
 	}
 
+	@Before
+	public void before() {
+		persistence = new SuperopertyPersistence(roperty, PERSISTENCE);
+	}
+
 	@Test
 	public void basePropertiesAreRead() throws SQLException {
 		PERSISTENCE.executeSql("INSERT INTO base_property (property_name, container_name, default_value) VALUES ('key', 'container', 'value')");
-		this.persistence = new SuperopertyPersistence(roperty, PERSISTENCE);
 		this.persistence.loadAll();
 		assertThat((String)roperty.get("key"), is("value"));
 	}
@@ -69,8 +74,7 @@ public class SuperopertyPersistenceTest {
 	@Test
 	public void domainPropertiesAreRead() throws SQLException {
 		PERSISTENCE.executeSql("INSERT INTO base_property (id, property_name, container_name, default_value) VALUES (1, 'key', 'container', 'value')");
-		PERSISTENCE.executeSql("INSERT INTO domain_property (base_property, buildDomainKey, overridden_value) VALUES (1, 'LOCALE_de_DE', 'overridden')");
-		this.persistence = new SuperopertyPersistence(roperty, PERSISTENCE);
+		PERSISTENCE.executeSql("INSERT INTO domain_property (base_property, domain, overridden_value) VALUES (1, 'LOCALE_de_DE', 'overridden')");
 		this.persistence.loadAll();
 		Resolver resolverMock = mock(Resolver.class);
 		roperty.addDomain("container").addDomain("country").addDomain("locale");
