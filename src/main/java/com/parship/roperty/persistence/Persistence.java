@@ -96,7 +96,7 @@ public class Persistence {
 		Connection con = dataSource.getConnection();
 		try {
 			Statement stmt = con.createStatement();
-			stmt.setFetchSize(1000);
+			stmt.setFetchSize(10);
 			try {
 				final ResultSet rs = stmt.executeQuery(sql);
 				try {

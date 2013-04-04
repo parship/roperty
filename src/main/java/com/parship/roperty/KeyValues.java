@@ -2,9 +2,7 @@ package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -49,7 +47,6 @@ public class KeyValues {
 		}
 	}
 
-	private Map<String, Object> values = new HashMap<>();
 	private Set<DomainPattern> patterns = new TreeSet<>();
 
 	public KeyValues() {
@@ -58,41 +55,38 @@ public class KeyValues {
 
 	public KeyValues(Object value) {
 		Ensure.notNull(value, "value");
-		values.put("", value);
+		put(value);
 	}
 
 	public void put(Object value, String... domains) {
 		Ensure.notNull(domains, "domain");
 		Ensure.notNull(value, "value");
-		values.put(buildDomain(value, domains), value);
-//		for (String domain : domains) {
-//			domainResolvers.put(new DomainResolver());
-//		}
-//		values.put(domain, value);
+		createAndAddDomainPattern(value, domains);
 	}
 
-	private String buildDomain(final Object value, final String[] domains) {
+	private void createAndAddDomainPattern(final Object value, final String[] domains) {
 		int order = 1;
 		if (domains.length == 0) {
 			addDomainPattern("", order, value);
-			return "";
+			return;
 		}
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		for (String domain : domains) {
 			i++;
-			if (builder.length() > 0) {
-				builder.append("|");
-			}
-//			order <<= order;
+			appendSeparatorIfNeeded(builder);
 			if (!"*".equals(domain)) {
 				order = order | (int) Math.pow(2, i);
 			}
 			builder.append(domain);
 		}
-		String string = builder.toString();
-		addDomainPattern(string, order, value);
-		return string;
+		addDomainPattern(builder.toString(), order, value);
+	}
+
+	private void appendSeparatorIfNeeded(final StringBuilder builder) {
+		if (builder.length() > 0) {
+			builder.append("|");
+		}
 	}
 
 	private void addDomainPattern(final String pattern, final int order, final Object value) {
@@ -104,16 +98,14 @@ public class KeyValues {
 	private String buildDomain(final Iterable<String> domains, final Resolver resolver) {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
-			if (builder.length() > 0) {
-				builder.append("|");
-			}
+			appendSeparatorIfNeeded(builder);
 			builder.append(resolver.getDomainValue(domain));
 		}
 		return builder.toString();
 	}
 
 	public <T> T get(List<String> domains, final Resolver resolver) {
-		T value = (T)values.get("");
+		T value = null;
 		for (DomainPattern pattern : patterns) {
 			String domainStr = buildDomain(domains, resolver);
 			if (pattern.pattern.matcher(domainStr).matches()) {

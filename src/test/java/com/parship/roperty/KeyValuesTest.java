@@ -3,6 +3,9 @@ package com.parship.roperty;
 import com.parship.commons.util.CollectionUtil;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static com.parship.commons.util.CollectionUtil.arrayList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -21,6 +24,18 @@ public class KeyValuesTest {
 			return domain;
 		}
 	};
+
+	@Test
+	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
+		assertThat((String)keyValues.get(Collections.EMPTY_LIST, null), is("[value undefined]"));
+		keyValues.put("val");
+		assertThat((String)keyValues.get(Collections.EMPTY_LIST, null), is("val"));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void callingGetWithoutAResolverGivesNullPointerException() {
+		keyValues.get(arrayList("dom1", "dom2"), null);
+	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturned() {
