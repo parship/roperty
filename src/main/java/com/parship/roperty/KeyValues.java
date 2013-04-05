@@ -15,15 +15,16 @@ import java.util.regex.Pattern;
 public class KeyValues {
 
 	private static class DomainPattern implements Comparable<DomainPattern> {
-		private final Pattern pattern;
+		private final String patternStr;
 		private final int ordering;
 		private final Object value;
 
 		public DomainPattern(final String domainPattern, final int order, Object value) {
 			Ensure.notNull(domainPattern, "domainPattern");
+			Ensure.notNull(value, "value");
 			String patternStr = domainPattern.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*");
 			patternStr += ".*";
-			this.pattern = Pattern.compile(patternStr);
+			this.patternStr = domainPattern;
 			this.ordering = order;
 			this.value = value;
 		}
@@ -32,7 +33,7 @@ public class KeyValues {
 		public int compareTo(final DomainPattern other) {
 			int order = this.ordering - other.ordering;
 			if (order == 0) {
-				return pattern.toString().compareTo(other.pattern.toString());
+				return getPattern().toString().compareTo(other.getPattern().toString());
 			}
 			return order;
 		}
@@ -40,10 +41,14 @@ public class KeyValues {
 		@Override
 		public String toString() {
 			return "DomainPattern{" +
-				"pattern=" + pattern +
+				"pattern=" + getPattern() +
 				", ordering=" + ordering +
 				", value=" + value +
 				'}';
+		}
+
+		private Pattern getPattern() {
+			return Pattern.compile(patternStr);
 		}
 	}
 
@@ -108,7 +113,7 @@ public class KeyValues {
 		T value = null;
 		for (DomainPattern pattern : patterns) {
 			String domainStr = buildDomain(domains, resolver);
-			if (pattern.pattern.matcher(domainStr).matches()) {
+			if (pattern.getPattern().matcher(domainStr).matches()) {
 				value = (T)pattern.value;
 			}
 		}
