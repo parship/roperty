@@ -18,9 +18,14 @@ import java.util.logging.Logger;
 public class Persistence {
 
 	private final DataSource dataSource;
+	private Boolean autoCommit;
 
 	public static interface ResultSetHandler {
 		void handle(ResultSet rs) throws SQLException;
+	}
+
+	public void setAutoCommit(boolean autoCommit) {
+		this.autoCommit = autoCommit;
 	}
 
 	public Persistence(DataSource dataSource) {
@@ -74,7 +79,7 @@ public class Persistence {
 		});
 	}
 
-	public synchronized void executeSql(final String sql) throws SQLException {
+	public void executeSql(final String sql) throws SQLException {
 		Connection con = dataSource.getConnection();
 		try {
 			executeSql(con, sql);
@@ -92,11 +97,16 @@ public class Persistence {
 		}
 	}
 
-	public synchronized void executeQuery(final String sql, final ResultSetHandler rsh) throws SQLException {
+	public void executeQuery(final String sql, final ResultSetHandler rsh) throws SQLException {
+		executeQuery(sql, rsh, 0);
+	}
+
+	public void executeQuery(final String sql, final ResultSetHandler rsh, int fetchSize) throws SQLException {
 		Connection con = dataSource.getConnection();
+		setAutoCommitIfNeeded(con);
 		try {
 			Statement stmt = con.createStatement();
-			stmt.setFetchSize(10);
+			stmt.setFetchSize(fetchSize);
 			try {
 				final ResultSet rs = stmt.executeQuery(sql);
 				try {
@@ -109,6 +119,12 @@ public class Persistence {
 			}
 		} finally {
 			close(con);
+		}
+	}
+
+	private void setAutoCommitIfNeeded(final Connection con) throws SQLException {
+		if (autoCommit != null) {
+			con.setAutoCommit(autoCommit);
 		}
 	}
 

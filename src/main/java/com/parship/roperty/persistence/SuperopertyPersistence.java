@@ -46,7 +46,7 @@ public class SuperopertyPersistence {
 							}
 						}
 					}
-				});
+				}, 100);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
