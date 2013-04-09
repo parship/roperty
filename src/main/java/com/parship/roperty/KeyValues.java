@@ -118,23 +118,6 @@ public class KeyValues {
 			}
 		}
 		return value;
-//		if (resolver == null) {
-//			return value;
-//		}
-//		StringBuilder builder = new StringBuilder();
-//		for (String domain : domains) {
-//			if (builder.length() > 0) {
-//				builder.append("|");
-//			} domain1|domain2|domain3
-//			String domainValue = resolver.getDomainValue(domain);
-//			Ensure.notEmpty(domainValue, "domainValue");
-//			builder.append(domainValue);
-//			T overriddenValue = (T)values.get(builder.toString());
-//			if (overriddenValue != null) {
-//				value = overriddenValue;
-//			}
-//		}
-//		return value;
 	}
 
 	@Override
