@@ -24,7 +24,7 @@ public class Persistence {
 		void handle(ResultSet rs) throws SQLException;
 	}
 
-	public void setAutoCommit(boolean autoCommit) {
+	public void setAutoCommit(Boolean autoCommit) {
 		this.autoCommit = autoCommit;
 	}
 

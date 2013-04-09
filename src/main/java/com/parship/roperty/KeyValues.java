@@ -22,8 +22,6 @@ public class KeyValues {
 		public DomainPattern(final String domainPattern, final int order, Object value) {
 			Ensure.notNull(domainPattern, "domainPattern");
 			Ensure.notNull(value, "value");
-			String patternStr = domainPattern.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*");
-			patternStr += ".*";
 			this.patternStr = domainPattern;
 			this.ordering = order;
 			this.value = value;
@@ -33,7 +31,7 @@ public class KeyValues {
 		public int compareTo(final DomainPattern other) {
 			int order = this.ordering - other.ordering;
 			if (order == 0) {
-				return getPattern().toString().compareTo(other.getPattern().toString());
+				return patternStr.compareTo(other.patternStr);
 			}
 			return order;
 		}
@@ -41,14 +39,19 @@ public class KeyValues {
 		@Override
 		public String toString() {
 			return "DomainPattern{" +
-				"pattern=" + getPattern() +
+				"pattern=" + patternStr +
 				", ordering=" + ordering +
 				", value=" + value +
 				'}';
 		}
 
-		private Pattern getPattern() {
-			return Pattern.compile(patternStr);
+		private boolean matches(final String domainStr) {
+			boolean equals = patternStr.equals(domainStr.substring(0, Math.min(domainStr.length(), patternStr.length())));
+			if (!equals && patternStr.contains("*")) {
+				String patternStr = domainStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*";
+				return domainStr.matches(patternStr);
+			}
+			return equals;
 		}
 	}
 
@@ -104,7 +107,9 @@ public class KeyValues {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
 			appendSeparatorIfNeeded(builder);
-			builder.append(resolver.getDomainValue(domain));
+			String domainValue = resolver.getDomainValue(domain);
+			Ensure.notEmpty(domainValue, "domainValue");
+			builder.append(domainValue);
 		}
 		return builder.toString();
 	}
@@ -113,7 +118,7 @@ public class KeyValues {
 		T value = null;
 		for (DomainPattern pattern : patterns) {
 			String domainStr = buildDomain(domains, resolver);
-			if (pattern.getPattern().matcher(domainStr).matches()) {
+			if (pattern.matches(domainStr)) {
 				value = (T)pattern.value;
 			}
 		}

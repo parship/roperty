@@ -18,6 +18,7 @@ public class SuperopertyPersistence {
 	public SuperopertyPersistence(final Roperty roperty, Persistence persistence) {
 		this.roperty = roperty;
 		this.persistence = persistence;
+		persistence.setAutoCommit(false);
 	}
 
 	public void loadAll() {
