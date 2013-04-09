@@ -23,6 +23,7 @@ public class SuperopertyPersistence {
 
 	public void loadAll() {
 		long start = System.currentTimeMillis();
+		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
 		try {
 			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value " +
 				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property",
@@ -63,13 +64,13 @@ public class SuperopertyPersistence {
 			return new String[]{container, stripPrefix(domain)};
 		}
 		if (domain.startsWith("LOCALE")) {
-			return new String[]{container, suffix(domain), stripPrefix(domain)};
+			return new String[]{container, suffix(domain), prefix(stripPrefix(domain))};
 		}
 		if (domain.startsWith("ORIENTATION")) {
-			return new String[]{container, suffix(domain), stripPrefix(stripPrefix(domain)), prefix(stripPrefix(domain))};
+			return new String[]{container, suffix(domain), prefix(stripPrefix(stripPrefix(domain))), prefix(stripPrefix(domain))};
 		}
 		if (domain.startsWith("PARTNER")) {
-			return new String[]{container, suffix(domain), stripPrefix(stripPrefix(domain)), "*", prefix(stripPrefix(domain))};
+			return new String[]{container, suffix(domain), prefix(stripPrefix(stripPrefix(domain))), "*", prefix(stripPrefix(domain))};
 		}
 		throw new RuntimeException("Could not find mapping for domain key: " + domain);
 	}

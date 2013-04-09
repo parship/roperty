@@ -5,7 +5,6 @@ import com.parship.commons.util.Ensure;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
 
 
 /**
@@ -13,47 +12,6 @@ import java.util.regex.Pattern;
  * @since 2013-03-26 09:18
  */
 public class KeyValues {
-
-	private static class DomainPattern implements Comparable<DomainPattern> {
-		private final String patternStr;
-		private final int ordering;
-		private final Object value;
-
-		public DomainPattern(final String domainPattern, final int order, Object value) {
-			Ensure.notNull(domainPattern, "domainPattern");
-			Ensure.notNull(value, "value");
-			this.patternStr = domainPattern;
-			this.ordering = order;
-			this.value = value;
-		}
-
-		@Override
-		public int compareTo(final DomainPattern other) {
-			int order = this.ordering - other.ordering;
-			if (order == 0) {
-				return patternStr.compareTo(other.patternStr);
-			}
-			return order;
-		}
-
-		@Override
-		public String toString() {
-			return "DomainPattern{" +
-				"pattern=" + patternStr +
-				", ordering=" + ordering +
-				", value=" + value +
-				'}';
-		}
-
-		private boolean matches(final String domainStr) {
-			boolean equals = patternStr.equals(domainStr.substring(0, Math.min(domainStr.length(), patternStr.length())));
-			if (!equals && patternStr.contains("*")) {
-				String patternStr = domainStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*";
-				return domainStr.matches(patternStr);
-			}
-			return equals;
-		}
-	}
 
 	private Set<DomainPattern> patterns = new TreeSet<>();
 
@@ -84,7 +42,7 @@ public class KeyValues {
 			i++;
 			appendSeparatorIfNeeded(builder);
 			if (!"*".equals(domain)) {
-				order = order | (int) Math.pow(2, i);
+				order = order | (int)Math.pow(2, i);
 			}
 			builder.append(domain);
 		}
@@ -108,7 +66,7 @@ public class KeyValues {
 		for (String domain : domains) {
 			appendSeparatorIfNeeded(builder);
 			String domainValue = resolver.getDomainValue(domain);
-			Ensure.notEmpty(domainValue, "domainValue");
+			Ensure.notEmpty(domainValue, "domainValue from Resolver");
 			builder.append(domainValue);
 		}
 		return builder.toString();
@@ -119,7 +77,7 @@ public class KeyValues {
 		for (DomainPattern pattern : patterns) {
 			String domainStr = buildDomain(domains, resolver);
 			if (pattern.matches(domainStr)) {
-				value = (T)pattern.value;
+				value = (T)pattern.getValue();
 			}
 		}
 		return value;
