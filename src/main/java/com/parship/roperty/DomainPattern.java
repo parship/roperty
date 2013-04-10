@@ -43,11 +43,18 @@ class DomainPattern implements Comparable<DomainPattern> {
 	}
 
 	public boolean matches(final String domainStr) {
-		boolean equals = patternStr.equals(domainStr.substring(0, Math.min(domainStr.length(), patternStr.length())));
+		boolean equals = prefixEquals(patternStr, domainStr);
 		if (!equals && patternStr.contains("*")) {
-			String patternStr = domainStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*";
-			return domainStr.matches(patternStr);
+			return domainStr.matches(toRegEx(patternStr));
 		}
 		return equals;
+	}
+
+	private boolean prefixEquals(final String patternStr, final String domainStr) {
+		return patternStr.equals(domainStr.substring(0, Math.min(domainStr.length(), patternStr.length())));
+	}
+
+	private String toRegEx(final String domainStr) {
+		return domainStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*";
 	}
 }
