@@ -1,6 +1,5 @@
 package com.parship.roperty;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -144,7 +143,7 @@ public class RopertyTest {
 		String overriddenValue2 = "overridden value domain2";
 		roperty.set("key", defaultValue);
 		roperty.set("key", overriddenValue1, "domain1");
-		roperty.set("key", overriddenValue2, "domain1|domain2");
+		roperty.set("key", overriddenValue2, "domain1", "domain2");
 		String value = roperty.get("key");
 		assertThat(value, is(overriddenValue2));
 	}

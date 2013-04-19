@@ -22,7 +22,7 @@ class DomainPattern implements Comparable<DomainPattern> {
 
 	@Override
 	public int compareTo(final DomainPattern other) {
-		int order = this.ordering - other.ordering;
+		int order = other.ordering - this.ordering;
 		if (order == 0) {
 			return patternStr.compareTo(other.patternStr);
 		}

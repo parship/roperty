@@ -73,14 +73,13 @@ public class KeyValues {
 	}
 
 	public <T> T get(List<String> domains, final Resolver resolver) {
-		T value = null;
+		String domainStr = buildDomain(domains, resolver);
 		for (DomainPattern pattern : patterns) {
-			String domainStr = buildDomain(domains, resolver);
 			if (pattern.matches(domainStr)) {
-				value = (T)pattern.getValue();
+				return (T)pattern.getValue();
 			}
 		}
-		return value;
+		return null;
 	}
 
 	@Override
