@@ -1,9 +1,9 @@
 package com.parship.roperty;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public class Roperty {
 
-	private Map<String, KeyValues> map = new HashMap<>();
-	private List<String> domains = new ArrayList<>();
+	private Map<String, KeyValues> map = new ConcurrentHashMap<>();
+	private List<String> domains = new CopyOnWriteArrayList<>();
 	private Resolver resolver;
 
 	public <T> T get(final String key, final T defaultValue) {
@@ -45,8 +45,13 @@ public class Roperty {
 	public void set(final String key, final Object value, final String... domains) {
 		KeyValues keyValues = map.get(key);
 		if (keyValues == null) {
-			keyValues = new KeyValues();
-			map.put(key, keyValues);
+			synchronized (map) {
+				keyValues = map.get(key);
+				if (keyValues == null) {
+					keyValues = new KeyValues();
+					map.put(key, keyValues);
+				}
+			}
 		}
 		keyValues.put(value, domains);
 	}
