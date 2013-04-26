@@ -4,7 +4,7 @@ import com.parship.commons.util.Ensure;
 
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 
 /**
@@ -13,7 +13,7 @@ import java.util.TreeSet;
  */
 public class KeyValues {
 
-	private Set<DomainPattern> patterns = new TreeSet<>();
+	private Set<DomainPattern> patterns = new ConcurrentSkipListSet<>();
 
 	public KeyValues() {
 		this("[value undefined]");
@@ -55,7 +55,7 @@ public class KeyValues {
 		}
 	}
 
-	private void addDomainPattern(final String pattern, final int order, final Object value) {
+	private synchronized void addDomainPattern(final String pattern, final int order, final Object value) {
 		DomainPattern domainPattern = new DomainPattern(pattern, order, value);
 		patterns.remove(domainPattern);
 		patterns.add(domainPattern);
