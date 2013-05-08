@@ -55,7 +55,7 @@ public class Ensure {
 	 * @param collection collection to check
 	 * @param parameterName name of the parameter to display in the error message
 	 */
-	public static void notEmpty(final Collection collection, final String parameterName) {
+	public static void notEmpty(final Collection<?> collection, final String parameterName) {
 		if (collection.isEmpty()) {
 			throw new IllegalArgumentException("\"" + parameterName + "\" must not be null or empty, but was: " + collection);
 		}
