@@ -18,6 +18,7 @@
 
 package com.parship.roperty;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -72,5 +73,14 @@ public class KeyValuesTest {
 		keyValues.put("value_2", "domain1", "*", "domain3");
 		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value_2"));
 	}
+
+    @Ignore
+    @Test
+    public void getAWildcardOverriddenValueIsReturned_4() {
+        keyValues.put("value_2", "domain1", "domain2a", "domain3");
+        keyValues.put("value_3", "domain1", "domain2b", "domain3");
+        // Are Wildcards allowed in request? Asterix (*) should be forbidden because this is a reserved pattern
+        assertThat((String)keyValues.get(arrayList("domain1", "*", "domain3"), resolver), is("value_3"));
+    }
 
 }
