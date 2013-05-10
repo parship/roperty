@@ -74,12 +74,11 @@ public class KeyValuesTest {
 		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value_2"));
 	}
 
-    @Ignore
-    @Test
-    public void getAWildcardOverriddenValueIsReturned_4() {
+    @Test(expected = IllegalArgumentException.class)
+    public void getIllegalArgumentExceptionOnUsingAstrixInRequest() {
         keyValues.put("value_2", "domain1", "domain2a", "domain3");
         keyValues.put("value_3", "domain1", "domain2b", "domain3");
-        // Are Wildcards allowed in request? Asterix (*) should be forbidden because this is a reserved pattern
+        // Are Wildcards allowed in request? Asterisk (*) should be forbidden because this is a reserved pattern
         assertThat((String)keyValues.get(arrayList("domain1", "*", "domain3"), resolver), is("value_3"));
     }
 
