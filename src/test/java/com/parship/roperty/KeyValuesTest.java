@@ -18,6 +18,7 @@
 
 package com.parship.roperty;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -81,5 +82,13 @@ public class KeyValuesTest {
 		when(resolver.getDomainValue("x1")).thenReturn("abc|def");
 		keyValues.get(asList("x1"), resolver);
 	}
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getIllegalArgumentExceptionOnUsingAstrixInRequest() {
+        keyValues.put("value_2", "domain1", "domain2a", "domain3");
+        keyValues.put("value_3", "domain1", "domain2b", "domain3");
+        // Are Wildcards allowed in request? Asterisk (*) should be forbidden because this is a reserved pattern
+        assertThat((String)keyValues.get(arrayList("domain1", "*", "domain3"), resolver), is("value_3"));
+    }
 
 }

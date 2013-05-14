@@ -57,8 +57,8 @@ public class KeyValues {
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
 		for (String domain : domains) {
-			i++;
-			appendSeparatorIfNeeded(builder);
+			++i;
+            appendSeparatorIfNeeded(builder);
 			if (!"*".equals(domain)) {
 				order = order | (int)Math.pow(2, i);
 			}
@@ -93,7 +93,12 @@ public class KeyValues {
 		return builder.toString();
 	}
 
-	public <T> T get(List<String> domains, final Resolver resolver) {
+	public <T> T get(List<String> domains, final Resolver resolver) throws IllegalArgumentException {
+        if (domains.contains("*"))   {
+            throw new IllegalArgumentException();
+        }
+
+
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainPattern pattern : patterns) {
 			if (pattern.matches(domainStr)) {
