@@ -34,6 +34,7 @@ public class Roperty {
 	private List<String> domains = new CopyOnWriteArrayList<>();
 	private Resolver resolver;
 
+	@SuppressWarnings("unchecked")
 	public <T> T get(final String key, final T defaultValue) {
 		KeyValues keyValues = map.get(key);
 		if (keyValues == null) {
