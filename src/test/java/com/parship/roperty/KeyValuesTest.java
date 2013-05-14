@@ -22,9 +22,11 @@ import org.junit.Test;
 
 import java.util.Collections;
 
-import static com.parship.commons.util.CollectionUtil.arrayList;
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -50,27 +52,34 @@ public class KeyValuesTest {
 
 	@Test(expected = NullPointerException.class)
 	public void callingGetWithoutAResolverGivesNullPointerException() {
-		keyValues.get(arrayList("dom1", "dom2"), null);
+		keyValues.get(asList("dom1", "dom2"), null);
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturned() {
 		keyValues.put("value", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value"));
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturned_2() {
 		keyValues.put("value_1", "*", "*", "domain3");
 		keyValues.put("value_2", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value_2"));
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturned_3() {
 		keyValues.put("value_1", "aaa", "*", "domain3");
 		keyValues.put("value_2", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(arrayList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void domainValuesMustNotContainPipe() {
+		resolver = mock(Resolver.class);
+		when(resolver.getDomainValue("x1")).thenReturn("abc|def");
+		keyValues.get(asList("x1"), resolver);
 	}
 
 }

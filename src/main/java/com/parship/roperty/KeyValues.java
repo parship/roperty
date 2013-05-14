@@ -84,7 +84,10 @@ public class KeyValues {
 		for (String domain : domains) {
 			appendSeparatorIfNeeded(builder);
 			String domainValue = resolver.getDomainValue(domain);
-			Ensure.notEmpty(domainValue, "domainValue from Resolver");
+			if (domainValue == null) {
+				domainValue = "";
+			}
+			Ensure.that(!domainValue.contains("|"), "domainValues can not contain '|'");
 			builder.append(domainValue);
 		}
 		return builder.toString();
