@@ -40,8 +40,8 @@ import static org.mockito.Mockito.when;
 public class SuperopertyPersistenceTest {
 
 	private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL";
-	private static final String USER = "parship";
-	private static final String PASSWORD = "freiheit";
+	private static final String USER = "user";
+	private static final String PASSWORD = "xxx";
 
 	private Roperty r = new Roperty();
 	private RopertyWithResolver roperty;
