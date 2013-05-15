@@ -86,7 +86,7 @@ public class SuperopertyPersistenceTest {
 		when(resolverMock.getDomainValue("language")).thenReturn("de");
 		when(resolverMock.getDomainValue("orientation")).thenReturn("hetero");
 		when(resolverMock.getDomainValue("owner")).thenReturn("1234");
-		roperty.setResolver(resolverMock);
+		roperty.setDefaultResolver(resolverMock);
 	}
 
 	@Test

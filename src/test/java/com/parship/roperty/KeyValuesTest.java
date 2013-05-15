@@ -18,6 +18,7 @@
 
 package com.parship.roperty;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -42,6 +43,11 @@ public class KeyValuesTest {
 			return domain;
 		}
 	};
+
+	@Test
+	public void toStringTest() {
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{patterns=[DomainSpecificValue{pattern=, ordering=1, value=[value undefined]}]}"));
+	}
 
 	@Test
 	public void gettingFromAnEmptyKeyValuesGivesUndefinedValue() {
