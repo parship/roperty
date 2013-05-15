@@ -61,30 +61,24 @@ public class KeyValuesTest {
 	}
 
 	@Test
-	public void getAWildcardOverriddenValueIsReturned_1() {
-		keyValues.put("value", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value"));
-	}
-
-	@Test
-	public void getAWildcardOverriddenValueIsReturned_2() {
+	public void getAWildcardOverriddenValueIsReturnedByBestMatch() {
 		keyValues.put("value_1", "*", "*", "domain3");
 		keyValues.put("value_2", "domain1", "*", "domain3");
 		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value_2"));
 	}
 
 	@Test
-	public void getAWildcardOverriddenValueIsReturned_3() {
-		keyValues.put("value_1", "aaa", "*", "domain3");
-		keyValues.put("value_2", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+	public void getAWildcardOverriddenValueIsReturnedWhenAllDomainsMatch() {
+		keyValues.put("other value", "aaa", "*", "domain3");
+		keyValues.put("value", "domain1", "*", "domain3");
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void domainValuesMustNotContainPipe() {
-		resolver = mock(Resolver.class);
-		when(resolver.getDomainValue("x1")).thenReturn("abc|def");
-		keyValues.get(asList("x1"), resolver);
+		Resolver resolverMock = mock(Resolver.class);
+		when(resolverMock.getDomainValue("x1")).thenReturn("abc|def");
+		keyValues.get(asList("x1"), resolverMock);
 	}
 
 	@Test
