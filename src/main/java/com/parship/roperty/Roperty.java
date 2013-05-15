@@ -34,11 +34,6 @@ public class Roperty {
 
 	private final Map<String, KeyValues> map = new ConcurrentHashMap<>();
 	private final List<String> domains = new CopyOnWriteArrayList<>();
-	private DomainResolver defaultResolver;
-
-	public <T> T get(final String key, final T defaultValue) {
-		return get(key, defaultValue, defaultResolver);
-	}
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
 		KeyValues keyValues = map.get(key);
@@ -48,16 +43,8 @@ public class Roperty {
 		return keyValues.get(domains, resolver);
 	}
 
-	public <T> T get(final String key) {
-		return get(key, defaultResolver);
-	}
-
 	public <T> T get(final String key, DomainResolver resolver) {
 		return get(key, null, resolver);
-	}
-
-	public <T> T getOrDefine(final String key, final T defaultValue) {
-		return getOrDefine(key, defaultValue, defaultResolver);
 	}
 
 	public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver) {
@@ -87,10 +74,6 @@ public class Roperty {
 			}
 		}
 		keyValues.put(value, domains);
-	}
-
-	public void setDefaultResolver(final DomainResolver resolver) {
-		this.defaultResolver = resolver;
 	}
 
 	@Override

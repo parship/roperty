@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -32,17 +33,18 @@ import static org.mockito.Mockito.*;
  */
 public class RopertyTest {
 
-	private Roperty roperty = new Roperty();
 	private DomainResolver resolver = new DomainResolver() {
 		@Override
 		public String getDomainValue(final String domain) {
 			return domain;
 		}
 	};
+	private Roperty r = new Roperty();
+	private RopertyWithResolver roperty = new RopertyWithResolver(r, resolver);
 
 	@Test
 	public void toStringTest() {
-		assertThat(roperty.toString(), is("Roperty{domains=[], map={}}"));
+		assertThat(roperty.toString(), startsWith("RopertyWithResolver{roperty=Roperty{domains=[], map={}}, domainResolver="));
 	}
 
 	@Test
@@ -114,18 +116,18 @@ public class RopertyTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullDomainsAreNotAllowed() {
-		roperty.addDomain(null);
+		r.addDomain(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emptyDomainsAreNotAllowed() {
-		roperty.addDomain("");
+		r.addDomain("");
 	}
 
 	@Test
 	public void getOverriddenValue() {
-		roperty.addDomain("domain1");
-		roperty.setDefaultResolver(resolver);
+		r.addDomain("domain1");
+		roperty = new RopertyWithResolver(r, resolver);
 		String defaultValue = "default value";
 		String overriddenValue = "overridden value";
 		roperty.set("key", defaultValue);
@@ -142,8 +144,8 @@ public class RopertyTest {
 
 	@Test
 	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist() {
-		roperty.addDomain("domain1");
-		roperty.setDefaultResolver(resolver);
+		r.addDomain("domain1");
+		roperty = new RopertyWithResolver(r, resolver);
 		String overriddenValue = "overridden value";
 		roperty.set("key", "other value", "other");
 		roperty.set("key", overriddenValue, "domain1");
@@ -154,11 +156,11 @@ public class RopertyTest {
 
 	@Test
 	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
-		roperty.addDomain("domain1").addDomain("domain2");
+		r.addDomain("domain1").addDomain("domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
 		when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
 		when(mockResolver.getDomainValue("domain2")).thenReturn("domVal2");
-		roperty.setDefaultResolver(mockResolver);
+		roperty = new RopertyWithResolver(r, mockResolver);
 		String overriddenValue = "overridden value";
 		roperty.set("key", "other value", "other");
 		roperty.set("key", "domVal1", "domVal1");
@@ -170,8 +172,8 @@ public class RopertyTest {
 
 	@Test
 	public void getOverriddenValueTwoDomainsOnlyFirstDomainIsOverridden() {
-		roperty.addDomain("domain1").addDomain("domain2");
-		roperty.setDefaultResolver(resolver);
+		r.addDomain("domain1").addDomain("domain2");
+		roperty = new RopertyWithResolver(r, resolver);
 		String defaultValue = "default value";
 		String overriddenValue1 = "overridden value domain1";
 		roperty.set("key", defaultValue);
@@ -182,9 +184,9 @@ public class RopertyTest {
 
 	@Test
 	public void domainValuesAreRequestedFromAResolver() {
-		roperty.addDomain("domain1").addDomain("domain2");
+		roperty.getRoperty().addDomain("domain1").addDomain("domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
-		roperty.setDefaultResolver(mockResolver);
+		roperty = new RopertyWithResolver(r, mockResolver);
 		roperty.set("key", "value");
 		roperty.get("key");
 		verify(mockResolver).getDomainValue("domain1");
@@ -194,17 +196,17 @@ public class RopertyTest {
 
 	@Test
 	public void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
-		roperty.addDomain("domain1").addDomain("domain2");
+		r.addDomain("domain1").addDomain("domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
-		roperty.setDefaultResolver(mockResolver);
+		roperty = new RopertyWithResolver(r, mockResolver);
 		roperty.get("key");
 		verifyNoMoreInteractions(mockResolver);
 	}
 
 	@Test
 	public void wildcardIsResolvedWhenOtherDomainsMatch() {
-		roperty.addDomain("domain1").addDomain("domain2");
-		roperty.setDefaultResolver(resolver);
+		r.addDomain("domain1").addDomain("domain2");
+		roperty = new RopertyWithResolver(r, resolver);
 		String value = "overridden value";
 		roperty.set("key", value, "*", "domain2");
 		assertThat((String)roperty.get("key"), is(value));

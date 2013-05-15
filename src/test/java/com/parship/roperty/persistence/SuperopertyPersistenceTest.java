@@ -20,6 +20,7 @@ package com.parship.roperty.persistence;
 
 import com.parship.roperty.DomainResolver;
 import com.parship.roperty.Roperty;
+import com.parship.roperty.RopertyWithResolver;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +43,8 @@ public class SuperopertyPersistenceTest {
 	private static final String USER = "parship";
 	private static final String PASSWORD = "freiheit";
 
-	private Roperty roperty = new Roperty();
+	private Roperty r = new Roperty();
+	private RopertyWithResolver roperty;
 	private SuperopertyPersistence persistence;
 
 	private static final String CREATE_BASE_TABLE = "CREATE TABLE base_property ( " +
@@ -79,14 +81,14 @@ public class SuperopertyPersistenceTest {
 
 	@Before
 	public void before() {
-		persistence = new SuperopertyPersistence(roperty, PERSISTENCE);
+		persistence = new SuperopertyPersistence(r, PERSISTENCE);
 		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("container")).thenReturn("container");
 		when(resolverMock.getDomainValue("country")).thenReturn("DE");
 		when(resolverMock.getDomainValue("language")).thenReturn("de");
 		when(resolverMock.getDomainValue("orientation")).thenReturn("hetero");
 		when(resolverMock.getDomainValue("owner")).thenReturn("1234");
-		roperty.setDefaultResolver(resolverMock);
+		roperty = new RopertyWithResolver(r, resolverMock);
 	}
 
 	@Test
