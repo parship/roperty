@@ -70,7 +70,7 @@ public class SuperopertyPersistenceTest {
 		"version bigint DEFAULT 0 NOT NULL, " +
 		"app_version character varying(30))";
 
-	private static Persistence PERSISTENCE;
+	private static SqlPersistence PERSISTENCE;
 
 	@BeforeClass
 	public static void beforeClass() throws SQLException {
@@ -104,8 +104,8 @@ public class SuperopertyPersistenceTest {
 		assertThat((String)roperty.get("key"), is("overridden"));
 	}
 
-	private static Persistence getPersistence() throws SQLException {
-		Persistence persistence = new Persistence(URL, USER, PASSWORD);
+	private static SqlPersistence getPersistence() throws SQLException {
+		SqlPersistence persistence = new SqlPersistence(URL, USER, PASSWORD);
 		persistence.executeSql(CREATE_BASE_TABLE);
 		persistence.executeSql(CREATE_DOMAIN_TABLE);
 		return persistence;

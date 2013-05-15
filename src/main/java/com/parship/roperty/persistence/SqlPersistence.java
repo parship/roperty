@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * @author mfinsterwalder
  * @since 2013-04-02 20:19
  */
-public class Persistence {
+public class SqlPersistence {
 
 	private final DataSource dataSource;
 	private Boolean autoCommit;
@@ -46,11 +46,11 @@ public class Persistence {
 		this.autoCommit = autoCommit;
 	}
 
-	public Persistence(DataSource dataSource) {
+	public SqlPersistence(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
-	public Persistence(final String url, final String user, final String password) {
+	public SqlPersistence(final String url, final String user, final String password) {
 		this(new DataSource() {
 			@Override
 			public Connection getConnection() throws SQLException {

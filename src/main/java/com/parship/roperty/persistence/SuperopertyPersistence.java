@@ -31,9 +31,9 @@ import java.sql.SQLException;
 public class SuperopertyPersistence {
 
 	private final Roperty roperty;
-	private final Persistence persistence;
+	private final SqlPersistence persistence;
 
-	public SuperopertyPersistence(final Roperty roperty, Persistence persistence) {
+	public SuperopertyPersistence(final Roperty roperty, SqlPersistence persistence) {
 		this.roperty = roperty;
 		this.persistence = persistence;
 		persistence.setAutoCommit(false);
@@ -45,7 +45,7 @@ public class SuperopertyPersistence {
 		try {
 			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value " +
 				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property",
-				new Persistence.ResultSetHandler() {
+				new SqlPersistence.ResultSetHandler() {
 					@Override
 					public void handle(final ResultSet rs) throws SQLException {
 						while (rs.next()) {
