@@ -50,9 +50,9 @@ public class KeyValuesTest {
 
 	@Test
 	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
-		assertThat((String)keyValues.get(Collections.EMPTY_LIST, null), is("[value undefined]"));
+		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), is("[value undefined]"));
 		keyValues.put("val");
-		assertThat((String)keyValues.get(Collections.EMPTY_LIST, null), is("val"));
+		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), is("val"));
 	}
 
 	@Test(expected = NullPointerException.class)

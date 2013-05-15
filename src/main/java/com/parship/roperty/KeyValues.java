@@ -96,6 +96,7 @@ public class KeyValues {
 		return builder.toString();
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T get(List<String> domains, final Resolver resolver) {
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue pattern : domainSpecificValues) {

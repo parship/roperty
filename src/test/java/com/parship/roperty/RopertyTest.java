@@ -94,6 +94,7 @@ public class RopertyTest {
 	public void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
 		String text = "value";
 		roperty.set("key", text);
+		@SuppressWarnings("unused")
 		Integer value = roperty.get("key");
 	}
 
