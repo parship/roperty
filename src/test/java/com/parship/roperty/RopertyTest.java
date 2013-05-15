@@ -62,6 +62,14 @@ public class RopertyTest {
 	}
 
 	@Test
+	public void gettingAValueWithoutAGivenDefaultGivesValue() {
+		String text = "value";
+		roperty.set("key", text);
+		String value = roperty.get("key");
+		assertThat(value, is(text));
+	}
+
+	@Test
 	public void changingAStringValue() {
 		roperty.set("key", "first");
 		roperty.set("key", "other");
@@ -70,25 +78,17 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void gettingAnIntValue() {
+	public void gettingAnIntValueDefault() {
 		int value = roperty.get("key", 3);
 		assertThat(value, is(3));
 	}
 
 	@Test
-	public void gettingAValueThatDoesNotExistWithoutADefaultGivesNull() {
-		Integer value = roperty.get("key");
-		assertThat(value, nullValue());
+	public void settingAndGettingAnIntValue() {
+		roperty.set("key", 7);
+		int value = roperty.get("key", 3);
+		assertThat(value, is(7));
 	}
-
-	@Test
-	public void gettingAValueWithoutAGivenDefaultGivesValue() {
-		String text = "value";
-		roperty.set("key", text);
-		String value = roperty.get("key");
-		assertThat(value, is(text));
-	}
-
 
 	@Test(expected = ClassCastException.class)
 	public void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
@@ -130,6 +130,12 @@ public class RopertyTest {
 	}
 
 	@Test
+	public void whenAKeyForASubdomainIsSetTheRootKeyGetsAnUndefinedValue() {
+		roperty.set("key", "value", "subdomain");
+		assertThat((String)roperty.get("key"), is("[value undefined]"));
+	}
+
+	@Test
 	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist() {
 		roperty.addDomain("domain1");
 		roperty.setResolver(resolver);
@@ -142,13 +148,7 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void whenAKeyForASubdomainIsSetTheRootKeyGetsAnUndefinedValue() {
-		roperty.set("key", "value", "subdomain");
-		assertThat((String)roperty.get("key"), is("[value undefined]"));
-	}
-
-	@Test
-	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist_2() {
+	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
 		roperty.addDomain("domain1").addDomain("domain2");
 		Resolver mockResolver = mock(Resolver.class);
 		when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
@@ -161,20 +161,6 @@ public class RopertyTest {
 		roperty.set("key", "yet another value", "domVal1", "other");
 		String value = roperty.get("key");
 		assertThat(value, is(overriddenValue));
-	}
-
-	@Test
-	public void getOverriddenValueTwoDomains() {
-		roperty.addDomain("domain1").addDomain("domain2");
-		roperty.setResolver(resolver);
-		String defaultValue = "default value";
-		String overriddenValue1 = "overridden value domain1";
-		String overriddenValue2 = "overridden value domain2";
-		roperty.set("key", defaultValue);
-		roperty.set("key", overriddenValue1, "domain1");
-		roperty.set("key", overriddenValue2, "domain1", "domain2");
-		String value = roperty.get("key");
-		assertThat(value, is(overriddenValue2));
 	}
 
 	@Test
@@ -193,7 +179,6 @@ public class RopertyTest {
 	public void domainValuesAreRequestedFromAResolver() {
 		roperty.addDomain("domain1").addDomain("domain2");
 		Resolver mockResolver = mock(Resolver.class);
-		when(mockResolver.getDomainValue(anyString())).thenReturn("x");
 		roperty.setResolver(mockResolver);
 		roperty.set("key", "value");
 		roperty.get("key");
@@ -212,7 +197,7 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void wildcard() {
+	public void wildcardIsResolvedWhenOtherDomainsMatch() {
 		roperty.addDomain("domain1").addDomain("domain2");
 		roperty.setResolver(resolver);
 		String value = "overridden value";
