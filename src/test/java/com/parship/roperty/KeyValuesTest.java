@@ -44,6 +44,11 @@ public class KeyValuesTest {
 	};
 
 	@Test
+	public void gettingFromAnEmptyKeyValuesGivesUndefinedValue() {
+		assertThat((String)keyValues.get(asList("dom1"), resolver), is("[value undefined]"));
+	}
+
+	@Test
 	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
 		assertThat((String)keyValues.get(Collections.EMPTY_LIST, null), is("[value undefined]"));
 		keyValues.put("val");
@@ -56,7 +61,7 @@ public class KeyValuesTest {
 	}
 
 	@Test
-	public void getAWildcardOverriddenValueIsReturned() {
+	public void getAWildcardOverriddenValueIsReturned_1() {
 		keyValues.put("value", "domain1", "*", "domain3");
 		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value"));
 	}
@@ -82,4 +87,17 @@ public class KeyValuesTest {
 		keyValues.get(asList("x1"), resolver);
 	}
 
+	@Test
+	public void resolvingToNullMatchesEmptyStringAndThatNeverMatchesSoTheRestOfTheDomainsAreIgnored() {
+		resolver = mock(Resolver.class);
+		when(resolver.getDomainValue("domain1")).thenReturn("domain1");
+		when(resolver.getDomainValue("domain2")).thenReturn(null);
+		when(resolver.getDomainValue("domain3")).thenReturn("domain3");
+		keyValues.put("value");
+		keyValues.put("overridden1", "domain1");
+		keyValues.put("overridden2", "domain1", "domain2");
+		keyValues.put("overridden3", "domain1", "domain2", "domain3");
+		String value = keyValues.get(asList("domain1", "domain2", "domain3"), resolver);
+		assertThat(value, is("overridden1"));
+	}
 }

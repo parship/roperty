@@ -25,12 +25,12 @@ import com.parship.commons.util.Ensure;
  * @author mfinsterwalder
  * @since 2013-04-09 18:20
  */
-class DomainPattern implements Comparable<DomainPattern> {
+class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final String patternStr;
 	private final int ordering;
 	private final Object value;
 
-	public DomainPattern(final String domainPattern, final int order, Object value) {
+	public DomainSpecificValue(final String domainPattern, final int order, Object value) {
 		Ensure.notNull(domainPattern, "domainPattern");
 		Ensure.notNull(value, "value");
 		this.patternStr = domainPattern;
@@ -39,7 +39,7 @@ class DomainPattern implements Comparable<DomainPattern> {
 	}
 
 	@Override
-	public int compareTo(final DomainPattern other) {
+	public int compareTo(final DomainSpecificValue other) {
 		int order = other.ordering - this.ordering;
 		if (order == 0) {
 			return patternStr.compareTo(other.patternStr);
@@ -49,7 +49,7 @@ class DomainPattern implements Comparable<DomainPattern> {
 
 	@Override
 	public String toString() {
-		return "DomainPattern{" +
+		return "DomainSpecificValue{" +
 			"pattern=" + patternStr +
 			", ordering=" + ordering +
 			", value=" + value +

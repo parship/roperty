@@ -106,6 +106,16 @@ public class RopertyTest {
 		assertThat(value, is(text));
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void nullDomainsAreNotAllowed() {
+		roperty.addDomain(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void emptyDomainsAreNotAllowed() {
+		roperty.addDomain("");
+	}
+
 	@Test
 	public void getOverriddenValue() {
 		roperty.addDomain("domain1");

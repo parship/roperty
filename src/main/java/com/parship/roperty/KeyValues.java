@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class KeyValues {
 
-	private Set<DomainPattern> patterns = new ConcurrentSkipListSet<>();
+	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
 
 	public KeyValues() {
 		this("[value undefined]");
@@ -44,6 +44,9 @@ public class KeyValues {
 
 	public void put(Object value, String... domains) {
 		Ensure.notNull(domains, "domain");
+		for (String domain : domains) {
+			Ensure.notEmpty(domain, "domain");
+		}
 		Ensure.notNull(value, "value");
 		createAndAddDomainPattern(value, domains);
 	}
@@ -51,7 +54,7 @@ public class KeyValues {
 	private void createAndAddDomainPattern(final Object value, final String[] domains) {
 		int order = 1;
 		if (domains.length == 0) {
-			addDomainPattern("", order, value);
+			addDomainSpecificValue("", order, value);
 			return;
 		}
 		StringBuilder builder = new StringBuilder();
@@ -64,7 +67,7 @@ public class KeyValues {
 			}
 			builder.append(domain);
 		}
-		addDomainPattern(builder.toString(), order, value);
+		addDomainSpecificValue(builder.toString(), order, value);
 	}
 
 	private void appendSeparatorIfNeeded(final StringBuilder builder) {
@@ -73,10 +76,10 @@ public class KeyValues {
 		}
 	}
 
-	private synchronized void addDomainPattern(final String pattern, final int order, final Object value) {
-		DomainPattern domainPattern = new DomainPattern(pattern, order, value);
-		patterns.remove(domainPattern);
-		patterns.add(domainPattern);
+	private synchronized void addDomainSpecificValue(final String pattern, final int order, final Object value) {
+		DomainSpecificValue domainSpecificValue = new DomainSpecificValue(pattern, order, value);
+		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
+		domainSpecificValues.add(domainSpecificValue);
 	}
 
 	private String buildDomain(final Iterable<String> domains, final Resolver resolver) {
@@ -95,18 +98,18 @@ public class KeyValues {
 
 	public <T> T get(List<String> domains, final Resolver resolver) {
 		String domainStr = buildDomain(domains, resolver);
-		for (DomainPattern pattern : patterns) {
+		for (DomainSpecificValue pattern : domainSpecificValues) {
 			if (pattern.matches(domainStr)) {
 				return (T)pattern.getValue();
 			}
 		}
-		return null;
+		return null; // this never happens, since there is always the default value
 	}
 
 	@Override
 	public String toString() {
 		return "KeyValues{" +
-			"patterns=" + patterns +
+			"patterns=" + domainSpecificValues +
 			'}';
 	}
 }
