@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 public class RopertyTest {
 
 	private Roperty roperty = new Roperty();
-	private Resolver resolver = new Resolver() {
+	private DomainResolver resolver = new DomainResolver() {
 		@Override
 		public String getDomainValue(final String domain) {
 			return domain;
@@ -150,7 +150,7 @@ public class RopertyTest {
 	@Test
 	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
 		roperty.addDomain("domain1").addDomain("domain2");
-		Resolver mockResolver = mock(Resolver.class);
+		DomainResolver mockResolver = mock(DomainResolver.class);
 		when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
 		when(mockResolver.getDomainValue("domain2")).thenReturn("domVal2");
 		roperty.setResolver(mockResolver);
@@ -178,7 +178,7 @@ public class RopertyTest {
 	@Test
 	public void domainValuesAreRequestedFromAResolver() {
 		roperty.addDomain("domain1").addDomain("domain2");
-		Resolver mockResolver = mock(Resolver.class);
+		DomainResolver mockResolver = mock(DomainResolver.class);
 		roperty.setResolver(mockResolver);
 		roperty.set("key", "value");
 		roperty.get("key");
@@ -190,7 +190,7 @@ public class RopertyTest {
 	@Test
 	public void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
 		roperty.addDomain("domain1").addDomain("domain2");
-		Resolver mockResolver = mock(Resolver.class);
+		DomainResolver mockResolver = mock(DomainResolver.class);
 		roperty.setResolver(mockResolver);
 		roperty.get("key");
 		verifyNoMoreInteractions(mockResolver);

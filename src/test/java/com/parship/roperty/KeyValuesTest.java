@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 public class KeyValuesTest {
 
 	private KeyValues keyValues = new KeyValues();
-	private Resolver resolver = new Resolver() {
+	private DomainResolver resolver = new DomainResolver() {
 		@Override
 		public String getDomainValue(final String domain) {
 			return domain;
@@ -76,14 +76,14 @@ public class KeyValuesTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void domainValuesMustNotContainPipe() {
-		Resolver resolverMock = mock(Resolver.class);
+		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("x1")).thenReturn("abc|def");
 		keyValues.get(asList("x1"), resolverMock);
 	}
 
 	@Test
 	public void resolvingToNullMatchesEmptyStringAndThatNeverMatchesSoTheRestOfTheDomainsAreIgnored() {
-		resolver = mock(Resolver.class);
+		resolver = mock(DomainResolver.class);
 		when(resolver.getDomainValue("domain1")).thenReturn("domain1");
 		when(resolver.getDomainValue("domain2")).thenReturn(null);
 		when(resolver.getDomainValue("domain3")).thenReturn("domain3");

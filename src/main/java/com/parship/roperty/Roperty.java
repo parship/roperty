@@ -34,7 +34,7 @@ public class Roperty {
 
 	private final Map<String, KeyValues> map = new ConcurrentHashMap<>();
 	private final List<String> domains = new CopyOnWriteArrayList<>();
-	private Resolver resolver;
+	private DomainResolver resolver;
 
 	public <T> T get(final String key, final T defaultValue) {
 		KeyValues keyValues = map.get(key);
@@ -77,7 +77,7 @@ public class Roperty {
 		keyValues.put(value, domains);
 	}
 
-	public void setResolver(final Resolver resolver) {
+	public void setResolver(final DomainResolver resolver) {
 		this.resolver = resolver;
 	}
 

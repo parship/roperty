@@ -82,7 +82,7 @@ public class KeyValues {
 		domainSpecificValues.add(domainSpecificValue);
 	}
 
-	private String buildDomain(final Iterable<String> domains, final Resolver resolver) {
+	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
 			appendSeparatorIfNeeded(builder);
@@ -97,7 +97,7 @@ public class KeyValues {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(List<String> domains, final Resolver resolver) {
+	public <T> T get(List<String> domains, final DomainResolver resolver) {
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue pattern : domainSpecificValues) {
 			if (pattern.matches(domainStr)) {

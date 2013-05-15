@@ -18,7 +18,7 @@
 
 package com.parship.roperty.persistence;
 
-import com.parship.roperty.Resolver;
+import com.parship.roperty.DomainResolver;
 import com.parship.roperty.Roperty;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -80,7 +80,7 @@ public class SuperopertyPersistenceTest {
 	@Before
 	public void before() {
 		persistence = new SuperopertyPersistence(roperty, PERSISTENCE);
-		Resolver resolverMock = mock(Resolver.class);
+		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("container")).thenReturn("container");
 		when(resolverMock.getDomainValue("country")).thenReturn("DE");
 		when(resolverMock.getDomainValue("language")).thenReturn("de");
