@@ -15,6 +15,6 @@ public class MapBackedDomainResolverTest {
 	@Test
 	public void setAndGetDomainValues() {
 		MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
-		assertThat(resolver.getDomainValue("dom1"), is("val1"));
+		assertThat(resolver.getDomainValue("dom1"), is("val1_Y"));
 	}
 }
