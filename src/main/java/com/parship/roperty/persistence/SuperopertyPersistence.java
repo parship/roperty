@@ -90,7 +90,7 @@ public class SuperopertyPersistence {
 				e.printStackTrace(); // TODO implement
 			}
 			return converter.toObject(value);
-		} catch (ClassNotFoundException e) {
+		} catch (ClassCastException|ClassNotFoundException e) {
 			e.printStackTrace(); // TODO implement
 			return value;
 		}

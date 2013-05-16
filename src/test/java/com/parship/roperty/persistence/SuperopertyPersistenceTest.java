@@ -94,7 +94,7 @@ public class SuperopertyPersistenceTest {
 	@Test
 	public void basePropertiesAreRead() throws SQLException {
 		PERSISTENCE.executeSql("INSERT INTO base_property (property_name, container_name, default_value, converter_class) VALUES ('key', 'container', 'value', " +
-			"'Converter_DOESNOTEXIST')");
+			"'com.freiheit.superoperty.converter.TextareaRegexCheckConverter')");
 		this.persistence.loadAll();
 		assertThat((String)roperty.get("key"), is("value"));
 	}
