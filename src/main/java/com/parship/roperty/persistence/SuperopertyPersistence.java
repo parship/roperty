@@ -43,7 +43,7 @@ public class SuperopertyPersistence {
 		long start = System.currentTimeMillis();
 		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
 		try {
-			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value " +
+			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value, converter_class " +
 				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property",
 				new SqlPersistence.ResultSetHandler() {
 					@Override
@@ -53,8 +53,9 @@ public class SuperopertyPersistence {
 							String defaultValue = rs.getString(2);
 							String domain = rs.getString(4);
 							String overriddenValue = rs.getString(5);
+							String converterClass = rs.getString(6);
 							if (defaultValue != null) {
-								roperty.set(key, defaultValue);
+								roperty.set(key, convert(defaultValue, converterClass));
 							}
 							if (overriddenValue != null && domain != null) {
 								String container = rs.getString(3);
@@ -72,6 +73,27 @@ public class SuperopertyPersistence {
 		}
 		long end = System.currentTimeMillis();
 		System.out.println("Loading took: " + (end - start) + "ms");
+	}
+
+	private Object convert(final String value, final String converterClassName) {
+		if (converterClassName == null || converterClassName.length() == 0) {
+			return value;
+		}
+		try {
+			final Class<? extends PropertyConverter> converterClass = Class.forName(converterClassName).asSubclass(PropertyConverter.class);
+			PropertyConverter converter = null;
+			try {
+				converter = converterClass.newInstance();
+			} catch (InstantiationException e) {
+				e.printStackTrace(); // TODO implement
+			} catch (IllegalAccessException e) {
+				e.printStackTrace(); // TODO implement
+			}
+			return converter.toObject(value);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace(); // TODO implement
+			return value;
+		}
 	}
 
 	String[] buildDomainKey(final String container, final String domain) {

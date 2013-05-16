@@ -93,7 +93,8 @@ public class SuperopertyPersistenceTest {
 
 	@Test
 	public void basePropertiesAreRead() throws SQLException {
-		PERSISTENCE.executeSql("INSERT INTO base_property (property_name, container_name, default_value) VALUES ('key', 'container', 'value')");
+		PERSISTENCE.executeSql("INSERT INTO base_property (property_name, container_name, default_value, converter_class) VALUES ('key', 'container', 'value', " +
+			"'Converter_DOESNOTEXIST')");
 		this.persistence.loadAll();
 		assertThat((String)roperty.get("key"), is("value"));
 	}
