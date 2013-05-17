@@ -9,6 +9,16 @@ import com.parship.roperty.persistence.PropertyConverter;
  */
 public abstract class AbstractPropertyConverter implements PropertyConverter {
 	@Override
+	public Object toObject(final String value) {
+		return value;
+	}
+
+	@Override
+	public String toString(final Object value) {
+		return value.toString();
+	}
+
+	@Override
 	public void setConfig(final String configString) {
 		// ignore config by default
 	}
