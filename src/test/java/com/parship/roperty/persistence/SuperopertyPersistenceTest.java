@@ -81,7 +81,7 @@ public class SuperopertyPersistenceTest {
 
 	@Before
 	public void before() {
-		persistence = new SuperopertyPersistence(r, PERSISTENCE);
+		persistence = new SuperopertyPersistence(PERSISTENCE);
 		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("container")).thenReturn("container");
 		when(resolverMock.getDomainValue("country")).thenReturn("DE");
@@ -95,7 +95,7 @@ public class SuperopertyPersistenceTest {
 	public void basePropertiesAreRead() throws SQLException {
 		PERSISTENCE.executeSql("INSERT INTO base_property (property_name, container_name, default_value, converter_class) VALUES ('key', 'container', 'value', " +
 			"'com.freiheit.superoperty.converter.TextareaRegexCheckConverter')");
-		this.persistence.loadAll();
+		this.persistence.load(r);
 		assertThat((String)roperty.get("key"), is("value"));
 	}
 
@@ -103,7 +103,7 @@ public class SuperopertyPersistenceTest {
 	public void domainPropertiesAreRead() throws SQLException {
 		PERSISTENCE.executeSql("INSERT INTO base_property (id, property_name, container_name, default_value) VALUES (1, 'key', 'container', 'value')");
 		PERSISTENCE.executeSql("INSERT INTO domain_property (base_property, domain, overridden_value) VALUES (1, 'LOCALE_de_DE', 'overridden')");
-		this.persistence.loadAll();
+		this.persistence.load(r);
 		assertThat((String)roperty.get("key"), is("overridden"));
 	}
 

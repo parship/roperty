@@ -28,18 +28,17 @@ import java.sql.SQLException;
  * @author mfinsterwalder
  * @since 2013-04-02 15:16
  */
-public class SuperopertyPersistence {
+public class SuperopertyPersistence implements Persistence {
 
-	private final Roperty roperty;
 	private final SqlPersistence persistence;
 
-	public SuperopertyPersistence(final Roperty roperty, SqlPersistence persistence) {
-		this.roperty = roperty;
+	public SuperopertyPersistence(SqlPersistence persistence) {
 		this.persistence = persistence;
 		persistence.setAutoCommit(false);
 	}
 
-	public void loadAll() {
+	@Override
+	public void load(final Roperty roperty) {
 		long start = System.currentTimeMillis();
 		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
 		try {
