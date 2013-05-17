@@ -13,9 +13,9 @@ public class ListConverter extends AbstractPropertyConverter {
 		return toEnum(value, config);
 	}
 
-	public static Object toEnum(final String value, String config) {
+	public static <T extends Enum<T>> Object toEnum(final String value, String config) {
 		try {
-			Class<? extends Enum> aClass = (Class<? extends Enum>)Class.forName(config);
+			Class<T> aClass = (Class<T>)Class.forName(config);
 			return Enum.valueOf(aClass, value);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace(); // TODO implement

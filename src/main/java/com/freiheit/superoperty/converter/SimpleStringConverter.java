@@ -1,8 +1,5 @@
 package com.freiheit.superoperty.converter;
 
-import com.parship.roperty.persistence.PropertyConverter;
-
-
 /**
  * @author mfinsterwalder
  * @since 2013-05-16 15:59
