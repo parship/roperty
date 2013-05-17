@@ -1,7 +1,5 @@
 package com.freiheit.superoperty.converter;
 
-import com.parship.roperty.persistence.PropertyConverter;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -10,7 +8,7 @@ import java.util.Collection;
  * @author mfinsterwalder
  * @since 2013-05-16 15:58
  */
-public class CollectionConverter implements PropertyConverter {
+public class CollectionConverter extends AbstractPropertyConverter {
 	@Override
 	public Object toObject(final String value) {
 		String[] split = value.split(",");
@@ -19,9 +17,12 @@ public class CollectionConverter implements PropertyConverter {
 
 	@Override
 	public String toString(final Object value) {
-		Collection<String> collection = (Collection<String>)value;
+		return buildString((Collection<String>)value);
+	}
+
+	public static String buildString(final Collection<?> collection) {
 		StringBuilder builder = new StringBuilder();
-		for (String s : collection) {
+		for (Object s : collection) {
 			if (builder.length() > 0) {
 				builder.append(",");
 			}

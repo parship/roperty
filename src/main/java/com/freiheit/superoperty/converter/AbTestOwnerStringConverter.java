@@ -7,7 +7,7 @@ import com.parship.roperty.persistence.PropertyConverter;
  * @author mfinsterwalder
  * @since 2013-05-16 15:57
  */
-public class AbTestOwnerStringConverter implements PropertyConverter {
+public class AbTestOwnerStringConverter extends AbstractPropertyConverter {
 	@Override
 	public Object toObject(final String value) {
 		return value;

@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
  * @author mfinsterwalder
  * @since 2013-05-16 15:58
  */
-public class DateConverter implements PropertyConverter {
+public class DateConverter extends AbstractPropertyConverter {
 
 	protected static final String FORMAT_STRING = "yyyy-MM-dd";
 	ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {

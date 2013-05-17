@@ -43,7 +43,7 @@ public class SuperopertyPersistence {
 		long start = System.currentTimeMillis();
 		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
 		try {
-			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value, converter_class " +
+			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value, converter_class, converter_config " +
 				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property",
 				new SqlPersistence.ResultSetHandler() {
 					@Override
@@ -54,13 +54,14 @@ public class SuperopertyPersistence {
 							String domain = rs.getString(4);
 							String overriddenValue = rs.getString(5);
 							String converterClass = rs.getString(6);
+							String converterConfig = rs.getString(7);
 							if (defaultValue != null) {
-								roperty.set(key, convert(defaultValue, converterClass));
+								roperty.set(key, convert(defaultValue, converterClass, converterConfig));
 							}
 							if (overriddenValue != null && domain != null) {
 								String container = rs.getString(3);
 								try {
-									roperty.set(key, overriddenValue, buildDomainKey(container, domain));
+									roperty.set(key, convert(overriddenValue, converterClass, converterConfig), buildDomainKey(container, domain));
 								} catch (Exception ex) {
 									System.out.println("Could not build domain key for: " + domain);
 								}
@@ -75,7 +76,7 @@ public class SuperopertyPersistence {
 		System.out.println("Loading took: " + (end - start) + "ms");
 	}
 
-	private Object convert(final String value, final String converterClassName) {
+	private Object convert(final String value, final String converterClassName, final String converterConfig) {
 		if (converterClassName == null || converterClassName.length() == 0) {
 			return value;
 		}
@@ -89,6 +90,7 @@ public class SuperopertyPersistence {
 			} catch (IllegalAccessException e) {
 				e.printStackTrace(); // TODO implement
 			}
+			converter.setConfig(converterConfig);
 			return converter.toObject(value);
 		} catch (ClassCastException|ClassNotFoundException e) {
 			e.printStackTrace(); // TODO implement

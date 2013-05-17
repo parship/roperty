@@ -7,7 +7,7 @@ import com.parship.roperty.persistence.PropertyConverter;
  * @author mfinsterwalder
  * @since 2013-05-16 15:58
  */
-public class BooleanConverter implements PropertyConverter {
+public class BooleanConverter extends AbstractPropertyConverter {
 	@Override
 	public Object toObject(final String value) {
 		return "true".equals(value) ? Boolean.TRUE : Boolean.FALSE;

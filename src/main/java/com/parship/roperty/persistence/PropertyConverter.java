@@ -7,4 +7,5 @@ package com.parship.roperty.persistence;
 public interface PropertyConverter {
 	Object toObject(String value);
 	String toString(Object value);
+	void setConfig(String configString);
 }
