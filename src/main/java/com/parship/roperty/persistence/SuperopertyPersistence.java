@@ -87,7 +87,8 @@ public class SuperopertyPersistence implements Persistence {
 					public void prepare(final PreparedStatement pStmt) throws SQLException {
 						pStmt.setString(1, key);
 					}
-				}, 100);
+				}, 100
+			);
 		} catch (SQLException e) {
 			LOGGER.error("Can not read from the database", e);
 		}
@@ -96,22 +97,26 @@ public class SuperopertyPersistence implements Persistence {
 	}
 
 	private void storeKeyInRoperty(final ResultSet rs, final Roperty roperty) throws SQLException {
-		String key = rs.getString(1);
-		String defaultValue = rs.getString(2);
-		String domain = rs.getString(4);
-		String overriddenValue = rs.getString(5);
-		String converterClass = rs.getString(6);
-		String converterConfig = rs.getString(7);
-		if (defaultValue != null) {
-			roperty.set(key, convert(defaultValue, converterClass, converterConfig));
-		}
-		if (overriddenValue != null && domain != null) {
-			String container = rs.getString(3);
-			try {
-				roperty.set(key, convert(overriddenValue, converterClass, converterConfig), buildDomainKey(container, domain));
-			} catch (Exception ex) {
-				LOGGER.warn("Could not build domain key for: " + container + "|" + domain, ex);
+		try {
+			String key = rs.getString(1);
+			String defaultValue = rs.getString(2);
+			String domain = rs.getString(4);
+			String overriddenValue = rs.getString(5);
+			String converterClass = rs.getString(6);
+			String converterConfig = rs.getString(7);
+			if (defaultValue != null) {
+				roperty.set(key, convert(defaultValue, converterClass, converterConfig));
 			}
+			if (overriddenValue != null && domain != null) {
+				String container = rs.getString(3);
+				try {
+					roperty.set(key, convert(overriddenValue, converterClass, converterConfig), buildDomainKey(container, domain));
+				} catch (Exception ex) {
+					LOGGER.warn("Could not build domain key for: " + container + "|" + domain, ex);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Could not store key", e);
 		}
 	}
 
@@ -124,7 +129,7 @@ public class SuperopertyPersistence implements Persistence {
 			PropertyConverter converter = converterClass.newInstance();
 			converter.setConfig(converterConfig);
 			return converter.toObject(value);
-		} catch (IllegalAccessException|InstantiationException|ClassCastException|ClassNotFoundException e) {
+		} catch (IllegalAccessException | InstantiationException | ClassCastException | ClassNotFoundException e) {
 			LOGGER.error("Can not convert value: " + value + " with converter class: " + converterClassName + " with config: " + converterConfig, e);
 		}
 		return value;
