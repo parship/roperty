@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -40,6 +41,10 @@ public class SqlPersistence {
 
 	public static interface ResultSetHandler {
 		void handle(ResultSet rs) throws SQLException;
+	}
+
+	public static interface PreparedStatementHandler {
+		void prepare(PreparedStatement pStmt) throws SQLException;
 	}
 
 	public void setAutoCommit(Boolean autoCommit) {
@@ -134,6 +139,28 @@ public class SqlPersistence {
 				}
 			} finally {
 				close(stmt);
+			}
+		} finally {
+			close(con);
+		}
+	}
+
+	public void executePreparedQuery(final String sql, final ResultSetHandler rsh, final PreparedStatementHandler pStmtHandler, int fetchSize) throws SQLException {
+		Connection con = dataSource.getConnection();
+		setAutoCommitIfNeeded(con);
+		try {
+			PreparedStatement pStmt = con.prepareStatement(sql);
+			pStmt.setFetchSize(fetchSize);
+			pStmtHandler.prepare(pStmt);
+			try {
+				final ResultSet rs = pStmt.executeQuery();
+				try {
+					rsh.handle(rs);
+				} finally {
+					close(rs);
+				}
+			} finally {
+				close(pStmt);
 			}
 		} finally {
 			close(con);

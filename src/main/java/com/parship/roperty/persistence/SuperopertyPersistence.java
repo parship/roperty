@@ -18,10 +18,15 @@
 
 package com.parship.roperty.persistence;
 
+import com.parship.roperty.Persistence;
 import com.parship.roperty.Roperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 /**
@@ -30,6 +35,7 @@ import java.sql.SQLException;
  */
 public class SuperopertyPersistence implements Persistence {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(SuperopertyPersistence.class);
 	private final SqlPersistence persistence;
 
 	public SuperopertyPersistence(SqlPersistence persistence) {
@@ -38,9 +44,10 @@ public class SuperopertyPersistence implements Persistence {
 	}
 
 	@Override
-	public void load(final Roperty roperty) {
+	public void loadAll(final Roperty roperty) {
 		long start = System.currentTimeMillis();
 		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
+		final AtomicLong counter = new AtomicLong();
 		try {
 			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value, converter_class, converter_config " +
 				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property",
@@ -48,31 +55,64 @@ public class SuperopertyPersistence implements Persistence {
 					@Override
 					public void handle(final ResultSet rs) throws SQLException {
 						while (rs.next()) {
-							String key = rs.getString(1);
-							String defaultValue = rs.getString(2);
-							String domain = rs.getString(4);
-							String overriddenValue = rs.getString(5);
-							String converterClass = rs.getString(6);
-							String converterConfig = rs.getString(7);
-							if (defaultValue != null) {
-								roperty.set(key, convert(defaultValue, converterClass, converterConfig));
-							}
-							if (overriddenValue != null && domain != null) {
-								String container = rs.getString(3);
-								try {
-									roperty.set(key, convert(overriddenValue, converterClass, converterConfig), buildDomainKey(container, domain));
-								} catch (Exception ex) {
-									System.out.println("Could not build domain key for: " + domain);
-								}
-							}
+							storeKeyInRoperty(rs, roperty);
+							counter.incrementAndGet();
 						}
 					}
 				}, 100);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("Can not read from the database", e);
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("Loading took: " + (end - start) + "ms");
+		LOGGER.info("Loading of " + counter + " entries took: " + (end - start) + "ms");
+	}
+
+	@Override
+	public void load(final Roperty roperty, final String key) {
+		long start = System.currentTimeMillis();
+		final AtomicLong counter = new AtomicLong();
+		try {
+			persistence.executePreparedQuery("SELECT property_name, default_value, container_name, domain, overridden_value, converter_class, converter_config " +
+				"FROM base_property base left outer join domain_property domain ON base.id = domain.base_property where property_name = ?",
+				new SqlPersistence.ResultSetHandler() {
+					@Override
+					public void handle(final ResultSet rs) throws SQLException {
+						while (rs.next()) {
+							storeKeyInRoperty(rs, roperty);
+							counter.incrementAndGet();
+						}
+					}
+				}, new SqlPersistence.PreparedStatementHandler() {
+					@Override
+					public void prepare(final PreparedStatement pStmt) throws SQLException {
+						pStmt.setString(1, key);
+					}
+				}, 100);
+		} catch (SQLException e) {
+			LOGGER.error("Can not read from the database", e);
+		}
+		long end = System.currentTimeMillis();
+		LOGGER.info("Loading of " + counter + " entries took: " + (end - start) + "ms");
+	}
+
+	private void storeKeyInRoperty(final ResultSet rs, final Roperty roperty) throws SQLException {
+		String key = rs.getString(1);
+		String defaultValue = rs.getString(2);
+		String domain = rs.getString(4);
+		String overriddenValue = rs.getString(5);
+		String converterClass = rs.getString(6);
+		String converterConfig = rs.getString(7);
+		if (defaultValue != null) {
+			roperty.set(key, convert(defaultValue, converterClass, converterConfig));
+		}
+		if (overriddenValue != null && domain != null) {
+			String container = rs.getString(3);
+			try {
+				roperty.set(key, convert(overriddenValue, converterClass, converterConfig), buildDomainKey(container, domain));
+			} catch (Exception ex) {
+				LOGGER.warn("Could not build domain key for: " + container + "|" + domain, ex);
+			}
+		}
 	}
 
 	private Object convert(final String value, final String converterClassName, final String converterConfig) {
@@ -81,20 +121,13 @@ public class SuperopertyPersistence implements Persistence {
 		}
 		try {
 			final Class<? extends PropertyConverter> converterClass = Class.forName(converterClassName).asSubclass(PropertyConverter.class);
-			PropertyConverter converter = null;
-			try {
-				converter = converterClass.newInstance();
-			} catch (InstantiationException e) {
-				e.printStackTrace(); // TODO implement
-			} catch (IllegalAccessException e) {
-				e.printStackTrace(); // TODO implement
-			}
+			PropertyConverter converter = converterClass.newInstance();
 			converter.setConfig(converterConfig);
 			return converter.toObject(value);
-		} catch (ClassCastException|ClassNotFoundException e) {
-			e.printStackTrace(); // TODO implement
-			return value;
+		} catch (IllegalAccessException|InstantiationException|ClassCastException|ClassNotFoundException e) {
+			LOGGER.error("Can not convert value: " + value + " with converter class: " + converterClassName + " with config: " + converterConfig, e);
 		}
+		return value;
 	}
 
 	String[] buildDomainKey(final String container, final String domain) {
