@@ -44,9 +44,13 @@ public class SuperopertyPersistence implements Persistence {
 	}
 
 	@Override
+	public void init(final Roperty roperty) {
+		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
+	}
+
+	@Override
 	public void loadAll(final Roperty roperty) {
 		long start = System.currentTimeMillis();
-		roperty.addDomain("container").addDomain("country").addDomain("language").addDomain("orientation").addDomain("owner");
 		final AtomicLong counter = new AtomicLong();
 		try {
 			persistence.executeQuery("SELECT property_name, default_value, container_name, domain, overridden_value, converter_class, converter_config " +

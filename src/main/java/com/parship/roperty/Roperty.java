@@ -19,6 +19,8 @@
 package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -31,9 +33,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 2013-03-25 08:07
  */
 public class Roperty {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(Roperty.class);
 	private final Map<String, KeyValues> map = new ConcurrentHashMap<>();
 	private final List<String> domains = new CopyOnWriteArrayList<>();
+	private Persistence persistence;
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
 		KeyValues keyValues = map.get(key);
@@ -74,6 +77,19 @@ public class Roperty {
 			}
 		}
 		keyValues.put(value, domains);
+	}
+
+	public void loadAll() {
+		if (persistence != null) {
+			persistence.loadAll(this);
+		} else {
+			LOGGER.error("Could not load roperty, because persistence is null");
+		}
+	}
+
+	public void setPersistence(final Persistence persistence) {
+		Ensure.notNull(persistence, "persistence");
+		this.persistence = persistence;
 	}
 
 	@Override
