@@ -1,6 +1,8 @@
-package com.freiheit.superoperty.converter;
+package com.parship.roperty.converter;
 
 import org.junit.Test;
+
+import com.parship.roperty.converter.BooleanConverter;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
