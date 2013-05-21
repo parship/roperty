@@ -1,4 +1,4 @@
-package com.freiheit.superoperty.converter;
+package com.parship.roperty.converter;
 
 import com.parship.roperty.persistence.PropertyConverter;
 

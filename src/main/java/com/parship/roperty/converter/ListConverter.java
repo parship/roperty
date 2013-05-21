@@ -1,4 +1,4 @@
-package com.freiheit.superoperty.converter;
+package com.parship.roperty.converter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
