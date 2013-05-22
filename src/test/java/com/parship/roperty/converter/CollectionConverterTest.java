@@ -2,7 +2,7 @@ package com.parship.roperty.converter;
 
 import org.junit.Test;
 
-import com.parship.roperty.converter.CollectionConverter;
+import com.parship.roperty.converter.StringCollectionConverter;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
  */
 public class CollectionConverterTest {
 
-	private CollectionConverter converter = new CollectionConverter();
+	private StringCollectionConverter converter = new StringCollectionConverter();
 
 	@Test
 	public void toObject() {

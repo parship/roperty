@@ -22,6 +22,6 @@ public class MultipleSelectionListConverter extends ListConverter {
 
 	@Override
 	public String toString(final Object value) {
-		return CollectionConverter.buildString((Collection<Enum>)value);
+		return StringCollectionConverter.buildString((Collection<Enum>)value);
 	}
 }

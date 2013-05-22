@@ -1,8 +1,10 @@
 package com.parship.roperty.converter;
 
-/**
- * @author mfinsterwalder
- * @since 2013-05-16 15:59
- */
-public class SimpleStringConverter extends AbstractPropertyConverter {
+public class SimpleStringConverter extends AbstractPropertyConverter<String> {
+	
+	@Override
+	public String toObject(String value) {
+		return value;
+	}
+
 }

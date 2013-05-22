@@ -7,14 +7,10 @@ import com.parship.roperty.persistence.PropertyConverter;
  * @author mfinsterwalder
  * @since 2013-05-17 10:52
  */
-public abstract class AbstractPropertyConverter implements PropertyConverter {
-	@Override
-	public Object toObject(final String value) {
-		return value;
-	}
+public abstract class AbstractPropertyConverter<T> implements PropertyConverter<T> {
 
 	@Override
-	public String toString(final Object value) {
+	public String toString(final T value) {
 		return value.toString();
 	}
 

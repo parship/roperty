@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
  * @author mfinsterwalder
  * @since 2013-05-16 15:58
  */
-public class ListConverter extends AbstractPropertyConverter {
+public class ListConverter extends AbstractPropertyConverter<Object> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ListConverter.class);
 	/*package*/ String config;
@@ -19,6 +19,7 @@ public class ListConverter extends AbstractPropertyConverter {
 
 	public static <T extends Enum<T>> Object toEnum(final String value, String config) {
 		try {
+			@SuppressWarnings("unchecked")
 			Class<T> aClass = (Class<T>)Class.forName(config);
 			return Enum.valueOf(aClass, value);
 		} catch (ClassNotFoundException e) {
