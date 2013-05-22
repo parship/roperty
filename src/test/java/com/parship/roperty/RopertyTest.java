@@ -54,6 +54,14 @@ public class RopertyTest {
 	}
 
 	@Test
+	public void gettingAPropertyThatDoesNotExistQueriesPersistence() {
+		Persistence persistenceMock = mock(Persistence.class);
+		r.setPersistence(persistenceMock);
+		roperty.get("key");
+		verify(persistenceMock).load("key");
+	}
+
+	@Test
 	public void gettingAPropertyThatDoesNotExistGivesDefaultValue() {
 		String text = "default";
 		String value = roperty.get("key", text);
@@ -74,10 +82,22 @@ public class RopertyTest {
 
 	@Test
 	public void definingAndGettingAStringValue() {
+		String key = "key";
 		String text = "some Value";
-		roperty.set("key", text);
-		String value = roperty.get("key", "default");
+		roperty.set(key, text);
+		String value = roperty.get(key, "default");
 		assertThat(value, is(text));
+	}
+
+	@Test
+	public void settingAValueCallsStoreOnPersistence() {
+		String key = "key";
+		Persistence persistenceMock = mock(Persistence.class);
+		r.setPersistence(persistenceMock);
+		KeyValues keyValue = new KeyValues();
+		when(persistenceMock.load(key)).thenReturn(keyValue);
+		roperty.set(key, "value");
+		verify(persistenceMock).store(keyValue);
 	}
 
 	@Test
@@ -222,18 +242,5 @@ public class RopertyTest {
 		String value = "overridden value";
 		roperty.set("key", value, "*", "domain2");
 		assertThat((String)roperty.get("key"), is(value));
-	}
-
-	@Test
-	public void loadAllWithoutAPersistenceDoesNothing() {
-		r.loadAll();
-	}
-
-	@Test
-	public void loadIsDelegatedToPersistence() {
-		Persistence persistenceMock = mock(Persistence.class);
-		r.setPersistence(persistenceMock);
-		r.loadAll();
-		verify(persistenceMock).loadAll(r);
 	}
 }

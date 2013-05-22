@@ -34,12 +34,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Roperty {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Roperty.class);
-	private final Map<String, KeyValues> map = new ConcurrentHashMap<>();
+	private volatile Map<String, KeyValues> map = new ConcurrentHashMap<>();
 	private final List<String> domains = new CopyOnWriteArrayList<>();
 	private Persistence persistence;
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
-		KeyValues keyValues = map.get(key);
+		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 		if (keyValues == null) {
 			return defaultValue;
 		}
@@ -66,7 +66,7 @@ public class Roperty {
 	}
 
 	public void set(final String key, final Object value, final String... domains) {
-		KeyValues keyValues = map.get(key);
+		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 		if (keyValues == null) {
 			synchronized (map) {
 				keyValues = map.get(key);
@@ -77,13 +77,30 @@ public class Roperty {
 			}
 		}
 		keyValues.put(value, domains);
+		store(keyValues);
 	}
 
-	public void loadAll() {
+	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {
+		KeyValues keyValues = map.get(key);
+		if (keyValues == null) {
+			keyValues = load(key);
+			if (keyValues != null) {
+				map.put(key, keyValues);
+			}
+		}
+		return keyValues;
+	}
+
+	private KeyValues load(final String key) {
 		if (persistence != null) {
-			persistence.loadAll(this);
-		} else {
-			LOGGER.error("Could not load roperty, because persistence is null");
+			return persistence.load(key);
+		}
+		return null;
+	}
+
+	private void store(final KeyValues keyValues) {
+		if (persistence != null) {
+			persistence.store(keyValues);
 		}
 	}
 
