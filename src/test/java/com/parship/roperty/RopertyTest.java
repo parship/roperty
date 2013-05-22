@@ -211,4 +211,17 @@ public class RopertyTest {
 		roperty.set("key", value, "*", "domain2");
 		assertThat((String)roperty.get("key"), is(value));
 	}
+
+	@Test
+	public void loadAllWithoutAPersistenceDoesNothing() {
+		r.loadAll();
+	}
+
+	@Test
+	public void loadIsDelegatedToPersistence() {
+		Persistence persistenceMock = mock(Persistence.class);
+		r.setPersistence(persistenceMock);
+		r.loadAll();
+		verify(persistenceMock).loadAll(r);
+	}
 }
