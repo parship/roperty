@@ -32,7 +32,6 @@ class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
 	public DomainSpecificValue(final String domainPattern, final int order, Object value) {
 		Ensure.notNull(domainPattern, "domainPattern");
-		Ensure.notNull(value, "value");
 		this.patternStr = domainPattern;
 		this.ordering = order;
 		this.value = value;

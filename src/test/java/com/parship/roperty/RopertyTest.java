@@ -61,6 +61,18 @@ public class RopertyTest {
 	}
 
 	@Test
+	public void	settingNullAsValue() {
+		roperty.set("key", null);
+		assertThat(roperty.get("key"), nullValue());
+	}
+
+	@Test
+	public void	settingAnEmptyString() {
+		roperty.set("key", "");
+		assertThat((String)roperty.get("key"), is(""));
+	}
+
+	@Test
 	public void definingAndGettingAStringValue() {
 		String text = "some Value";
 		roperty.set("key", text);

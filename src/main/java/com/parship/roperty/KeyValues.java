@@ -38,16 +38,13 @@ public class KeyValues {
 	}
 
 	public KeyValues(Object value) {
-		Ensure.notNull(value, "value");
 		put(value);
 	}
 
 	public void put(Object value, String... domains) {
-		Ensure.notNull(domains, "domain");
 		for (String domain : domains) {
 			Ensure.notEmpty(domain, "domain");
 		}
-		Ensure.notNull(value, "value");
 		createAndAddDomainPattern(value, domains);
 	}
 
