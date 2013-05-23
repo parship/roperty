@@ -33,7 +33,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Roperty {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Roperty.class);
-	private volatile Map<String, KeyValues> map = new ConcurrentHashMap<>();
+	private volatile Map<String, KeyValues> keyValuesMap = new ConcurrentHashMap<>();
 	private final List<String> domains = new CopyOnWriteArrayList<>();
 	private Persistence persistence;
 
@@ -67,11 +67,11 @@ public class Roperty {
 	public void set(final String key, final Object value, final String... domains) {
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 		if (keyValues == null) {
-			synchronized (map) {
-				keyValues = map.get(key);
+			synchronized (keyValuesMap) {
+				keyValues = keyValuesMap.get(key);
 				if (keyValues == null) {
 					keyValues = new KeyValues();
-					map.put(key, keyValues);
+					keyValuesMap.put(key, keyValues);
 				}
 			}
 		}
@@ -80,11 +80,18 @@ public class Roperty {
 	}
 
 	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {
-		KeyValues keyValues = map.get(key);
+		KeyValues keyValues = keyValuesMap.get(key);
 		if (keyValues == null) {
 			keyValues = load(key);
 			if (keyValues != null) {
-				map.put(key, keyValues);
+				synchronized (keyValuesMap) {
+					KeyValues keyValuesSecondTry = keyValuesMap.get(key);
+					if (keyValuesSecondTry == null) {
+						keyValuesMap.put(key, keyValues);
+					} else {
+						return keyValuesSecondTry;
+					}
+				}
 			}
 		}
 		return keyValues;
@@ -103,6 +110,13 @@ public class Roperty {
 		}
 	}
 
+	public void setKeyValuesMap(final Map<String, KeyValues> keyValuesMap) {
+		Ensure.notNull(keyValuesMap, "keyValuesMap");
+		synchronized (keyValuesMap) {
+			this.keyValuesMap = keyValuesMap;
+		}
+	}
+
 	public void setPersistence(final Persistence persistence) {
 		Ensure.notNull(persistence, "persistence");
 		this.persistence = persistence;
@@ -112,7 +126,7 @@ public class Roperty {
 	public String toString() {
 		return "Roperty{" +
 			"domains=" + domains +
-			", map=" + map +
+			", map=" + keyValuesMap +
 			'}';
 	}
 }
