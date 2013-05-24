@@ -19,9 +19,9 @@ package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -30,9 +30,31 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 2013-03-25 08:07
  */
 public class Roperty {
-	private volatile Map<String, KeyValues> keyValuesMap = new ConcurrentHashMap<>();
-	private final List<String> domains = new CopyOnWriteArrayList<>();
+	private volatile Map<String, KeyValues> keyValuesMap;
+	private final List<String> domains;
 	private Persistence persistence;
+
+	public Roperty(final Persistence persistence, final DomainInitializer domainInitializer) {
+		Ensure.notNull(persistence, "persistence");
+		Ensure.notNull(domainInitializer, "domainInitializer");
+		this.domains = domainInitializer.getInitialDomains();
+		this.persistence = persistence;
+		this.keyValuesMap = persistence.loadAll();
+	}
+
+	public Roperty(final Persistence persistence, final String... domains) {
+		this();
+		for(String d : domains) {
+			this.domains.add(d);
+		}
+		this.persistence = persistence;
+		this.keyValuesMap = persistence.loadAll();
+	}
+
+	public Roperty() {
+		this.domains = new CopyOnWriteArrayList<>();
+		this.keyValuesMap = new HashMap<>();
+	}
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);

@@ -280,4 +280,30 @@ public class RopertyTest {
 		roperty.get(key);
 		verify(mockMap, never()).put(key, keyValues);
 	}
+
+	@Test
+	public void domainsThatAreInitializedAreUsed() {
+		Persistence persistenceMock = mock(Persistence.class);
+		Roperty roperty1 = new Roperty(persistenceMock, "dom1", "dom2");
+		roperty1.set("key", "value", "dom1");
+		assertThat((String)roperty1.get("key", resolver), is("value"));
+	}
+
+	@Test
+	public void persistenceThatIsInitializedIsUsed() {
+		Persistence persistenceMock = mock(Persistence.class);
+		Roperty roperty1 = new Roperty(persistenceMock, "dom1", "dom2");
+		verify(persistenceMock).loadAll();
+		roperty1.get("key", resolver);
+		verify(persistenceMock).load("key");
+	}
+
+	@Test
+	public void domainInitializerAndPersistenceAreUsedDuringInitialization() {
+		Persistence persistenceMock = mock(Persistence.class);
+		DomainInitializer domainInitializerMock = mock(DomainInitializer.class);
+		new Roperty(persistenceMock, domainInitializerMock);
+		verify(domainInitializerMock).getInitialDomains();
+		verify(persistenceMock).loadAll();
+	}
 }
