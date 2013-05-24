@@ -19,6 +19,10 @@ package com.parship.roperty;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
@@ -241,5 +245,39 @@ public class RopertyTest {
 		String value = "overridden value";
 		roperty.set("key", value, "*", "domain2");
 		assertThat((String)roperty.get("key"), is(value));
+	}
+
+	@Test
+	public void settingANewKeyMapReplacesAllMappings() {
+		roperty.set("key", "value");
+		r.setKeyValuesMap(new ConcurrentHashMap<String, KeyValues>());
+		assertThat(roperty.get("key"), nullValue());
+	}
+
+	@Test
+	public void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheMap() {
+		String key = "key";
+		Map<String, KeyValues> mockMap = mock(HashMap.class);
+		Persistence persistenceMock = mock(Persistence.class);
+		KeyValues keyValues = new KeyValues();
+		when(persistenceMock.load(key)).thenReturn(keyValues);
+		r.setPersistence(persistenceMock);
+		r.setKeyValuesMap(mockMap);
+		roperty.get(key);
+		verify(mockMap).put(key, keyValues);
+	}
+
+	@Test
+	public void whenKeyValueIsNotInTheMapButCanBeLoadedFromPersistenceItIsOnlyInsertedInsideTheSynchronizedBlockWhenNotAlreadyThere() {
+		String key = "key";
+		Map<String, KeyValues> mockMap = mock(HashMap.class);
+		Persistence persistenceMock = mock(Persistence.class);
+		KeyValues keyValues = new KeyValues();
+		when(persistenceMock.load(key)).thenReturn(keyValues);
+		r.setPersistence(persistenceMock);
+		when(mockMap.get(key)).thenReturn(null).thenReturn(new KeyValues());
+		r.setKeyValuesMap(mockMap);
+		roperty.get(key);
+		verify(mockMap, never()).put(key, keyValues);
 	}
 }
