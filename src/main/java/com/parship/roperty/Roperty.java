@@ -18,8 +18,6 @@
 package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 2013-03-25 08:07
  */
 public class Roperty {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Roperty.class);
 	private volatile Map<String, KeyValues> keyValuesMap = new ConcurrentHashMap<>();
 	private final List<String> domains = new CopyOnWriteArrayList<>();
 	private Persistence persistence;
