@@ -1,5 +1,5 @@
 /*
- * Roperty - An advanced property management and retrival system
+ * Roperty - An advanced property management and retrieval system
  * Copyright (C) 2013 PARSHIP GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
