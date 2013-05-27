@@ -32,14 +32,6 @@ public class KeyValues {
 
 	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
 
-	public KeyValues() {
-		this("[value undefined]");
-	}
-
-	public KeyValues(Object value) {
-		put(value);
-	}
-
 	public void put(Object value, String... domains) {
 		for (String domain : domains) {
 			Ensure.notEmpty(domain, "domain");
@@ -108,5 +100,9 @@ public class KeyValues {
 		return "KeyValues{" +
 			"patterns=" + domainSpecificValues +
 			'}';
+	}
+
+	public Set<DomainSpecificValue> getDomainSpecificValues() {
+		return domainSpecificValues;
 	}
 }

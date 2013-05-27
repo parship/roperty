@@ -24,7 +24,7 @@ import com.parship.commons.util.Ensure;
  * @author mfinsterwalder
  * @since 2013-04-09 18:20
  */
-class DomainSpecificValue implements Comparable<DomainSpecificValue> {
+public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final String patternStr;
 	private final int ordering;
 	private final Object value;
@@ -52,6 +52,10 @@ class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 			", ordering=" + ordering +
 			", value=" + value +
 			'}';
+	}
+
+	public String getPatternStr() {
+		return patternStr;
 	}
 
 	public Object getValue() {

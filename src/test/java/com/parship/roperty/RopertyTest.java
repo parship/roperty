@@ -100,7 +100,7 @@ public class RopertyTest {
 		KeyValues keyValue = new KeyValues();
 		when(persistenceMock.load(key)).thenReturn(keyValue);
 		roperty.set(key, "value");
-		verify(persistenceMock).store(keyValue);
+		verify(persistenceMock).store(key, keyValue);
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public class RopertyTest {
 	@Test
 	public void whenAKeyForASubdomainIsSetTheRootKeyGetsAnUndefinedValue() {
 		roperty.set("key", "value", "subdomain");
-		assertThat((String)roperty.get("key"), is("[value undefined]"));
+		assertThat((String)roperty.get("key"), nullValue());
 	}
 
 	@Test

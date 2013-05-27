@@ -26,6 +26,6 @@ import java.util.Map;
  */
 public interface Persistence {
 	KeyValues load(final String key);
-	void store(final KeyValues keyValues);
-	Map<String,KeyValues> loadAll();
+	void store(final String key, final KeyValues keyValues);
+	Map<String, KeyValues> loadAll();
 }

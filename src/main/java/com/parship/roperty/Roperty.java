@@ -95,7 +95,7 @@ public class Roperty {
 			}
 		}
 		keyValues.put(value, domains);
-		store(keyValues);
+		store(key, keyValues);
 	}
 
 	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {
@@ -123,9 +123,9 @@ public class Roperty {
 		return null;
 	}
 
-	private void store(final KeyValues keyValues) {
+	private void store(final String key, final KeyValues keyValues) {
 		if (persistence != null) {
-			persistence.store(keyValues);
+			persistence.store(key, keyValues);
 		}
 	}
 

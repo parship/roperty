@@ -21,8 +21,12 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -44,18 +48,49 @@ public class KeyValuesTest {
 	};
 
 	@Test
-	public void toStringTest() {
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{patterns=[DomainSpecificValue{pattern=, ordering=1, value=[value undefined]}]}"));
+	public void toStringEmptyTest() {
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{patterns=[]}"));
+	}
+
+	@Test
+	public void toStringFilledTest() {
+		keyValues.put("text", "domain1", "domain2");
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{patterns=[DomainSpecificValue{pattern=domain1|domain2, ordering=7, value=text}]}"));
 	}
 
 	@Test
 	public void gettingFromAnEmptyKeyValuesGivesUndefinedValue() {
-		assertThat((String)keyValues.get(asList("dom1"), resolver), is("[value undefined]"));
+		assertThat(keyValues.get(asList("dom1"), resolver), nullValue());
+	}
+
+	@Test
+	public void whenNoValuesAreDefinedGettingAllDomainSpecificValuesGivesAnEmptySet() {
+		Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+		assertThat(domainSpecificValues, hasSize(0));
+	}
+
+	@Test
+	public void gettingAllDomainSpecificValuesGivesSetInLongestMatchFirstOrder() {
+		keyValues.put("value1", "dom1");
+		keyValues.put("value2", "dom1", "dom2");
+		keyValues.put("value*", "*", "dom2");
+		Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+		assertThat(domainSpecificValues, hasSize(3));
+		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
+		DomainSpecificValue value = iterator.next();
+		assertThat((String)value.getValue(), is("value2"));
+		assertThat(value.getPatternStr(), is("dom1|dom2"));
+		value = iterator.next();
+		assertThat((String)value.getValue(), is("value*"));
+		assertThat(value.getPatternStr(), is("*|dom2"));
+		value = iterator.next();
+		assertThat((String)value.getValue(), is("value1"));
+		assertThat(value.getPatternStr(), is("dom1"));
 	}
 
 	@Test
 	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
-		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), is("[value undefined]"));
+		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), nullValue());
 		keyValues.put("val");
 		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), is("val"));
 	}
