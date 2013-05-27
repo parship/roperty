@@ -7,13 +7,37 @@
     <groupId>com.parship</groupId>
     <artifactId>roperty</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>Roperty</name>
+    <description>Roperty - An advanced property management and retrieval system with hierarchical resolution of values</description>
+    <url>https://github.com/parship/roperty</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
     <scm>
-        <url>http://svn/dev/roperty/trunk</url>
-        <connection>scm:svn:http://subversion.parship.office/dev/roperty/trunk</connection>
-        <developerConnection>scm:svn:http://subversion.parship.office/dev/roperty/trunk</developerConnection>
+        <url>git@github.com:parship/roperty.git</url>
+        <connection>scm:git:git@github.com:parship/roperty.git</connection>
+        <developerConnection>scm:git:git@github.com:parship/roperty.git</developerConnection>
     </scm>
+
+    <developers>
+        <developer>
+            <name>Malte Finsterwalder</name>
+            <organization>PARSHIP GmbH</organization>
+            <organizationUrl>http://www.parship.com</organizationUrl>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -63,6 +87,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <inherited>true</inherited>
                 <configuration>
                     <source>1.7</source>
@@ -72,6 +97,43 @@
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <!--<repositories>-->
+    <!--<repository>-->
+    <!--<id>sonatype-nexus</id>-->
+    <!--<name>Sonatype Nexus Public</name>-->
+    <!--<url>https://oss.sonatype.org/content/groups/public</url>-->
+    <!--</repository>-->
+    <!--</repositories>-->
+
 </project>
