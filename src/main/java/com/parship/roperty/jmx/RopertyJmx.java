@@ -30,7 +30,7 @@ public class RopertyJmx implements RopertyJmxMBean {
 		if (!registered) {
 			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 			try {
-				mbs.registerMBean(new RopertyJmx(), new ObjectName("com.parship.roperty:type=" + RopertyJmxMBean.class.getSimpleName()));
+				mbs.registerMBean(new RopertyJmx(), new ObjectName("com.parship.roperty", "type", RopertyJmxMBean.class.getSimpleName()));
 				registered = true;
 			} catch (InstanceAlreadyExistsException e) {
 				// nothing to do
