@@ -73,6 +73,8 @@ public class RopertyTest {
 
 	@Test
 	public void	settingNullAsValue() {
+		roperty.set("key", "value");
+		assertThat((String)roperty.get("key"), is("value"));
 		roperty.set("key", null);
 		assertThat(roperty.get("key"), nullValue());
 	}
