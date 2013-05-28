@@ -317,7 +317,7 @@ public class RopertyTest {
 		r.set(key, "value");
 		KeyValues keyValues = r.KeyValues(key);
 		assertThat(keyValues.getDomainSpecificValues(), hasSize(1));
-		String value = keyValues.get(new ArrayList(), null);
+		String value = keyValues.get(new ArrayList<String>(), null);
 		assertThat(value, is("value"));
 	}
 
