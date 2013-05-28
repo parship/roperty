@@ -102,7 +102,6 @@ public class KeyValues {
 		for(DomainSpecificValue entry:domainSpecificValues) {
 			builder.append("\t").append(entry).append("\n");
 		}
-//		builder.setCharAt(builder.length() - 1, '}');
 		builder.append("}");
 		return builder.toString();
 	}
