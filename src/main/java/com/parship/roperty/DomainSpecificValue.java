@@ -48,10 +48,10 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	@Override
 	public String toString() {
 		return "DomainSpecificValue{" +
-			"pattern=" + patternStr +
-			", ordering=" + ordering +
-			", value=" + value +
-			'}';
+			"pattern=\"" + patternStr +
+			"\", ordering=" + ordering +
+			", value=\"" + value +
+			"\"}";
 	}
 
 	public String getPatternStr() {

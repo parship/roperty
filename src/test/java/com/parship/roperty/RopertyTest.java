@@ -19,13 +19,14 @@ package com.parship.roperty;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -44,11 +45,6 @@ public class RopertyTest {
 	};
 	private Roperty r = new Roperty();
 	private RopertyWithResolver roperty = new RopertyWithResolver(r, resolver);
-
-	@Test
-	public void toStringTest() {
-		assertThat(roperty.toString(), startsWith("RopertyWithResolver{roperty=Roperty{domains=[], map={}}, domainResolver="));
-	}
 
 	@Test
 	public void gettingAPropertyThatDoesNotExistGivesNull() {
@@ -72,7 +68,7 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void	settingNullAsValue() {
+	public void settingNullAsValue() {
 		roperty.set("key", "value");
 		assertThat((String)roperty.get("key"), is("value"));
 		roperty.set("key", null);
@@ -80,7 +76,7 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void	settingAnEmptyString() {
+	public void settingAnEmptyString() {
 		roperty.set("key", "");
 		assertThat((String)roperty.get("key"), is(""));
 	}
@@ -307,5 +303,50 @@ public class RopertyTest {
 		new Roperty(persistenceMock, domainInitializerMock);
 		verify(domainInitializerMock).getInitialDomains();
 		verify(persistenceMock).loadAll();
+	}
+
+	@Test
+	public void domainsThatAreInitializedArePresent() {
+		Roperty roperty = new Roperty("domain1", "domain2");
+		assertThat(roperty.toString(), is("Roperty{domains=[domain1, domain2]\n}"));
+	}
+
+	@Test
+	public void getKeyValues() {
+		String key = "key";
+		r.set(key, "value");
+		KeyValues keyValues = r.KeyValues(key);
+		assertThat(keyValues.getDomainSpecificValues(), hasSize(1));
+		String value = keyValues.get(new ArrayList(), null);
+		assertThat(value, is("value"));
+	}
+
+	@Test
+	public void ropertyWithResolverToString() {
+		assertThat(roperty.toString(), is("RopertyWithResolver{roperty=Roperty{domains=[]\n}}"));
+	}
+
+	@Test
+	public void toStringTest() {
+		assertThat(r.toString(), is("Roperty{domains=[]\n}"));
+		r.addDomain("domain");
+		assertThat(r.toString(), is("Roperty{domains=[domain]\n}"));
+	}
+
+	@Test
+	public void toStringFilled() {
+		r.addDomain("domain1").addDomain("domain2");
+		r.set("key", "value");
+		r.set("key", "value2", "domain1");
+		r.set("otherKey", "otherValue");
+		assertThat(r.toString(), is("Roperty{domains=[domain1, domain2]\n" +
+			"KeyValues for \"otherKey\": KeyValues{\n" +
+			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\"}\n" +
+			"}\n" +
+			"KeyValues for \"key\": KeyValues{\n" +
+			"\tDomainSpecificValue{pattern=\"domain1\", ordering=3, value=\"value2\"}\n" +
+			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n" +
+			"}\n" +
+			"}"));
 	}
 }

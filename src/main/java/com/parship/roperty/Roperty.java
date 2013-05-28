@@ -18,6 +18,9 @@
 package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
+import com.parship.roperty.jmx.RopertyJmx;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @since 2013-03-25 08:07
  */
 public class Roperty {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Roperty.class);
 	private volatile Map<String, KeyValues> keyValuesMap;
 	private final List<String> domains;
 	private Persistence persistence;
@@ -40,28 +45,45 @@ public class Roperty {
 		this.domains = domainInitializer.getInitialDomains();
 		this.persistence = persistence;
 		this.keyValuesMap = persistence.loadAll();
+		RopertyJmx.addRoperty(this, persistence);
 	}
 
 	public Roperty(final Persistence persistence, final String... domains) {
-		this();
-		for(String d : domains) {
-			this.domains.add(d);
+		this.domains = new CopyOnWriteArrayList<>();
+		for(String domain : domains) {
+			addDomain(domain);
 		}
+		Ensure.notNull(persistence, "persistence");
 		this.persistence = persistence;
 		this.keyValuesMap = persistence.loadAll();
+		RopertyJmx.addRoperty(this, persistence);
+	}
+
+	public Roperty(final String... domains) {
+		this.domains = new CopyOnWriteArrayList<>();
+		for(String domain : domains) {
+			addDomain(domain);
+		}
+		this.keyValuesMap = new HashMap<>();
+		RopertyJmx.addRoperty(this, null);
 	}
 
 	public Roperty() {
 		this.domains = new CopyOnWriteArrayList<>();
 		this.keyValuesMap = new HashMap<>();
+		RopertyJmx.addRoperty(this, null);
 	}
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+		T result;
 		if (keyValues == null) {
-			return defaultValue;
+			result = defaultValue;
+		} else {
+			result = keyValues.get(domains, resolver);
 		}
-		return keyValues.get(domains, resolver);
+		LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", key, defaultValue, result);
+		return result;
 	}
 
 	public <T> T get(final String key, DomainResolver resolver) {
@@ -84,6 +106,7 @@ public class Roperty {
 	}
 
 	public void set(final String key, final Object value, final String... domains) {
+		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, key, domains);
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 		if (keyValues == null) {
 			synchronized (keyValuesMap) {
@@ -139,13 +162,20 @@ public class Roperty {
 	public void setPersistence(final Persistence persistence) {
 		Ensure.notNull(persistence, "persistence");
 		this.persistence = persistence;
+		RopertyJmx.addRoperty(this, persistence);
 	}
 
 	@Override
 	public String toString() {
-		return "Roperty{" +
-			"domains=" + domains +
-			", map=" + keyValuesMap +
-			'}';
+		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
+		for(Map.Entry<String, KeyValues> entry:keyValuesMap.entrySet()) {
+			builder.append("\n").append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());
+		}
+		builder.append("\n}");
+		return builder.toString();
+	}
+
+	public KeyValues KeyValues(final String key) {
+		return keyValuesMap.get(key);
 	}
 }

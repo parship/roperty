@@ -60,7 +60,6 @@ public class RopertyWithResolver {
 	public String toString() {
 		return "RopertyWithResolver{" +
 			"roperty=" + roperty +
-			", domainResolver=" + domainResolver +
 			'}';
 	}
 }

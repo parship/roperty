@@ -86,6 +86,7 @@ public class KeyValues {
 
 	@SuppressWarnings("unchecked")
 	public <T> T get(List<String> domains, final DomainResolver resolver) {
+		Ensure.notNull(domains, "domains");
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue pattern : domainSpecificValues) {
 			if (pattern.matches(domainStr)) {
@@ -97,9 +98,13 @@ public class KeyValues {
 
 	@Override
 	public String toString() {
-		return "KeyValues{" +
-			"patterns=" + domainSpecificValues +
-			'}';
+		StringBuilder builder = new StringBuilder("KeyValues{\n");
+		for(DomainSpecificValue entry:domainSpecificValues) {
+			builder.append("\t").append(entry).append("\n");
+		}
+//		builder.setCharAt(builder.length() - 1, '}');
+		builder.append("}");
+		return builder.toString();
 	}
 
 	public Set<DomainSpecificValue> getDomainSpecificValues() {

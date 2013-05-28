@@ -49,13 +49,16 @@ public class KeyValuesTest {
 
 	@Test
 	public void toStringEmptyTest() {
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{patterns=[]}"));
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
+			"}"));
 	}
 
 	@Test
 	public void toStringFilledTest() {
 		keyValues.put("text", "domain1", "domain2");
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{patterns=[DomainSpecificValue{pattern=domain1|domain2, ordering=7, value=text}]}"));
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
+			"\tDomainSpecificValue{pattern=\"domain1|domain2\", ordering=7, value=\"text\"}\n" +
+			"}"));
 	}
 
 	@Test
