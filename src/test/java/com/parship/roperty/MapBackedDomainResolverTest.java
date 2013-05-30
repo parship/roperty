@@ -29,9 +29,15 @@ import static org.junit.Assert.assertThat;
  */
 public class MapBackedDomainResolverTest {
 
+	private MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
+
 	@Test
 	public void setAndGetDomainValues() {
-		MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
 		assertThat(resolver.getDomainValue("dom1"), is("val1"));
+	}
+
+	@Test
+	public void toStringTest() {
+		assertThat(resolver.toString(), is("com.parship.roperty.MapBackedDomainResolver with {dom1=val1, dom2=val2}"));
 	}
 }
