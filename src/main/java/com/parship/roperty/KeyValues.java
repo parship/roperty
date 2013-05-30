@@ -30,7 +30,14 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class KeyValues {
 
+	private String description;
 	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
+
+	public KeyValues() {}
+
+	public KeyValues(final String description) {
+		this.description = description;
+	}
 
 	public void put(Object value, String... domains) {
 		for (String domain : domains) {
@@ -96,9 +103,14 @@ public class KeyValues {
 		return null; // this never happens, since there is always the default value
 	}
 
+	public String getDescription() {
+		return description == null ? "" : description;
+	}
+
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("KeyValues{\n");
+		StringBuilder builder = new StringBuilder("KeyValues{description=\"");
+		builder.append(getDescription()).append("\"\n");
 		for(DomainSpecificValue entry:domainSpecificValues) {
 			builder.append("\t").append(entry).append("\n");
 		}

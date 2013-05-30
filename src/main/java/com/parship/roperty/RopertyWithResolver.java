@@ -48,8 +48,12 @@ public class RopertyWithResolver {
 		return roperty.getOrDefine(key, defaultValue, domainResolver);
 	}
 
-	public void set(final String key, final Object value, final String... domains) {
-		roperty.set(key, value, domains);
+	public <T> T getOrDefine(final String key, final T defaultValue, final String description) {
+		return roperty.getOrDefine(key, defaultValue, domainResolver, description);
+	}
+
+	public void set(final String key, final Object value, final String description, final String... domains) {
+		roperty.set(key, value, description, domains);
 	}
 
 	public Roperty getRoperty() {

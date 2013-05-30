@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
  */
 public class KeyValuesTest {
 
-	private KeyValues keyValues = new KeyValues();
+	private KeyValues keyValues = new KeyValues("description");
 	private DomainResolver resolver = new DomainResolver() {
 		@Override
 		public String getDomainValue(final String domain) {
@@ -48,15 +48,21 @@ public class KeyValuesTest {
 	};
 
 	@Test
+	public void descriptionIsNeverNullButIsTheEmptyString() {
+		KeyValues keyValues = new KeyValues();
+		assertThat(keyValues.getDescription(), is(""));
+	}
+
+	@Test
 	public void toStringEmptyTest() {
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{description=\"description\"\n" +
 			"}"));
 	}
 
 	@Test
 	public void toStringFilledTest() {
 		keyValues.put("text", "domain1", "domain2");
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{description=\"description\"\n" +
 			"\tDomainSpecificValue{pattern=\"domain1|domain2\", ordering=7, value=\"text\"}\n" +
 			"}"));
 	}

@@ -24,7 +24,7 @@ public class RopertyLoggingTest {
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelSetValue() {
-		r.set("key", "otherValue");
+		r.set("key", "otherValue", null);
 		r.get("key", "default", null);
 		rule.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'otherValue'");
 	}

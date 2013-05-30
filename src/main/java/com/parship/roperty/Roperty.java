@@ -91,11 +91,15 @@ public class Roperty {
 	}
 
 	public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver) {
+		return getOrDefine(key, defaultValue, resolver, null);
+	}
+
+	public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver, String description) {
 		T value = get(key, resolver);
 		if (value != null) {
 			return value;
 		}
-		set(key, defaultValue);
+		set(key, defaultValue, description);
 		return defaultValue;
 	}
 
@@ -105,14 +109,14 @@ public class Roperty {
 		return this;
 	}
 
-	public void set(final String key, final Object value, final String... domains) {
+	public void set(final String key, final Object value, final String description, final String... domains) {
 		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, key, domains);
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 		if (keyValues == null) {
 			synchronized (keyValuesMap) {
 				keyValues = keyValuesMap.get(key);
 				if (keyValues == null) {
-					keyValues = new KeyValues();
+					keyValues = new KeyValues(description);
 					keyValuesMap.put(key, keyValues);
 				}
 			}
@@ -120,6 +124,10 @@ public class Roperty {
 		keyValues.put(value, domains);
 		store(key, keyValues);
 	}
+
+//	public void set(final String key, final Object value, final String... domains) {
+//		set(key, value, null, domains);
+//	}
 
 	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {
 		KeyValues keyValues = keyValuesMap.get(key);
