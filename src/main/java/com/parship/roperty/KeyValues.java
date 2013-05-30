@@ -100,7 +100,7 @@ public class KeyValues {
 				return (T)pattern.getValue();
 			}
 		}
-		return null; // this never happens, since there is always the default value
+		return null;
 	}
 
 	public String getDescription() {
