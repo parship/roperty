@@ -173,6 +173,10 @@ public class Roperty {
 		RopertyJmx.addRoperty(this, persistence);
 	}
 
+	public void reload() {
+		setKeyValuesMap(persistence.loadAll());
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);

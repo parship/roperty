@@ -306,6 +306,18 @@ public class RopertyTest {
 	}
 
 	@Test
+	public void reloadReplacesKeyValuesMap() {
+		Persistence persistenceMock = mock(Persistence.class);
+		Roperty roperty1 = new Roperty(persistenceMock);
+		verify(persistenceMock).loadAll();
+		roperty1.set("key", "value", "descr");
+		assertThat((String)roperty1.get("key", null), is("value"));
+		roperty1.reload();
+		assertThat((String)roperty1.get("key", null), nullValue());
+		verify(persistenceMock, times(2)).loadAll();
+	}
+
+	@Test
 	public void domainsThatAreInitializedArePresent() {
 		Roperty roperty = new Roperty("domain1", "domain2");
 		assertThat(roperty.toString(), is("Roperty{domains=[domain1, domain2]\n}"));
