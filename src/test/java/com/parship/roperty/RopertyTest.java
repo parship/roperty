@@ -313,8 +313,15 @@ public class RopertyTest {
 		roperty1.set("key", "value", "descr");
 		assertThat((String)roperty1.get("key", null), is("value"));
 		roperty1.reload();
-		assertThat((String)roperty1.get("key", null), nullValue());
+		assertThat(roperty1.get("key", null), nullValue());
 		verify(persistenceMock, times(2)).loadAll();
+	}
+
+	@Test
+	public void reloadWithoutPersistenceDoesNothing() {
+		r.set("key", "value", "descr");
+		r.reload();
+		assertThat((String)r.get("key", null), is("value"));
 	}
 
 	@Test

@@ -23,7 +23,7 @@ public class RopertyJmx implements RopertyJmxMBean {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyJmx.class);
 
-	private static Map<Roperty, Persistence> roperties = new WeakHashMap<>();
+	private static Map<Roperty, Roperty> roperties = new WeakHashMap<>();
 	private static volatile boolean registered = false;
 
 	public static synchronized void register() {
@@ -43,7 +43,7 @@ public class RopertyJmx implements RopertyJmxMBean {
 	public static void addRoperty(Roperty roperty, Persistence persistence) {
 		Ensure.notNull(roperty, "roperty");
 		register();
-		roperties.put(roperty, persistence);
+		roperties.put(roperty, roperty);
 	}
 
 	@Override
@@ -76,10 +76,8 @@ public class RopertyJmx implements RopertyJmxMBean {
 
 	@Override
 	public void reload() {
-		for (Map.Entry<Roperty, Persistence> entry : roperties.entrySet()) {
-			if (entry.getValue() != null) {
-				entry.getKey().setKeyValuesMap(entry.getValue().loadAll());
-			}
+		for (Roperty roperty : roperties.keySet()) {
+			roperty.reload();
 		}
 	}
 }

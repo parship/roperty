@@ -50,7 +50,7 @@ public class Roperty {
 
 	public Roperty(final Persistence persistence, final String... domains) {
 		this.domains = new CopyOnWriteArrayList<>();
-		for(String domain : domains) {
+		for (String domain : domains) {
 			addDomain(domain);
 		}
 		Ensure.notNull(persistence, "persistence");
@@ -61,7 +61,7 @@ public class Roperty {
 
 	public Roperty(final String... domains) {
 		this.domains = new CopyOnWriteArrayList<>();
-		for(String domain : domains) {
+		for (String domain : domains) {
 			addDomain(domain);
 		}
 		this.keyValuesMap = new HashMap<>();
@@ -174,13 +174,15 @@ public class Roperty {
 	}
 
 	public void reload() {
-		setKeyValuesMap(persistence.loadAll());
+		if (persistence != null) {
+			setKeyValuesMap(persistence.loadAll());
+		}
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
-		for(Map.Entry<String, KeyValues> entry:keyValuesMap.entrySet()) {
+		for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
 			builder.append("\n").append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());
 		}
 		builder.append("\n}");
