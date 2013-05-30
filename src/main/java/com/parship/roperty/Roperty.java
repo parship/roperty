@@ -125,10 +125,6 @@ public class Roperty {
 		store(key, keyValues);
 	}
 
-//	public void set(final String key, final Object value, final String... domains) {
-//		set(key, value, null, domains);
-//	}
-
 	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {
 		KeyValues keyValues = keyValuesMap.get(key);
 		if (keyValues == null) {
