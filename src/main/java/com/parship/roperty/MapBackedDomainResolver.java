@@ -38,4 +38,27 @@ public class MapBackedDomainResolver implements DomainResolver {
 		map.put(domain, domainValue);
 		return this;
 	}
+	
+	private void dumpMap(StringBuilder sb) {
+		sb.append('{');
+		boolean first = true;
+		for (Map.Entry<String,String> entry : map.entrySet()) {
+			if (!first) {
+				sb.append(", ");
+			}
+			sb.append(entry.getKey()).append('=').append(entry.getValue());
+			first = false;
+		}
+		sb.append('}');
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append('[');
+		sb.append(super.toString());
+		sb.append(" with ");
+		dumpMap(sb);
+		sb.append(']');
+		return sb.toString();
+	}
 }
