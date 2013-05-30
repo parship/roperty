@@ -54,11 +54,9 @@ public class MapBackedDomainResolver implements DomainResolver {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append('[');
 		sb.append(super.toString());
 		sb.append(" with ");
 		dumpMap(sb);
-		sb.append(']');
 		return sb.toString();
 	}
 }
