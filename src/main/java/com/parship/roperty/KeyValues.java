@@ -43,10 +43,10 @@ public class KeyValues {
 		for (String domain : domains) {
 			Ensure.notEmpty(domain, "domain");
 		}
-		createAndAddDomainPattern(value, domains);
+		createAndAddDomainSpecificValue(value, domains);
 	}
 
-	private void createAndAddDomainPattern(final Object value, final String[] domains) {
+	private void createAndAddDomainSpecificValue(final Object value, final String[] domains) {
 		int order = 1;
 		if (domains.length == 0) {
 			addDomainSpecificValue("", order, value);
