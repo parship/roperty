@@ -41,7 +41,12 @@ public class Roperty {
 	private KeyValuesFactory keyValuesFactory;
 	private DomainSpecificValueFactory domainSpecificValueFactory;
 
-	public Roperty(final Persistence persistence, final DomainInitializer domainInitializer, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory) {
+	public Roperty(final Persistence persistence, final DomainInitializer domainInitializer, final FactoryProvider factoryProvider) {
+		this(persistence, domainInitializer, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory());
+	}
+
+	public Roperty(final Persistence persistence, final DomainInitializer domainInitializer, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory
+		domainSpecificValueFactory) {
 		Ensure.notNull(domainInitializer, "domainInitializer");
 		this.domains = domainInitializer.getInitialDomains();
 		initFromPersistence(persistence, keyValuesFactory, domainSpecificValueFactory);
@@ -49,6 +54,10 @@ public class Roperty {
 
 	public Roperty(final Persistence persistence, final DomainInitializer domainInitializer) {
 		this(persistence, domainInitializer, new DefaultKeyValuesFactory(), new DefaultDomainSpecificValueFactory());
+	}
+
+	public Roperty(final Persistence persistence, final FactoryProvider factoryProvider, final String... domains) {
+		this(persistence, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory(), domains);
 	}
 
 	public Roperty(final Persistence persistence, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory, final String... domains) {
