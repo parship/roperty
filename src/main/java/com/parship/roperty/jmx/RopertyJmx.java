@@ -2,7 +2,6 @@ package com.parship.roperty.jmx;
 
 import com.parship.commons.util.Ensure;
 import com.parship.roperty.KeyValues;
-import com.parship.roperty.Persistence;
 import com.parship.roperty.Roperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +39,7 @@ public class RopertyJmx implements RopertyJmxMBean {
 		}
 	}
 
-	public static void addRoperty(Roperty roperty, Persistence persistence) {
+	public static void addRoperty(Roperty roperty) {
 		Ensure.notNull(roperty, "roperty");
 		register();
 		roperties.put(roperty, roperty);

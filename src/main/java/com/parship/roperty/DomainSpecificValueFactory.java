@@ -17,15 +17,10 @@
 
 package com.parship.roperty;
 
-import java.util.Map;
-
-
 /**
  * @author mfinsterwalder
- * @since 2013-05-17 13:01
+ * @since 2013-06-03 14:33
  */
-public interface Persistence {
-	KeyValues load(final String key, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
-	Map<String, KeyValues> loadAll(KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
-	void store(final String key, final KeyValues keyValues);
+public interface DomainSpecificValueFactory {
+	DomainSpecificValue create(final String domainPattern, final int order, Object value);
 }

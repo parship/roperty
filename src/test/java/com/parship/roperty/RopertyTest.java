@@ -45,6 +45,9 @@ public class RopertyTest {
 	};
 	private Roperty r = new Roperty();
 	private RopertyWithResolver roperty = new RopertyWithResolver(r, resolver);
+	private KeyValuesFactory keyValuesFactory = new DefaultKeyValuesFactory();
+	private DomainSpecificValueFactory domainSpecificValueFactory = new DefaultDomainSpecificValueFactory();
+
 
 	@Test
 	public void gettingAPropertyThatDoesNotExistGivesNull() {
@@ -57,7 +60,7 @@ public class RopertyTest {
 		Persistence persistenceMock = mock(Persistence.class);
 		r.setPersistence(persistenceMock);
 		roperty.get("key");
-		verify(persistenceMock).load("key");
+		verify(persistenceMock).load(eq("key"), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 	}
 
 	@Test
@@ -95,8 +98,8 @@ public class RopertyTest {
 		String key = "key";
 		Persistence persistenceMock = mock(Persistence.class);
 		r.setPersistence(persistenceMock);
-		KeyValues keyValue = new KeyValues();
-		when(persistenceMock.load(key)).thenReturn(keyValue);
+		KeyValues keyValue = new KeyValues(new DefaultDomainSpecificValueFactory());
+		when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
 		roperty.set(key, "value", null);
 		verify(persistenceMock).store(key, keyValue);
 	}
@@ -257,8 +260,8 @@ public class RopertyTest {
 		String key = "key";
 		Map<String, KeyValues> mockMap = mock(HashMap.class);
 		Persistence persistenceMock = mock(Persistence.class);
-		KeyValues keyValues = new KeyValues();
-		when(persistenceMock.load(key)).thenReturn(keyValues);
+		KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
+		when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
 		r.setPersistence(persistenceMock);
 		r.setKeyValuesMap(mockMap);
 		roperty.get(key);
@@ -270,10 +273,10 @@ public class RopertyTest {
 		String key = "key";
 		Map<String, KeyValues> mockMap = mock(HashMap.class);
 		Persistence persistenceMock = mock(Persistence.class);
-		KeyValues keyValues = new KeyValues();
-		when(persistenceMock.load(key)).thenReturn(keyValues);
+		KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
+		when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
 		r.setPersistence(persistenceMock);
-		when(mockMap.get(key)).thenReturn(null).thenReturn(new KeyValues());
+		when(mockMap.get(key)).thenReturn(null).thenReturn(new KeyValues(new DefaultDomainSpecificValueFactory()));
 		r.setKeyValuesMap(mockMap);
 		roperty.get(key);
 		verify(mockMap, never()).put(key, keyValues);
@@ -291,9 +294,9 @@ public class RopertyTest {
 	public void persistenceThatIsInitializedIsUsed() {
 		Persistence persistenceMock = mock(Persistence.class);
 		Roperty roperty1 = new Roperty(persistenceMock, "dom1", "dom2");
-		verify(persistenceMock).loadAll();
+		verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 		roperty1.get("key", resolver);
-		verify(persistenceMock).load("key");
+		verify(persistenceMock).load(eq("key"), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 	}
 
 	@Test
@@ -302,19 +305,19 @@ public class RopertyTest {
 		DomainInitializer domainInitializerMock = mock(DomainInitializer.class);
 		new Roperty(persistenceMock, domainInitializerMock);
 		verify(domainInitializerMock).getInitialDomains();
-		verify(persistenceMock).loadAll();
+		verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 	}
 
 	@Test
 	public void reloadReplacesKeyValuesMap() {
 		Persistence persistenceMock = mock(Persistence.class);
 		Roperty roperty1 = new Roperty(persistenceMock);
-		verify(persistenceMock).loadAll();
+		verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 		roperty1.set("key", "value", "descr");
 		assertThat((String)roperty1.get("key", null), is("value"));
 		roperty1.reload();
 		assertThat(roperty1.get("key", null), nullValue());
-		verify(persistenceMock, times(2)).loadAll();
+		verify(persistenceMock, times(2)).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 	}
 
 	@Test

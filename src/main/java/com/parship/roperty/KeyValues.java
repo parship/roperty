@@ -32,11 +32,10 @@ public class KeyValues {
 
 	private String description;
 	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
+	private DomainSpecificValueFactory domainSpecificValueFactory;
 
-	public KeyValues() {}
-
-	public KeyValues(final String description) {
-		this.description = description;
+	public KeyValues(final DomainSpecificValueFactory domainSpecificValueFactory) {
+		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 
 	public void put(Object value, String... domains) {
@@ -72,7 +71,7 @@ public class KeyValues {
 	}
 
 	private synchronized void addDomainSpecificValue(final String pattern, final int order, final Object value) {
-		DomainSpecificValue domainSpecificValue = new DomainSpecificValue(pattern, order, value);
+		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value);
 		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
 		domainSpecificValues.add(domainSpecificValue);
 	}
@@ -107,6 +106,10 @@ public class KeyValues {
 		return description == null ? "" : description;
 	}
 
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder("KeyValues{description=\"");
@@ -120,5 +123,9 @@ public class KeyValues {
 
 	public Set<DomainSpecificValue> getDomainSpecificValues() {
 		return domainSpecificValues;
+	}
+
+	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
+		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 }
