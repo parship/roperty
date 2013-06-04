@@ -144,4 +144,12 @@ public class KeyValuesTest {
 		String value = keyValues.get(asList("domain1", "domain2", "domain3"), resolver);
 		assertThat(value, is("overridden1"));
 	}
+
+	@Test
+	public void getDefaultValue() {
+		assertThat(keyValues.getDefaultValue(), nullValue());
+		keyValues.put("default");
+		keyValues.put("other", "domain");
+		assertThat((String)keyValues.getDefaultValue(), is("default"));
+	}
 }
