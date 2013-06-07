@@ -18,18 +18,23 @@ import java.util.WeakHashMap;
  * @author mfinsterwalder
  * @since 2013-05-28 12:08
  */
-public class RopertyJmx implements RopertyJmxMBean {
+public class RopertyManager implements RopertyManagerMBean {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyJmx.class);
-
-	private static Map<Roperty, Roperty> roperties = new WeakHashMap<>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyManager.class);
+	private static final RopertyManager instance = new RopertyManager();
 	private static volatile boolean registered = false;
 
-	public static synchronized void register() {
+	private Map<Roperty, Roperty> roperties = new WeakHashMap<>();
+
+	public static RopertyManager instance() {
+		return instance;
+	}
+
+	public synchronized void register() {
 		if (!registered) {
 			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 			try {
-				mbs.registerMBean(new RopertyJmx(), new ObjectName("com.parship.roperty", "type", RopertyJmxMBean.class.getSimpleName()));
+				mbs.registerMBean(new RopertyManager(), new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
 				registered = true;
 			} catch (InstanceAlreadyExistsException e) {
 				// nothing to do
@@ -39,7 +44,7 @@ public class RopertyJmx implements RopertyJmxMBean {
 		}
 	}
 
-	public static void addRoperty(Roperty roperty) {
+	public void addRoperty(Roperty roperty) {
 		Ensure.notNull(roperty, "roperty");
 		register();
 		roperties.put(roperty, roperty);
