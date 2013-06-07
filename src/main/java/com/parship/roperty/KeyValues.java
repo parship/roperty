@@ -19,6 +19,7 @@ package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -127,5 +128,10 @@ public class KeyValues {
 
 	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
+	}
+
+	public <T> T getDefaultValue() {
+		List<String> emptyList = Collections.emptyList();
+		return get(emptyList, null);
 	}
 }
