@@ -61,15 +61,10 @@ public class RopertyManager implements RopertyManagerMBean {
 		}
 	}
 
-	public void addRoperty(Roperty roperty) {
+	public void add(Roperty roperty) {
 		Ensure.notNull(roperty, "roperty");
 		register();
 		roperties.put(roperty, null);
-	}
-
-	@Override
-	public void dumpToSystemOut() {
-		System.out.println(dump());
 	}
 
 	@Override

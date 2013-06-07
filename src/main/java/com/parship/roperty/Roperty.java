@@ -84,19 +84,19 @@ public class Roperty {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 		this.persistence = persistence;
 		this.keyValuesMap = persistence.loadAll(keyValuesFactory, domainSpecificValueFactory);
-		RopertyManager.getInstance().addRoperty(this);
+		RopertyManager.getInstance().add(this);
 	}
 
 	public Roperty(final String... domains) {
 		initDomains(domains);
 		initWithoutPersistence();
-		RopertyManager.getInstance().addRoperty(this);
+		RopertyManager.getInstance().add(this);
 	}
 
 	public Roperty() {
 		this.domains = new CopyOnWriteArrayList<>();
 		initWithoutPersistence();
-		RopertyManager.getInstance().addRoperty(this);
+		RopertyManager.getInstance().add(this);
 	}
 
 	private void initWithoutPersistence() {
@@ -198,7 +198,7 @@ public class Roperty {
 	public void setPersistence(final Persistence persistence) {
 		Ensure.notNull(persistence, "persistence");
 		this.persistence = persistence;
-		RopertyManager.getInstance().addRoperty(this);
+		RopertyManager.getInstance().add(this);
 	}
 
 	public void reload() {

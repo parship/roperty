@@ -48,7 +48,6 @@ public class RopertyTest {
 	private KeyValuesFactory keyValuesFactory = new DefaultKeyValuesFactory();
 	private DomainSpecificValueFactory domainSpecificValueFactory = new DefaultDomainSpecificValueFactory();
 
-
 	@Test
 	public void gettingAPropertyThatDoesNotExistGivesNull() {
 		String value = roperty.get("key");

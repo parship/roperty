@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -151,5 +152,15 @@ public class KeyValuesTest {
 		keyValues.put("default");
 		keyValues.put("other", "domain");
 		assertThat((String)keyValues.getDefaultValue(), is("default"));
+	}
+
+	@Test
+	public void newValuesAreCreatedThroughTheSuppliedFactory() {
+		DefaultDomainSpecificValueFactory factoryMock = mock(DefaultDomainSpecificValueFactory.class);
+		keyValues.setDomainSpecificValueFactory(factoryMock);
+		String value = "value";
+		when(factoryMock.create("", 1, value)).thenReturn(new DomainSpecificValue("", 1, value));
+		keyValues.put(value);
+		verify(factoryMock).create("", 1, value);
 	}
 }

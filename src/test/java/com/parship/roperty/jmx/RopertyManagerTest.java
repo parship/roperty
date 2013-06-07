@@ -22,7 +22,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 /**
@@ -46,11 +50,49 @@ public class RopertyManagerTest {
 	}
 
 	@Test
-	public void ropertyInstancesRemoveThemselvesFromManagerUponDestruction() {
+	public void ropertyInstancesAreRemovedFromManagerAfterDestruction() {
 		Roperty roperty = new Roperty();
 		assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
 		roperty = null;
 		System.gc();
 		assertThat(manager.dump(), is(""));
+	}
+
+	@Test
+	public void dumpSingleKeyIsDelegatedToAllRoperties() {
+		final String key = "key";
+		Roperty roperty1 = new Roperty();
+		roperty1.set(key, "value1", "descr");
+		Roperty roperty2 = new Roperty();
+		roperty2.set(key, "value2", "descr");
+		String dump = manager.dump("key");
+		assertThat(dump, containsString("KeyValues{description=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\"}\n}"));
+		assertThat(dump, containsString("KeyValues{description=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\"}\n}"));
+	}
+
+	@Test
+	public void reloadIsDelegatedToAllRoperties() {
+		Roperty ropertyMock1 = mock(Roperty.class);
+		manager.add(ropertyMock1);
+		Roperty ropertyMock2 = mock(Roperty.class);
+		manager.add(ropertyMock2);
+		manager.reload();
+		verify(ropertyMock1).reload();
+		verify(ropertyMock2).reload();
+	}
+
+	@Test
+	public void removedRopertiesAreNotCalled() {
+		Roperty ropertyMock1 = mock(Roperty.class);
+		manager.add(ropertyMock1);
+		Roperty ropertyMock2 = mock(Roperty.class);
+		manager.add(ropertyMock2);
+		manager.reload();
+		verify(ropertyMock1).reload();
+		verify(ropertyMock2).reload();
+		manager.remove(ropertyMock1);
+		manager.reload();
+		verify(ropertyMock1).reload();
+		verify(ropertyMock2, times(2)).reload();
 	}
 }
