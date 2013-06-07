@@ -47,7 +47,7 @@ public class RopertyManager implements RopertyManagerMBean {
 	public void addRoperty(Roperty roperty) {
 		Ensure.notNull(roperty, "roperty");
 		register();
-		roperties.put(roperty, roperty);
+		roperties.put(roperty, null);
 	}
 
 	@Override
@@ -83,5 +83,13 @@ public class RopertyManager implements RopertyManagerMBean {
 		for (Roperty roperty : roperties.keySet()) {
 			roperty.reload();
 		}
+	}
+
+	public void reset() {
+		roperties.clear();
+	}
+
+	public void remove(final Roperty roperty) {
+		roperties.remove(roperty);
 	}
 }
