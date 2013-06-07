@@ -1,4 +1,4 @@
 roperty
 =======
 
-Roperty - An advanced property management and retrieval system
+Roperty - An advanced property management and retrival system
