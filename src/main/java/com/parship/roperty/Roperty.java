@@ -18,7 +18,7 @@
 package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
-import com.parship.roperty.jmx.RopertyJmx;
+import com.parship.roperty.jmx.RopertyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,19 +84,19 @@ public class Roperty {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 		this.persistence = persistence;
 		this.keyValuesMap = persistence.loadAll(keyValuesFactory, domainSpecificValueFactory);
-		RopertyJmx.addRoperty(this);
+		RopertyManager.getInstance().addRoperty(this);
 	}
 
 	public Roperty(final String... domains) {
 		initDomains(domains);
 		initWithoutPersistence();
-		RopertyJmx.addRoperty(this);
+		RopertyManager.getInstance().addRoperty(this);
 	}
 
 	public Roperty() {
 		this.domains = new CopyOnWriteArrayList<>();
 		initWithoutPersistence();
-		RopertyJmx.addRoperty(this);
+		RopertyManager.getInstance().addRoperty(this);
 	}
 
 	private void initWithoutPersistence() {
@@ -198,7 +198,7 @@ public class Roperty {
 	public void setPersistence(final Persistence persistence) {
 		Ensure.notNull(persistence, "persistence");
 		this.persistence = persistence;
-		RopertyJmx.addRoperty(this);
+		RopertyManager.getInstance().addRoperty(this);
 	}
 
 	public void reload() {

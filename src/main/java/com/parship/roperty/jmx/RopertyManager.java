@@ -26,7 +26,7 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	private Map<Roperty, Roperty> roperties = new WeakHashMap<>();
 
-	public static RopertyManager instance() {
+	public static RopertyManager getInstance() {
 		return instance;
 	}
 
