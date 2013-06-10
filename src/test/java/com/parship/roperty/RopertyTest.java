@@ -120,13 +120,13 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void gettingAnIntValueDefault() {
+	public void gettingAnIntValueThatDoesNotExistGivesDefault() {
 		int value = roperty.get("key", 3);
 		assertThat(value, is(3));
 	}
 
 	@Test
-	public void settingAndGettingAnIntValue() {
+	public void settingAndGettingAnIntValueWithDefaultGivesStoredValue() {
 		roperty.set("key", 7, null);
 		int value = roperty.get("key", 3);
 		assertThat(value, is(7));
@@ -173,7 +173,7 @@ public class RopertyTest {
 
 	@Test
 	public void whenAKeyForASubdomainIsSetTheRootKeyGetsAnUndefinedValue() {
-		roperty.set("key", "value", null, "subdomain");
+		roperty.set("key", "value", "descr", "subdomain");
 		assertThat((String)roperty.get("key"), nullValue());
 	}
 
@@ -348,14 +348,14 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void toStringTest() {
+	public void toStringEmptyRoperty() {
 		assertThat(r.toString(), is("Roperty{domains=[]\n}"));
 		r.addDomain("domain");
 		assertThat(r.toString(), is("Roperty{domains=[domain]\n}"));
 	}
 
 	@Test
-	public void toStringFilled() {
+	public void toStringFilledRoperty() {
 		r.addDomain("domain1").addDomain("domain2");
 		r.set("key", "value", null);
 		r.set("key", "value2", null, "domain1");
