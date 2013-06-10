@@ -55,13 +55,13 @@ public class KeyValuesTest {
 	}
 
 	@Test
-	public void toStringEmptyTest() {
+	public void toStringEmpty() {
 		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{description=\"\"\n" +
 			"}"));
 	}
 
 	@Test
-	public void toStringFilledTest() {
+	public void toStringFilled() {
 		keyValues.setDescription("description");
 		keyValues.put("text", "domain1", "domain2");
 		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{description=\"description\"\n" +
@@ -70,7 +70,7 @@ public class KeyValuesTest {
 	}
 
 	@Test
-	public void gettingFromAnEmptyKeyValuesGivesUndefinedValue() {
+	public void gettingFromAnEmptyKeyValuesGivesNull() {
 		assertThat(keyValues.get(asList("dom1"), resolver), nullValue());
 	}
 

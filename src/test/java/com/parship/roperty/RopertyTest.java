@@ -172,7 +172,7 @@ public class RopertyTest {
 	}
 
 	@Test
-	public void whenAKeyForASubdomainIsSetTheRootKeyGetsAnUndefinedValue() {
+	public void whenAKeyForASubdomainIsSetTheRootKeyGetsANullValue() {
 		roperty.set("key", "value", "descr", "subdomain");
 		assertThat((String)roperty.get("key"), nullValue());
 	}
