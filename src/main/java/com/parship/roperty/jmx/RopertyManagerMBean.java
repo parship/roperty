@@ -25,4 +25,5 @@ public interface RopertyManagerMBean {
 	String dump();
 	String dump(String key);
 	void reload();
+	String listRoperties();
 }

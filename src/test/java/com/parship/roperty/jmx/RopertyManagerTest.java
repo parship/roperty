@@ -95,4 +95,12 @@ public class RopertyManagerTest {
 		verify(ropertyMock1).reload();
 		verify(ropertyMock2, times(2)).reload();
 	}
+
+	@Test
+	public void listRoperties() {
+		Roperty r1 = new Roperty().addDomain("dom1");
+		Roperty r2 = new Roperty().addDomain("dom2");
+		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
+		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
+	}
 }

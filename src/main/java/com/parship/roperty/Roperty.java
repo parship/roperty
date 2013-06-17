@@ -209,6 +209,11 @@ public class Roperty {
 
 	@Override
 	public String toString() {
+		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains).append("}");
+		return builder.toString();
+	}
+
+	public String dump() {
 		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
 		for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
 			builder.append("\n").append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());

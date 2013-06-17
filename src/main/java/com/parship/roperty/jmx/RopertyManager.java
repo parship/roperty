@@ -39,7 +39,6 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyManager.class);
 	private static final RopertyManager instance = new RopertyManager();
-	private static volatile boolean registered = false;
 
 	private Map<Roperty, Roperty> roperties = new WeakHashMap<>();
 
@@ -47,23 +46,19 @@ public class RopertyManager implements RopertyManagerMBean {
 		return instance;
 	}
 
-	public synchronized void register() {
-		if (!registered) {
-			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-			try {
-				mbs.registerMBean(new RopertyManager(), new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
-				registered = true;
-			} catch (InstanceAlreadyExistsException e) {
-				// nothing to do
-			} catch (Exception e) {
-				LOGGER.warn("Could not register MBean for Roperty", e);
-			}
+	public RopertyManager() {
+		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+		try {
+			mbs.registerMBean(this, new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
+		} catch (InstanceAlreadyExistsException e) {
+			// nothing to do
+		} catch (Exception e) {
+			LOGGER.warn("Could not register MBean for Roperty", e);
 		}
 	}
 
 	public void add(Roperty roperty) {
 		Ensure.notNull(roperty, "roperty");
-		register();
 		roperties.put(roperty, null);
 	}
 
@@ -84,7 +79,7 @@ public class RopertyManager implements RopertyManagerMBean {
 	public String dump() {
 		StringBuilder builder = new StringBuilder();
 		for (Roperty roperty : roperties.keySet()) {
-			builder.append(roperty.toString());
+			builder.append(roperty.dump());
 			builder.append("\n\n");
 		}
 		return builder.toString();
@@ -95,6 +90,11 @@ public class RopertyManager implements RopertyManagerMBean {
 		for (Roperty roperty : roperties.keySet()) {
 			roperty.reload();
 		}
+	}
+
+	@Override
+	public String listRoperties() {
+		return roperties.keySet().toString();
 	}
 
 	public void reset() {
