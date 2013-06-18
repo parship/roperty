@@ -213,13 +213,13 @@ public class Roperty {
 		return builder.toString();
 	}
 
-	public String dump() {
+	public StringBuilder dump() {
 		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
 		for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
 			builder.append("\n").append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());
 		}
 		builder.append("\n}");
-		return builder.toString();
+		return builder;
 	}
 
 	public KeyValues KeyValues(final String key) {

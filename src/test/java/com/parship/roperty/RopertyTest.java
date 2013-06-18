@@ -329,7 +329,7 @@ public class RopertyTest {
 	@Test
 	public void domainsThatAreInitializedArePresent() {
 		Roperty roperty = new Roperty("domain1", "domain2");
-		assertThat(roperty.dump(), is("Roperty{domains=[domain1, domain2]\n}"));
+		assertThat(roperty.dump().toString(), is("Roperty{domains=[domain1, domain2]\n}"));
 	}
 
 	@Test
@@ -349,9 +349,9 @@ public class RopertyTest {
 
 	@Test
 	public void toStringEmptyRoperty() {
-		assertThat(r.dump(), is("Roperty{domains=[]\n}"));
+		assertThat(r.dump().toString(), is("Roperty{domains=[]\n}"));
 		r.addDomain("domain");
-		assertThat(r.dump(), is("Roperty{domains=[domain]\n}"));
+		assertThat(r.dump().toString(), is("Roperty{domains=[domain]\n}"));
 	}
 
 	@Test
@@ -360,7 +360,7 @@ public class RopertyTest {
 		r.set("key", "value", null);
 		r.set("key", "value2", null, "domain1");
 		r.set("otherKey", "otherValue", null);
-		assertThat(r.dump(), is("Roperty{domains=[domain1, domain2]\n" +
+		assertThat(r.dump().toString(), is("Roperty{domains=[domain1, domain2]\n" +
 			"KeyValues for \"otherKey\": KeyValues{description=\"\"\n" +
 			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\"}\n" +
 			"}\n" +
