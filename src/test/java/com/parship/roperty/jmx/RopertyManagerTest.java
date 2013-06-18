@@ -24,9 +24,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -104,12 +102,5 @@ public class RopertyManagerTest {
 		Roperty r2 = new Roperty().addDomain("dom2");
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
-	}
-
-	@Test
-	public void dumpToStdout() {
-		Roperty r1 = new Roperty().addDomain("dom1");
-		r1.set("key", "value", "descr");
-		r1.dump(System.out);
 	}
 }

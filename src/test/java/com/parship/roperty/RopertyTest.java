@@ -19,6 +19,9 @@ package com.parship.roperty;
 
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -371,5 +374,15 @@ public class RopertyTest {
 			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n" +
 			"}\n" +
 			"}"));
+	}
+
+	@Test
+	public void dumpToStdout() throws UnsupportedEncodingException {
+		r.addDomain("dom1");
+		r.set("key", "value", "descr");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		r.dump(new PrintStream(os));
+		String output = os.toString("UTF8");
+		assertThat(output, is("Roperty{domains=[dom1]\nKeyValues for \"key\": KeyValues{\n\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n}\n}\n"));
 	}
 }

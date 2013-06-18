@@ -89,7 +89,7 @@ public class RopertyManager implements RopertyManagerMBean {
 	public void dumpToSystemOut() {
 		for (Roperty roperty : roperties.keySet()) {
 			roperty.dump(System.out);
-			System.out.println("\n\n");
+			System.out.println();
 		}
 	}
 
