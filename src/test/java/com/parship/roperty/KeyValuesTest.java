@@ -56,7 +56,7 @@ public class KeyValuesTest {
 
 	@Test
 	public void toStringEmpty() {
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{description=\"\"\n" +
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n\tdescription=\"\"\n" +
 			"}"));
 	}
 
@@ -64,7 +64,8 @@ public class KeyValuesTest {
 	public void toStringFilled() {
 		keyValues.setDescription("description");
 		keyValues.put("text", "domain1", "domain2");
-		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{description=\"description\"\n" +
+		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
+			"\tdescription=\"description\"\n" +
 			"\tDomainSpecificValue{pattern=\"domain1|domain2\", ordering=7, value=\"text\"}\n" +
 			"}"));
 	}

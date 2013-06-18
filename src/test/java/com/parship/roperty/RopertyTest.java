@@ -361,10 +361,12 @@ public class RopertyTest {
 		r.set("key", "value2", null, "domain1");
 		r.set("otherKey", "otherValue", null);
 		assertThat(r.dump().toString(), is("Roperty{domains=[domain1, domain2]\n" +
-			"KeyValues for \"otherKey\": KeyValues{description=\"\"\n" +
+			"KeyValues for \"otherKey\": KeyValues{\n" +
+			"\tdescription=\"\"\n" +
 			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\"}\n" +
 			"}\n" +
-			"KeyValues for \"key\": KeyValues{description=\"\"\n" +
+			"KeyValues for \"key\": KeyValues{\n" +
+			"\tdescription=\"\"\n" +
 			"\tDomainSpecificValue{pattern=\"domain1\", ordering=3, value=\"value2\"}\n" +
 			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n" +
 			"}\n" +

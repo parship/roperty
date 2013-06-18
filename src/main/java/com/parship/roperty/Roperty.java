@@ -22,6 +22,7 @@ import com.parship.roperty.jmx.RopertyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -220,6 +221,19 @@ public class Roperty {
 		}
 		builder.append("\n}");
 		return builder;
+	}
+
+	public void dump(final PrintStream out) {
+		out.print("Roperty{domains=");
+		out.print(domains);
+		for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
+			out.println();
+			out.print("KeyValues for \"");
+			out.print(entry.getKey());
+			out.print("\": ");
+			out.print(entry.getValue());
+		}
+		out.println("\n}");
 	}
 
 	public KeyValues KeyValues(final String key) {

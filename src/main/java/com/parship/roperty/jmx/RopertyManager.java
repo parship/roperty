@@ -86,6 +86,14 @@ public class RopertyManager implements RopertyManagerMBean {
 	}
 
 	@Override
+	public void dumpToSystemOut() {
+		for (Roperty roperty : roperties.keySet()) {
+			roperty.dump(System.out);
+			System.out.println("\n\n");
+		}
+	}
+
+	@Override
 	public void reload() {
 		for (Roperty roperty : roperties.keySet()) {
 			roperty.reload();

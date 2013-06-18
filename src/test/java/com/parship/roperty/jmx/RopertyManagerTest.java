@@ -66,8 +66,10 @@ public class RopertyManagerTest {
 		Roperty roperty2 = new Roperty();
 		roperty2.set(key, "value2", "descr");
 		String dump = manager.dump("key");
-		assertThat(dump, containsString("KeyValues{description=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\"}\n}"));
-		assertThat(dump, containsString("KeyValues{description=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\"}\n}"));
+		assertThat(dump, containsString("KeyValues{\n" +
+			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\"}\n}"));
+		assertThat(dump, containsString("KeyValues{\n" +
+			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\"}\n}"));
 	}
 
 	@Test
@@ -102,5 +104,12 @@ public class RopertyManagerTest {
 		Roperty r2 = new Roperty().addDomain("dom2");
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
+	}
+
+	@Test
+	public void dumpToStdout() {
+		Roperty r1 = new Roperty().addDomain("dom1");
+		r1.set("key", "value", "descr");
+		r1.dump(System.out);
 	}
 }

@@ -113,7 +113,7 @@ public class KeyValues {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("KeyValues{description=\"");
+		StringBuilder builder = new StringBuilder("KeyValues{\n\tdescription=\"");
 		builder.append(getDescription()).append("\"\n");
 		for(DomainSpecificValue entry:domainSpecificValues) {
 			builder.append("\t").append(entry).append("\n");

@@ -23,6 +23,7 @@ package com.parship.roperty.jmx;
  */
 public interface RopertyManagerMBean {
 	String dump();
+	void dumpToSystemOut();
 	String dump(String key);
 	void reload();
 	String listRoperties();
