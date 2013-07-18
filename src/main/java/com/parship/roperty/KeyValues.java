@@ -92,7 +92,7 @@ public class KeyValues {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(List<String> domains, final DomainResolver resolver) {
+	public <T> T get(List<String> domains, final DomainResolver resolver, T defaultValue) {
 		Ensure.notNull(domains, "domains");
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue pattern : domainSpecificValues) {
@@ -100,7 +100,7 @@ public class KeyValues {
 				return (T)pattern.getValue();
 			}
 		}
-		return null;
+		return defaultValue;
 	}
 
 	public String getDescription() {
@@ -132,6 +132,6 @@ public class KeyValues {
 
 	public <T> T getDefaultValue() {
 		List<String> emptyList = Collections.emptyList();
-		return get(emptyList, null);
+		return get(emptyList, null, null);
 	}
 }

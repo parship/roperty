@@ -72,7 +72,25 @@ public class KeyValuesTest {
 
 	@Test
 	public void gettingFromAnEmptyKeyValuesGivesNull() {
-		assertThat(keyValues.get(asList("dom1"), resolver), nullValue());
+		assertThat(keyValues.get(asList("dom1"), resolver, null), nullValue());
+	}
+
+	@Test
+	public void whenNoPatternMatchesTheDefaultValueIsReturned() {
+		keyValues.put("value", "domain");
+		assertThat(keyValues.get(asList("x1"), resolver, "default"), is("default"));
+	}
+
+	@Test
+	public void whenAPatternMatchesItIsReturnedAndNotTheDefault() {
+		keyValues.put("text");
+		assertThat(keyValues.get(asList("x1"), resolver, "default"), is("text"));
+	}
+
+	@Test
+	public void whenNoPatternMatchesItIsReturnedAndNotTheDefault() {
+		keyValues.put("text", "domain");
+		assertThat(keyValues.get(asList("domain"), resolver, "default"), is("text"));
 	}
 
 	@Test
@@ -102,35 +120,35 @@ public class KeyValuesTest {
 
 	@Test
 	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
-		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), nullValue());
+		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), nullValue());
 		keyValues.put("val");
-		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null), is("val"));
+		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), is("val"));
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void callingGetWithoutAResolverGivesNullPointerException() {
-		keyValues.get(asList("dom1", "dom2"), null);
+		keyValues.get(asList("dom1", "dom2"), null, null);
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturnedByBestMatch() {
 		keyValues.put("value_1", "*", "*", "domain3");
 		keyValues.put("value_2", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value_2"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver, null), is("value_2"));
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturnedWhenAllDomainsMatch() {
 		keyValues.put("other value", "aaa", "*", "domain3");
 		keyValues.put("value", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver), is("value"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver, null), is("value"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void domainValuesMustNotContainPipe() {
 		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("x1")).thenReturn("abc|def");
-		keyValues.get(asList("x1"), resolverMock);
+		keyValues.get(asList("x1"), resolverMock, null);
 	}
 
 	@Test
@@ -143,7 +161,7 @@ public class KeyValuesTest {
 		keyValues.put("overridden1", "domain1");
 		keyValues.put("overridden2", "domain1", "domain2");
 		keyValues.put("overridden3", "domain1", "domain2", "domain3");
-		String value = keyValues.get(asList("domain1", "domain2", "domain3"), resolver);
+		String value = keyValues.get(asList("domain1", "domain2", "domain3"), resolver, null);
 		assertThat(value, is("overridden1"));
 	}
 
