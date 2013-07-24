@@ -107,14 +107,16 @@ public class Roperty {
 	}
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
-		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+		Ensure.notEmpty(key, "key");
+		final String trimmedKey = key.trim();
+		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		T result;
 		if (keyValues == null) {
 			result = defaultValue;
 		} else {
 			result = keyValues.get(domains, resolver, defaultValue);
 		}
-		LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", key, defaultValue, result);
+		LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", trimmedKey, defaultValue, result);
 		return result;
 	}
 
@@ -142,20 +144,22 @@ public class Roperty {
 	}
 
 	public void set(final String key, final Object value, final String description, final String... domains) {
-		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, key, domains);
-		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+		Ensure.notEmpty(key, "key");
+		final String trimmedKey = key.trim();
+		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, trimmedKey, domains);
+		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		if (keyValues == null) {
 			synchronized (keyValuesMap) {
-				keyValues = keyValuesMap.get(key);
+				keyValues = keyValuesMap.get(trimmedKey);
 				if (keyValues == null) {
 					keyValues = keyValuesFactory.create(domainSpecificValueFactory);
 					keyValues.setDescription(description);
-					keyValuesMap.put(key, keyValues);
+					keyValuesMap.put(trimmedKey, keyValues);
 				}
 			}
 		}
 		keyValues.put(value, domains);
-		store(key, keyValues);
+		store(trimmedKey, keyValues);
 	}
 
 	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {

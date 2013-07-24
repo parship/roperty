@@ -51,6 +51,36 @@ public class RopertyTest {
 	private KeyValuesFactory keyValuesFactory = new DefaultKeyValuesFactory();
 	private DomainSpecificValueFactory domainSpecificValueFactory = new DefaultDomainSpecificValueFactory();
 
+	@Test(expected = IllegalArgumentException.class)
+	public void keyMayNotBeNull() {
+		roperty.get(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void keyMayNotBeNullWithDefault() {
+		roperty.getOrDefine(null, "default");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void keyMayNotBeEmpty() {
+		roperty.get("");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void keyMayNotBeEmptyWithDefault() {
+		roperty.getOrDefine("", "default");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void canNotSetValueForNullKey() {
+		roperty.set(null, "value", "descr");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void canNotSetValueForEmptyKey() {
+		roperty.set("", "value", "descr");
+	}
+
 	@Test
 	public void gettingAPropertyThatDoesNotExistGivesNull() {
 		String value = roperty.get("key");
@@ -84,6 +114,12 @@ public class RopertyTest {
 	public void settingAnEmptyString() {
 		roperty.set("key", "", null);
 		assertThat((String)roperty.get("key"), is(""));
+	}
+
+	@Test
+	public void keysAreAlwaysTrimmed() {
+		roperty.set("  key   ", "val", "descr");
+		assertThat((String)roperty.get(" key"), is("val"));
 	}
 
 	@Test
@@ -362,7 +398,7 @@ public class RopertyTest {
 		r.addDomain("domain1").addDomain("domain2");
 		r.set("key", "value", null);
 		r.set("key", "value2", null, "domain1");
-		r.set("otherKey", "otherValue", null);
+		r.set(" otherKey ", "otherValue", null); // keys are always trimmed
 		assertThat(r.dump().toString(), is("Roperty{domains=[domain1, domain2]\n" +
 			"KeyValues for \"otherKey\": KeyValues{\n" +
 			"\tdescription=\"\"\n" +
