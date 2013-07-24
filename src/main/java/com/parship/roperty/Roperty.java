@@ -241,7 +241,8 @@ public class Roperty {
 	}
 
 	public KeyValues KeyValues(final String key) {
-		return keyValuesMap.get(key);
+		Ensure.notEmpty("key", key);
+		return keyValuesMap.get(key.trim());
 	}
 
 	public void setKeyValuesFactory(final KeyValuesFactory keyValuesFactory) {

@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -379,6 +380,12 @@ public class RopertyTest {
 		assertThat(keyValues.getDomainSpecificValues(), hasSize(1));
 		String value = keyValues.get(new ArrayList<String>(), null, null);
 		assertThat(value, is("value"));
+	}
+
+	@Test
+	public void getKeyValuesTrimsTheKey() {
+		r.set("key", "value", null);
+		assertThat(r.KeyValues("  key"), notNullValue());
 	}
 
 	@Test
