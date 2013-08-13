@@ -66,7 +66,7 @@ public class RopertyManager implements RopertyManagerMBean {
 	public String dump(String key) {
 		StringBuilder builder = new StringBuilder();
 		for (Roperty roperty : roperties.keySet()) {
-			KeyValues keyValues = roperty.KeyValues(key);
+			KeyValues keyValues = roperty.getKeyValues(key);
 			if (keyValues != null) {
 				builder.append(keyValues.toString());
 				builder.append("\n\n");

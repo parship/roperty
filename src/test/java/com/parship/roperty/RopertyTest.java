@@ -376,7 +376,7 @@ public class RopertyTest {
 	public void getKeyValues() {
 		String key = "key";
 		r.set(key, "value", null);
-		KeyValues keyValues = r.KeyValues(key);
+		KeyValues keyValues = r.getKeyValues(key);
 		assertThat(keyValues.getDomainSpecificValues(), hasSize(1));
 		String value = keyValues.get(new ArrayList<String>(), null, null);
 		assertThat(value, is("value"));
@@ -385,7 +385,7 @@ public class RopertyTest {
 	@Test
 	public void getKeyValuesTrimsTheKey() {
 		r.set("key", "value", null);
-		assertThat(r.KeyValues("  key"), notNullValue());
+		assertThat(r.getKeyValues("  key"), notNullValue());
 	}
 
 	@Test
@@ -427,5 +427,14 @@ public class RopertyTest {
 		r.dump(new PrintStream(os));
 		String output = os.toString("UTF8");
 		assertThat(output, is("Roperty{domains=[dom1]\nKeyValues for \"key\": KeyValues{\n\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n}\n}\n"));
+	}
+
+	@Test
+	public void iterate() {
+		r.set("key1", "value_1", "desc");
+		Map<String, KeyValues> keyValues = r.getKeyValues();
+		assertThat(keyValues.size(), is(1));
+		assertThat(keyValues.containsKey("key1"), is(true));
+		assertThat(keyValues.get("key1").<String>getDefaultValue(), is("value_1"));
 	}
 }

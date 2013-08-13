@@ -240,7 +240,7 @@ public class Roperty {
 		out.println("\n}");
 	}
 
-	public KeyValues KeyValues(final String key) {
+	public KeyValues getKeyValues(final String key) {
 		Ensure.notEmpty("key", key);
 		return keyValuesMap.get(key.trim());
 	}
@@ -251,5 +251,9 @@ public class Roperty {
 
 	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
+	}
+
+	public Map<String, KeyValues> getKeyValues() {
+		return keyValuesMap;
 	}
 }
