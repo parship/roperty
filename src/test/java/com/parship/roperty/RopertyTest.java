@@ -27,11 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 
 
@@ -49,8 +48,6 @@ public class RopertyTest {
 	};
 	private Roperty r = new Roperty();
 	private RopertyWithResolver roperty = new RopertyWithResolver(r, resolver);
-	private KeyValuesFactory keyValuesFactory = new DefaultKeyValuesFactory();
-	private DomainSpecificValueFactory domainSpecificValueFactory = new DefaultDomainSpecificValueFactory();
 
 	@Test(expected = IllegalArgumentException.class)
 	public void keyMayNotBeNull() {
