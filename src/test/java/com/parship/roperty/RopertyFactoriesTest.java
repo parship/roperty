@@ -61,6 +61,11 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
+			public void reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+				// TODO implement
+			}
+
+			@Override
 			public void store(final String key, final KeyValues keyValues) {
 				stringKeyValuesHashMap.put(key, keyValues);
 			}
@@ -95,6 +100,11 @@ public class RopertyFactoriesTest {
 			@Override
 			public Map<String, KeyValues> loadAll(final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
 				return stringKeyValuesHashMap;
+			}
+
+			@Override
+			public void reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+				// TODO implement
 			}
 
 			@Override

@@ -352,8 +352,9 @@ public class RopertyTest {
 		roperty1.set("key", "value", "descr");
 		assertThat((String)roperty1.get("key", null), is("value"));
 		roperty1.reload();
-		assertThat(roperty1.get("key", null), nullValue());
-		verify(persistenceMock, times(2)).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+		verify(persistenceMock).reload(any(Map.class), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+//		assertThat(roperty1.get("key", null), nullValue());
+//		verify(persistenceMock, times(2)).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 	}
 
 	@Test
