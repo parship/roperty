@@ -217,7 +217,7 @@ public class Roperty {
 
 	public void reload() {
 		if (persistence != null) {
-			persistence.reload(keyValuesMap, keyValuesFactory, domainSpecificValueFactory);
+			keyValuesMap = persistence.reload(keyValuesMap, keyValuesFactory, domainSpecificValueFactory);
 		}
 	}
 

@@ -61,8 +61,8 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
-			public void reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
-				// TODO implement
+			public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+				return keyValuesMap;
 			}
 
 			@Override
@@ -103,8 +103,8 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
-			public void reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
-				// TODO implement
+			public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+				return keyValuesMap;
 			}
 
 			@Override
