@@ -116,7 +116,14 @@ public class Roperty {
 		} else {
 			result = keyValues.get(domains, resolver, defaultValue);
 		}
-		LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", trimmedKey, defaultValue, result);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", trimmedKey, defaultValue, result);
+			StringBuilder builder = new StringBuilder("DomainValues: ");
+			for (String domain : domains) {
+				builder.append(domain).append(" => ").append(resolver.getDomainValue(domain)).append("; ");
+			}
+			LOGGER.debug(builder.toString());
+		}
 		return result;
 	}
 
@@ -153,7 +160,9 @@ public class Roperty {
 				keyValues = keyValuesMap.get(trimmedKey);
 				if (keyValues == null) {
 					keyValues = keyValuesFactory.create(domainSpecificValueFactory);
-					keyValues.setDescription(description);
+					if (description != null && description.trim().length() > 0) {
+						keyValues.setDescription(description);
+					}
 					keyValuesMap.put(trimmedKey, keyValues);
 				}
 			}
@@ -208,7 +217,7 @@ public class Roperty {
 
 	public void reload() {
 		if (persistence != null) {
-			setKeyValuesMap(persistence.loadAll(keyValuesFactory, domainSpecificValueFactory));
+			keyValuesMap = persistence.reload(keyValuesMap, keyValuesFactory, domainSpecificValueFactory);
 		}
 	}
 

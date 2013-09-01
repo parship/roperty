@@ -27,5 +27,12 @@ import java.util.Map;
 public interface Persistence {
 	KeyValues load(final String key, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
 	Map<String, KeyValues> loadAll(KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+
+	/**
+	 * Reload the data from persistence to synchronize changes.
+	 * Reload may change the existing collection and give back a reference to the same collection passed as a parameter or it might create a new map.
+	 * @param keyValuesMap current keyValuesMap with keys already known
+	 */
+	Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
 	void store(final String key, final KeyValues keyValues);
 }
