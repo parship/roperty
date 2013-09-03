@@ -411,7 +411,7 @@ public class RopertyTest {
 			"}\n" +
 			"KeyValues for \"key\": KeyValues{\n" +
 			"\tdescription=\"\"\n" +
-			"\tDomainSpecificValue{pattern=\"domain1\", ordering=3, value=\"value2\"}\n" +
+			"\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\"}\n" +
 			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n" +
 			"}\n" +
 			"}"));

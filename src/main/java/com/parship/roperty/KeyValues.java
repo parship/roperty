@@ -56,11 +56,11 @@ public class KeyValues {
 		int i = 0;
 		for (String domain : domains) {
 			i++;
-			appendSeparatorIfNeeded(builder);
 			if (!"*".equals(domain)) {
 				order = order | (int)Math.pow(2, i);
 			}
 			builder.append(domain);
+			appendSeparatorIfNeeded(builder);
 		}
 		addDomainSpecificValue(builder.toString(), order, value);
 	}
@@ -80,13 +80,13 @@ public class KeyValues {
 	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
-			appendSeparatorIfNeeded(builder);
 			String domainValue = resolver.getDomainValue(domain);
 			if (domainValue == null) {
 				domainValue = "";
 			}
 			Ensure.that(!domainValue.contains("|"), "domainValues can not contain '|'");
 			builder.append(domainValue);
+			appendSeparatorIfNeeded(builder);
 		}
 		return builder.toString();
 	}

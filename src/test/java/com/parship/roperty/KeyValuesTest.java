@@ -66,7 +66,7 @@ public class KeyValuesTest {
 		keyValues.put("text", "domain1", "domain2");
 		assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
 			"\tdescription=\"description\"\n" +
-			"\tDomainSpecificValue{pattern=\"domain1|domain2\", ordering=7, value=\"text\"}\n" +
+			"\tDomainSpecificValue{pattern=\"domain1|domain2|\", ordering=7, value=\"text\"}\n" +
 			"}"));
 	}
 
@@ -109,13 +109,13 @@ public class KeyValuesTest {
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
 		DomainSpecificValue value = iterator.next();
 		assertThat((String)value.getValue(), is("value2"));
-		assertThat(value.getPatternStr(), is("dom1|dom2"));
+		assertThat(value.getPatternStr(), is("dom1|dom2|"));
 		value = iterator.next();
 		assertThat((String)value.getValue(), is("value*"));
-		assertThat(value.getPatternStr(), is("*|dom2"));
+		assertThat(value.getPatternStr(), is("*|dom2|"));
 		value = iterator.next();
 		assertThat((String)value.getValue(), is("value1"));
-		assertThat(value.getPatternStr(), is("dom1"));
+		assertThat(value.getPatternStr(), is("dom1|"));
 	}
 
 	@Test
@@ -181,5 +181,13 @@ public class KeyValuesTest {
 		when(factoryMock.create("", 1, value)).thenReturn(new DomainSpecificValue("", 1, value));
 		keyValues.put(value);
 		verify(factoryMock).create("", 1, value);
+	}
+
+	@Test
+	public void domainsWithTheSamePrefixReturnTheCorrectValue() {
+		keyValues.put("valuePrefix", "dom1", "prefix");
+		keyValues.put("value1", "dom1", "prefixDom2");
+		assertThat(keyValues.<String>get(asList("dom1", "prefix"), resolver, null), is("valuePrefix"));
+		assertThat(keyValues.<String>get(asList("dom1", "prefixDom2"), resolver, null), is("value1"));
 	}
 }
