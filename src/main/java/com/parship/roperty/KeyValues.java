@@ -65,18 +65,6 @@ public class KeyValues {
 		addDomainSpecificValue(builder.toString(), order, value);
 	}
 
-	private void appendSeparatorIfNeeded(final StringBuilder builder) {
-		if (builder.length() > 0) {
-			builder.append("|");
-		}
-	}
-
-	private synchronized void addDomainSpecificValue(final String pattern, final int order, final Object value) {
-		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value);
-		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
-		domainSpecificValues.add(domainSpecificValue);
-	}
-
 	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
@@ -89,6 +77,18 @@ public class KeyValues {
 			appendSeparatorIfNeeded(builder);
 		}
 		return builder.toString();
+	}
+
+	private void appendSeparatorIfNeeded(final StringBuilder builder) {
+		if (builder.length() > 0) {
+			builder.append("|");
+		}
+	}
+
+	private synchronized void addDomainSpecificValue(final String pattern, final int order, final Object value) {
+		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value);
+		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
+		domainSpecificValues.add(domainSpecificValue);
 	}
 
 	@SuppressWarnings("unchecked")
