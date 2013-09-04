@@ -114,7 +114,7 @@ public class Roperty {
 		if (keyValues == null) {
 			result = defaultValue;
 		} else {
-			result = keyValues.get(domains, resolver, defaultValue);
+			result = keyValues.get(domains, defaultValue, resolver);
 		}
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", trimmedKey, defaultValue, result);

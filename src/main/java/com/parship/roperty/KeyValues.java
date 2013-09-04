@@ -92,7 +92,7 @@ public class KeyValues {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(List<String> domains, final DomainResolver resolver, T defaultValue) {
+	public <T> T get(List<String> domains, T defaultValue, final DomainResolver resolver) {
 		Ensure.notNull(domains, "domains");
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue pattern : domainSpecificValues) {

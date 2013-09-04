@@ -72,25 +72,25 @@ public class KeyValuesTest {
 
 	@Test
 	public void gettingFromAnEmptyKeyValuesGivesNull() {
-		assertThat(keyValues.get(asList("dom1"), resolver, null), nullValue());
+		assertThat(keyValues.get(asList("dom1"), null, resolver), nullValue());
 	}
 
 	@Test
 	public void whenNoPatternMatchesTheDefaultValueIsReturned() {
 		keyValues.put("value", "domain");
-		assertThat(keyValues.get(asList("x1"), resolver, "default"), is("default"));
+		assertThat(keyValues.get(asList("x1"), "default", resolver), is("default"));
 	}
 
 	@Test
 	public void whenAPatternMatchesItIsReturnedAndNotTheDefault() {
 		keyValues.put("text");
-		assertThat(keyValues.get(asList("x1"), resolver, "default"), is("text"));
+		assertThat(keyValues.get(asList("x1"), "default", resolver), is("text"));
 	}
 
 	@Test
 	public void whenNoPatternMatchesItIsReturnedAndNotTheDefault() {
 		keyValues.put("text", "domain");
-		assertThat(keyValues.get(asList("domain"), resolver, "default"), is("text"));
+		assertThat(keyValues.get(asList("domain"), "default", resolver), is("text"));
 	}
 
 	@Test
@@ -134,21 +134,21 @@ public class KeyValuesTest {
 	public void getAWildcardOverriddenValueIsReturnedByBestMatch() {
 		keyValues.put("value_1", "*", "*", "domain3");
 		keyValues.put("value_2", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver, null), is("value_2"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value_2"));
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturnedWhenAllDomainsMatch() {
 		keyValues.put("other value", "aaa", "*", "domain3");
 		keyValues.put("value", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), resolver, null), is("value"));
+		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void domainValuesMustNotContainPipe() {
 		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("x1")).thenReturn("abc|def");
-		keyValues.get(asList("x1"), resolverMock, null);
+		keyValues.get(asList("x1"), null, resolverMock);
 	}
 
 	@Test
@@ -161,7 +161,7 @@ public class KeyValuesTest {
 		keyValues.put("overridden1", "domain1");
 		keyValues.put("overridden2", "domain1", "domain2");
 		keyValues.put("overridden3", "domain1", "domain2", "domain3");
-		String value = keyValues.get(asList("domain1", "domain2", "domain3"), resolver, null);
+		String value = keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver);
 		assertThat(value, is("overridden1"));
 	}
 
@@ -187,7 +187,7 @@ public class KeyValuesTest {
 	public void domainsWithTheSamePrefixReturnTheCorrectValue() {
 		keyValues.put("valuePrefix", "dom1", "prefix");
 		keyValues.put("value1", "dom1", "prefixDom2");
-		assertThat(keyValues.<String>get(asList("dom1", "prefix"), resolver, null), is("valuePrefix"));
-		assertThat(keyValues.<String>get(asList("dom1", "prefixDom2"), resolver, null), is("value1"));
+		assertThat(keyValues.<String>get(asList("dom1", "prefix"), null, resolver), is("valuePrefix"));
+		assertThat(keyValues.<String>get(asList("dom1", "prefixDom2"), null, resolver), is("value1"));
 	}
 }
