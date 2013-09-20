@@ -211,7 +211,7 @@ public class RopertyTest {
 	@Test
 	public void whenAKeyForASubdomainIsSetTheRootKeyGetsANullValue() {
 		roperty.set("key", "value", "descr", "subdomain");
-		assertThat((String)roperty.get("key"), nullValue());
+		assertThat(roperty.get("key"), nullValue());
 	}
 
 	@Test
@@ -434,5 +434,16 @@ public class RopertyTest {
 		assertThat(keyValues.size(), is(1));
 		assertThat(keyValues.containsKey("key1"), is(true));
 		assertThat(keyValues.get("key1").<String>getDefaultValue(), is("value_1"));
+	}
+
+	@Test
+	public void domainResolverToNullIsIgnored() {
+		DomainResolver domainResolver = new MapBackedDomainResolver().set("dom", "domVal");
+		r.addDomain("dom").addDomain("dom2").addDomain("dom3");r.get("key", domainResolver);
+		r.set("key", "value", "desc");
+		r.set("key", "valueDom", "desc", "domVal");
+		r.set("key", "valueDom2", "desc", "domVal", "dom2");
+		r.set("key", "valueDom3", "desc", "domVal", "dom2", "dom3");
+		assertThat(r.<String>get("key", domainResolver), is("valueDom"));
 	}
 }

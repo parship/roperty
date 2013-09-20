@@ -28,10 +28,16 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final String patternStr;
 	private final int ordering;
 	private final Object value;
+	private final Matcher matcher;
 
 	public DomainSpecificValue(final String domainPattern, final int order, Object value) {
 		Ensure.notNull(domainPattern, "domainPattern");
 		this.patternStr = domainPattern;
+		if (patternStr.contains("*")) {
+			matcher = new RegexMatcher(patternStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*");
+		} else {
+			matcher = new StringPrefixMatcher(domainPattern);
+		}
 		this.ordering = order;
 		this.value = value;
 	}
@@ -63,18 +69,6 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public boolean matches(final String domainStr) {
-		boolean equals = prefixEquals(patternStr, domainStr);
-		if (!equals && patternStr.contains("*")) {
-			return domainStr.matches(toRegEx(patternStr));
-		}
-		return equals;
-	}
-
-	private boolean prefixEquals(final String patternStr, final String domainStr) {
-		return patternStr.equals(domainStr.substring(0, Math.min(domainStr.length(), patternStr.length())));
-	}
-
-	private String toRegEx(final String domainStr) {
-		return domainStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*";
+		return matcher.matches(domainStr);
 	}
 }
