@@ -25,7 +25,15 @@ import java.util.Map;
  * @since 2013-05-17 13:01
  */
 public interface Persistence {
+	/**
+	 * Load all overridden values for a single key. Is called by Roperty when an unknown key is queried.
+	 */
 	KeyValues load(final String key, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+
+	/**
+	 * Load all values persisted (Preloading). Is called by Roperty when it is started.
+	 * @return A map that is either empty or prefilled with some data.
+	 */
 	Map<String, KeyValues> loadAll(KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
 
 	/**
@@ -34,5 +42,6 @@ public interface Persistence {
 	 * @param keyValuesMap current keyValuesMap with keys already known
 	 */
 	Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+
 	void store(final String key, final KeyValues keyValues);
 }
