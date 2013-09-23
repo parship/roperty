@@ -119,6 +119,14 @@ public class KeyValuesTest {
 	}
 
 	@Test
+	public void wildcardsAlsoMatchNullDomainValues() {
+		DomainResolver resolverMock = mock(DomainResolver.class);
+		when(resolverMock.getDomainValue("dom3")).thenReturn("domVal3");
+		keyValues.put("value", "*", "*", "domVal3");
+		assertThat(keyValues.get(asList("dom1", "dom2", "dom3"), "default", resolverMock), is("value"));
+	}
+
+	@Test
 	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
 		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), nullValue());
 		keyValues.put("val");

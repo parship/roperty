@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public class KeyValues {
 
+	private static final String domainSeparator = "|";
 	private String description;
 	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
 	private DomainSpecificValueFactory domainSpecificValueFactory;
@@ -39,28 +40,27 @@ public class KeyValues {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 
-	public void put(Object value, String... domains) {
-		for (String domain : domains) {
+	public void put(Object value, String... domainValues) {
+		for (String domain : domainValues) {
 			Ensure.notEmpty(domain, "domain");
 		}
-		createAndAddDomainSpecificValue(value, domains);
+		createAndAddDomainSpecificValue(value, domainValues);
 	}
 
-	private void createAndAddDomainSpecificValue(final Object value, final String[] domains) {
+	private void createAndAddDomainSpecificValue(final Object value, final String[] domainValues) {
 		int order = 1;
-		if (domains.length == 0) {
+		if (domainValues.length == 0) {
 			addDomainSpecificValue("", order, value);
 			return;
 		}
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
-		for (String domain : domains) {
+		for (String domain : domainValues) {
 			i++;
 			if (!"*".equals(domain)) {
 				order = order | (int)Math.pow(2, i);
 			}
-			builder.append(domain);
-			appendSeparatorIfNeeded(builder);
+			builder.append(domain).append(domainSeparator);
 		}
 		addDomainSpecificValue(builder.toString(), order, value);
 	}
@@ -72,17 +72,10 @@ public class KeyValues {
 			if (domainValue == null) {
 				domainValue = "";
 			}
-			Ensure.that(!domainValue.contains("|"), "domainValues can not contain '|'");
-			builder.append(domainValue);
-			appendSeparatorIfNeeded(builder);
+			Ensure.that(!domainValue.contains(domainSeparator), "domainValues can not contain '" + domainSeparator + "'");
+			builder.append(domainValue).append(domainSeparator);
 		}
 		return builder.toString();
-	}
-
-	private void appendSeparatorIfNeeded(final StringBuilder builder) {
-		if (builder.length() > 0) {
-			builder.append("|");
-		}
 	}
 
 	private synchronized void addDomainSpecificValue(final String pattern, final int order, final Object value) {
