@@ -69,6 +69,14 @@ public class RopertyFactoriesTest {
 			public void store(final String key, final KeyValues keyValues) {
 				stringKeyValuesHashMap.put(key, keyValues);
 			}
+
+			@Override
+			public void remove(final String key, final KeyValues keyValues) {
+			}
+
+			@Override
+			public void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+			}
 		}, new DomainInitializer() {
 			@Override
 			public CopyOnWriteArrayList<String> getInitialDomains() {
@@ -110,6 +118,14 @@ public class RopertyFactoriesTest {
 			@Override
 			public void store(final String key, final KeyValues keyValues) {
 				stringKeyValuesHashMap.put(key, keyValues);
+			}
+
+			@Override
+			public void remove(final String key, final KeyValues keyValues) {
+			}
+
+			@Override
+			public void remove(final String key, final DomainSpecificValue domainSpecificValue) {
 			}
 		}, new FactoryProvider() {
 			@Override

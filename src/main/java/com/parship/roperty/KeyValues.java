@@ -137,16 +137,19 @@ public class KeyValues {
 		return get(emptyList, null, null);
 	}
 
-	public void remove(final String[] domainValues) {
+	public DomainSpecificValue remove(final String[] domainValues) {
 		StringBuilder builder = new StringBuilder();
 		for (String domainValue : domainValues) {
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
-			if (builder.toString().equals(iterator.next().getPatternStr())) {
+			DomainSpecificValue value = iterator.next();
+			if (value.changeSetIs(null) && builder.toString().equals(value.getPatternStr())) {
 				iterator.remove();
+				return value;
 			}
 		}
+		return null;
 	}
 }

@@ -74,10 +74,10 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 				else
 					return patternStr.compareTo(other.patternStr);
 			}
-			if (changeSet != null && other.changeSet == null) {
+			if (changeSet != null) { // other.changeSet is null here
 				return -1;
 			}
-			if (changeSet == null && other.changeSet != null) {
+			if (other.changeSet != null) { // changeSet is null here
 				return 1;
 			}
 			return patternStr.compareTo(other.patternStr);
@@ -116,5 +116,10 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		if (changeSet == null)
 			return true;
 		return activeChangeSets.contains(changeSet);
+	}
+
+	public boolean changeSetIs(final String changeSet) {
+		return ((this.changeSet == null && changeSet == null)
+			|| (this.changeSet != null && this.changeSet.equals(changeSet)));
 	}
 }

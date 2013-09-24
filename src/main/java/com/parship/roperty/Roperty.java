@@ -110,8 +110,7 @@ public class Roperty {
 	}
 
 	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
-		Ensure.notEmpty(key, "key");
-		final String trimmedKey = key.trim();
+		final String trimmedKey = trimKey(key);
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		T result;
 		if (keyValues == null) {
@@ -128,6 +127,11 @@ public class Roperty {
 			LOGGER.debug(builder.toString());
 		}
 		return result;
+	}
+
+	private String trimKey(final String key) {
+		Ensure.notEmpty(key, "key");
+		return key.trim();
 	}
 
 	public <T> T get(final String key, DomainResolver resolver) {
@@ -154,8 +158,7 @@ public class Roperty {
 	}
 
 	public void set(final String key, final Object value, final String description, final String... domains) {
-		Ensure.notEmpty(key, "key");
-		final String trimmedKey = key.trim();
+		final String trimmedKey = trimKey(key);
 		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, trimmedKey, domains);
 		KeyValues keyValues = getOrCreateKeyValues(description, trimmedKey);
 		keyValues.put(value, domains);
@@ -163,8 +166,7 @@ public class Roperty {
 	}
 
 	public void setWithChangeSet(final String key, final Object value, final String description, String changeSet, final String... domains) {
-		Ensure.notEmpty(key, "key");
-		final String trimmedKey = key.trim();
+		final String trimmedKey = trimKey(key);
 		LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet, domains);
 		KeyValues keyValues = getOrCreateKeyValues(description, trimmedKey);
 		keyValues.putWithChangeSet(changeSet, value, domains);
@@ -219,6 +221,18 @@ public class Roperty {
 		}
 	}
 
+	private void remove(final String key, final KeyValues keyValues) {
+		if (persistence != null) {
+			persistence.remove(key, keyValues);
+		}
+	}
+
+	private void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+		if (persistence != null) {
+			persistence.remove(key, domainSpecificValue);
+		}
+	}
+
 	public void setKeyValuesMap(final Map<String, KeyValues> keyValuesMap) {
 		Ensure.notNull(keyValuesMap, "keyValuesMap");
 		synchronized (keyValuesMap) {
@@ -240,8 +254,7 @@ public class Roperty {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains).append("}");
-		return builder.toString();
+		return "Roperty{domains=" + domains + "}";
 	}
 
 	public StringBuilder dump() {
@@ -284,9 +297,15 @@ public class Roperty {
 	}
 
 	public void remove(final String key, final String... domainValues) {
-		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+		final String trimmedKey = trimKey(key);
+		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		if (keyValues != null) {
-			keyValues.remove(domainValues);
+			remove(trimmedKey, keyValues.remove(domainValues));
 		}
+	}
+
+	public void removeKey(final String key) {
+		final String trimmedKey = trimKey(key);
+		remove(trimmedKey, keyValuesMap.remove(trimmedKey));
 	}
 }

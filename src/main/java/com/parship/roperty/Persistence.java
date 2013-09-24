@@ -44,4 +44,8 @@ public interface Persistence {
 	Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
 
 	void store(final String key, final KeyValues keyValues);
+
+	void remove(String key, KeyValues keyValues);
+
+	void remove(String key, DomainSpecificValue domainSpecificValue);
 }

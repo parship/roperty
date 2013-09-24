@@ -61,4 +61,18 @@ public class DomainSpecificValueTest {
 		assertThat(dsv_A.compareTo(dsv_B), greaterThan(0));
 		assertThat(dsv_B.compareTo(dsv_A), lessThan(0));
 	}
+
+	@Test
+	public void changeSetIs() {
+		DomainSpecificValue dsv = new DomainSpecificValue("p", 4, "val", "changeSet");
+		assertThat(dsv.changeSetIs("changeSet"), is(true));
+		assertThat(dsv.changeSetIs("other"), is(false));
+	}
+
+	@Test
+	public void changeSetIsWithoutChangeSet() {
+		DomainSpecificValue dsv = new DomainSpecificValue("p", 4, "val");
+		assertThat(dsv.changeSetIs(null), is(true));
+		assertThat(dsv.changeSetIs("other"), is(false));
+	}
 }
