@@ -20,6 +20,7 @@ package com.parship.roperty;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 
 
@@ -34,6 +35,14 @@ public class MapBackedDomainResolverTest {
 	@Test
 	public void setAndGetDomainValues() {
 		assertThat(resolver.getDomainValue("dom1"), is("val1"));
+	}
+
+	@Test
+	public void setAndGetActiveChangeSets() {
+		resolver.addActiveChangeSets("CS1", "CS2");
+		assertThat(resolver.getActiveChangeSets(), containsInAnyOrder("CS1", "CS2"));
+		resolver.addActiveChangeSets("CS3");
+		assertThat(resolver.getActiveChangeSets(), containsInAnyOrder("CS1", "CS2", "CS3"));
 	}
 
 	@Test
