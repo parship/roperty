@@ -17,6 +17,9 @@
 
 package com.parship.roperty;
 
+import java.util.Collection;
+
+
 /**
  * Callback interface to resolve values for the different domains for the current query to Roperty.
  * Passed as a paramter to Roperty.get-methods this interface is called for each domain configured
@@ -33,4 +36,6 @@ public interface DomainResolver {
 	 * @return The value for the domain or null, when the domain should be ignored
 	 */
 	String getDomainValue(String domain);
+
+	Collection<String> getActiveChangeSets();
 }

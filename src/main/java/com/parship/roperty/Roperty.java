@@ -154,6 +154,21 @@ public class Roperty {
 		Ensure.notEmpty(key, "key");
 		final String trimmedKey = key.trim();
 		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, trimmedKey, domains);
+		KeyValues keyValues = getOrCreateKeyValues(description, trimmedKey);
+		keyValues.put(value, domains);
+		store(trimmedKey, keyValues);
+	}
+
+	public void setWithChangeSet(final String key, final Object value, final String description, String changeSet, final String... domains) {
+		Ensure.notEmpty(key, "key");
+		final String trimmedKey = key.trim();
+		LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet, domains);
+		KeyValues keyValues = getOrCreateKeyValues(description, trimmedKey);
+		keyValues.putWithChangeSet(changeSet, value, domains);
+		store(trimmedKey, keyValues);
+	}
+
+	private KeyValues getOrCreateKeyValues(final String description, final String trimmedKey) {
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		if (keyValues == null) {
 			synchronized (keyValuesMap) {
@@ -167,8 +182,7 @@ public class Roperty {
 				}
 			}
 		}
-		keyValues.put(value, domains);
-		store(trimmedKey, keyValues);
+		return keyValues;
 	}
 
 	private KeyValues getKeyValuesFromMapOrPersistence(final String key) {

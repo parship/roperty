@@ -24,7 +24,7 @@ package com.parship.roperty;
 public class DefaultDomainSpecificValueFactory implements DomainSpecificValueFactory {
 
 	@Override
-	public DomainSpecificValue create(final String domainPattern, final int order, final Object value) {
-		return new DomainSpecificValue(domainPattern, order, value);
+	public DomainSpecificValue create(final String domainPattern, final int order, final Object value, String changeSet) {
+		return new DomainSpecificValue(domainPattern, order, value, changeSet);
 	}
 }

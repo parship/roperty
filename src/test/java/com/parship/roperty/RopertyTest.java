@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +45,11 @@ public class RopertyTest {
 		@Override
 		public String getDomainValue(final String domain) {
 			return domain;
+		}
+
+		@Override
+		public Collection<String> getActiveChangeSets() {
+			return new ArrayList<>();
 		}
 	};
 	private Roperty r = new Roperty();
@@ -263,6 +269,7 @@ public class RopertyTest {
 		roperty.get("key");
 		verify(mockResolver).getDomainValue("domain1");
 		verify(mockResolver).getDomainValue("domain2");
+		verify(mockResolver).getActiveChangeSets();
 		verifyNoMoreInteractions(mockResolver);
 	}
 

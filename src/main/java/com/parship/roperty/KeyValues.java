@@ -40,29 +40,15 @@ public class KeyValues {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 
-	public void put(Object value, String... domainValues) {
+	public DomainSpecificValue put(Object value, String... domainValues) {
+		return putWithChangeSet(null, value, domainValues);
+	}
+
+	public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainValues) {
 		for (String domain : domainValues) {
 			Ensure.notEmpty(domain, "domain");
 		}
-		createAndAddDomainSpecificValue(value, domainValues);
-	}
-
-	private void createAndAddDomainSpecificValue(final Object value, final String[] domainValues) {
-		int order = 1;
-		if (domainValues.length == 0) {
-			addDomainSpecificValue("", order, value);
-			return;
-		}
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
-		for (String domain : domainValues) {
-			i++;
-			if (!"*".equals(domain)) {
-				order = order | (int)Math.pow(2, i);
-			}
-			builder.append(domain).append(domainSeparator);
-		}
-		addDomainSpecificValue(builder.toString(), order, value);
+		return createAndAddDomainSpecificValue(value, domainValues, changeSet);
 	}
 
 	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
@@ -78,19 +64,37 @@ public class KeyValues {
 		return builder.toString();
 	}
 
-	private synchronized void addDomainSpecificValue(final String pattern, final int order, final Object value) {
-		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value);
+	private DomainSpecificValue createAndAddDomainSpecificValue(final Object value, final String[] domainValues, String changeSet) {
+		int order = 1;
+		if (domainValues.length == 0) {
+			return addDomainSpecificValue("", order, value, changeSet);
+		}
+		StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for (String domain : domainValues) {
+			i++;
+			if (!"*".equals(domain)) {
+				order = order | (int)Math.pow(2, i);
+			}
+			builder.append(domain).append(domainSeparator);
+		}
+		return addDomainSpecificValue(builder.toString(), order, value, changeSet);
+	}
+
+	private synchronized DomainSpecificValue addDomainSpecificValue(final String pattern, final int order, final Object value, String changeSet) {
+		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value, changeSet);
 		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
 		domainSpecificValues.add(domainSpecificValue);
+		return domainSpecificValue;
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T get(List<String> domains, T defaultValue, final DomainResolver resolver) {
 		Ensure.notNull(domains, "domains");
 		String domainStr = buildDomain(domains, resolver);
-		for (DomainSpecificValue pattern : domainSpecificValues) {
-			if (pattern.matches(domainStr)) {
-				return (T)pattern.getValue();
+		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
+			if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(domainStr)) {
+				return (T)domainSpecificValue.getValue();
 			}
 		}
 		return defaultValue;

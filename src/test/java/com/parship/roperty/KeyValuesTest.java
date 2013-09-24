@@ -20,6 +20,8 @@ package com.parship.roperty;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -29,9 +31,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 /**
@@ -45,6 +45,11 @@ public class KeyValuesTest {
 		@Override
 		public String getDomainValue(final String domain) {
 			return domain;
+		}
+
+		@Override
+		public Collection<String> getActiveChangeSets() {
+			return new ArrayList<>();
 		}
 	};
 
@@ -186,9 +191,9 @@ public class KeyValuesTest {
 		DefaultDomainSpecificValueFactory factoryMock = mock(DefaultDomainSpecificValueFactory.class);
 		keyValues.setDomainSpecificValueFactory(factoryMock);
 		String value = "value";
-		when(factoryMock.create("", 1, value)).thenReturn(new DomainSpecificValue("", 1, value));
+		when(factoryMock.create("", 1, value, null)).thenReturn(new DomainSpecificValue("", 1, value));
 		keyValues.put(value);
-		verify(factoryMock).create("", 1, value);
+		verify(factoryMock).create("", 1, value, null);
 	}
 
 	@Test

@@ -19,6 +19,8 @@ package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
 
+import java.util.Collection;
+
 
 /**
  * @author mfinsterwalder
@@ -29,6 +31,12 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final int ordering;
 	private final Object value;
 	private final Matcher matcher;
+	private String changeSet;
+
+	public DomainSpecificValue(final String domainPattern, final int order, Object value, String changeSet) {
+		this(domainPattern, order, value);
+		this.changeSet = changeSet;
+	}
 
 	public DomainSpecificValue(final String domainPattern, final int order, Object value) {
 		Ensure.notNull(domainPattern, "domainPattern");
@@ -42,10 +50,26 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		this.value = value;
 	}
 
+	/**
+	 * Sort DomainSpecificValue in reverse order as specified by ordering, changeSet and patternStr.
+	 */
 	@Override
 	public int compareTo(final DomainSpecificValue other) {
 		int order = other.ordering - this.ordering;
 		if (order == 0) {
+			if (changeSet != null && other.changeSet != null) {
+				int changeSetCompare = other.changeSet.compareTo(changeSet);
+				if (changeSetCompare != 0)
+					return changeSetCompare;
+				else
+					return patternStr.compareTo(other.patternStr);
+			}
+			if (changeSet != null && other.changeSet == null) {
+				return -1;
+			}
+			if (changeSet == null && other.changeSet != null) {
+				return 1;
+			}
 			return patternStr.compareTo(other.patternStr);
 		}
 		return order;
@@ -56,6 +80,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		return "DomainSpecificValue{" +
 			"pattern=\"" + patternStr +
 			"\", ordering=" + ordering +
+			(changeSet != null ? ", changeSet=\"" + changeSet + "\"" : "") +
 			", value=\"" + value +
 			"\"}";
 	}
@@ -70,5 +95,16 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
 	public boolean matches(final String domainStr) {
 		return matcher.matches(domainStr);
+	}
+
+	public void setChangeSet(final String changeSet) {
+		Ensure.notNull(changeSet, "changeSet");
+		this.changeSet = changeSet;
+	}
+
+	public boolean isInChangeSets(final Collection<String> activeChangeSets) {
+		if (changeSet == null)
+			return true;
+		return activeChangeSets.contains(changeSet);
 	}
 }

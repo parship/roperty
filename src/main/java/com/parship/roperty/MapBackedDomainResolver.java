@@ -17,8 +17,11 @@
 
 package com.parship.roperty;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -28,10 +31,17 @@ import java.util.Map;
 public class MapBackedDomainResolver implements DomainResolver {
 
 	private Map<String, String> map = new HashMap<>();
+	private Set<String> activeChangeSets = new HashSet<>();
+	private static final String[] TYPE_PARAMETER = new String[0];
 
 	@Override
 	public String getDomainValue(final String domain) {
 		return map.get(domain);
+	}
+
+	@Override
+	public Collection<String> getActiveChangeSets() {
+		return activeChangeSets;
 	}
 
 	public MapBackedDomainResolver set(final String domain, final String domainValue) {
@@ -83,6 +93,4 @@ public class MapBackedDomainResolver implements DomainResolver {
 			return false;
 		return true;
 	}
-	
-	
 }
