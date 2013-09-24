@@ -282,4 +282,11 @@ public class Roperty {
 	public Map<String, KeyValues> getKeyValues() {
 		return keyValuesMap;
 	}
+
+	public void remove(final String key, final String... domainValues) {
+		KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+		if (keyValues != null) {
+			keyValues.remove(domainValues);
+		}
+	}
 }

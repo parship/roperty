@@ -20,6 +20,7 @@ package com.parship.roperty;
 import com.parship.commons.util.Ensure;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -75,12 +76,12 @@ public class KeyValues {
 		}
 		StringBuilder builder = new StringBuilder();
 		int i = 0;
-		for (String domain : domainValues) {
+		for (String domainValue : domainValues) {
 			i++;
-			if (!"*".equals(domain)) {
+			if (!"*".equals(domainValue)) {
 				order = order | (int)Math.pow(2, i);
 			}
-			builder.append(domain).append(DOMAIN_SEPARATOR);
+			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		return addDomainSpecificValue(builder.toString(), order, value, changeSet);
 	}
@@ -134,5 +135,18 @@ public class KeyValues {
 	public <T> T getDefaultValue() {
 		List<String> emptyList = Collections.emptyList();
 		return get(emptyList, null, null);
+	}
+
+	public void remove(final String[] domainValues) {
+		StringBuilder builder = new StringBuilder();
+		for (String domainValue : domainValues) {
+			builder.append(domainValue).append(DOMAIN_SEPARATOR);
+		}
+		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
+		while(iterator.hasNext()) {
+			if (builder.toString().equals(iterator.next().getPatternStr())) {
+				iterator.remove();
+			}
+		}
 	}
 }

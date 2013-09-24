@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
@@ -452,5 +453,30 @@ public class RopertyTest {
 		r.set("key", "valueDom2", "desc", "domVal", "dom2");
 		r.set("key", "valueDom3", "desc", "domVal", "dom2", "dom3");
 		assertThat(r.<String>get("key", domainResolver), is("valueDom"));
+	}
+
+	@Test
+	public void removeDefaultValue() {
+		r.addDomain("dom1");
+		r.set("key", "value", "desc");
+		r.set("key", "domValue", "desc", "dom1");
+
+		r.remove("key");
+
+		assertThat(r.get("key", mock(DomainResolver.class)), nullValue());
+		assertThat(roperty.<String>get("key"), is("domValue"));
+	}
+
+	@Test
+	public void removeDomainSpecificValue() {
+		r.addDomain("dom1").addDomain("dom2");
+		r.set("key", "value", "desc");
+		r.set("key", "domValue1", "desc", "dom1");
+		r.set("key", "domValue2", "desc", "dom1", "dom2");
+
+		r.remove("key", "dom1");
+
+		assertThat(r.<String>get("key", mock(DomainResolver.class)), is("value"));
+		assertThat(roperty.<String>get("key"), is("domValue2"));
 	}
 }
