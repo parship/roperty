@@ -525,14 +525,18 @@ public class RopertyTest {
 
 	@Test
 	public void removeAChangeSet() {
-		r.set("key", "value", "descr");
-		r.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
-		r.setWithChangeSet("otherKey", "otherValueChangeSet", "descr", "changeSet");
+		Persistence persistenceMock = mock(Persistence.class);
+		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		ropertyWithPersistence.set("key", "value", "descr");
+		ropertyWithPersistence.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
+		ropertyWithPersistence.setWithChangeSet("otherKey", "otherValueChangeSet", "descr", "changeSet");
 		DomainResolver resolver = new MapBackedDomainResolver().addActiveChangeSets("changeSet");
-		assertThat(r.<String>get("key", resolver), is("valueChangeSet"));
-		assertThat(r.<String>get("otherKey", resolver), is("otherValueChangeSet"));
-		r.removeChangeSet("changeSet");
-		assertThat(r.<String>get("key", resolver), is("value"));
-		assertThat(r.<String>get("otherKey", resolver), nullValue());
+		assertThat(ropertyWithPersistence.<String>get("key", resolver), is("valueChangeSet"));
+		assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), is("otherValueChangeSet"));
+		ropertyWithPersistence.removeChangeSet("changeSet");
+		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class));
+		verify(persistenceMock).remove(eq("otherKey"), any(DomainSpecificValue.class));
+		assertThat(ropertyWithPersistence.<String>get("key", resolver), is("value"));
+		assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), nullValue());
 	}
 }

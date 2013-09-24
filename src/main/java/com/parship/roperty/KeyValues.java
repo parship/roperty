@@ -19,6 +19,8 @@ package com.parship.roperty;
 
 import com.parship.commons.util.Ensure;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -153,13 +155,16 @@ public class KeyValues {
 		return null;
 	}
 
-	public void removeChangeSet(final String changeSet) {
+	public Collection<DomainSpecificValue> removeChangeSet(final String changeSet) {
+		Collection<DomainSpecificValue> removedValues = new ArrayList<>();
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
 			DomainSpecificValue value = iterator.next();
 			if (value.changeSetIs(changeSet)) {
+				removedValues.add(value);
 				iterator.remove();
 			}
 		}
+		return removedValues;
 	}
 }

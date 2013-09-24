@@ -331,7 +331,9 @@ public class Roperty {
 		for (String key : changeSets.get(changeSet)) {
 			KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 			if (keyValues != null) {
-				keyValues.removeChangeSet(changeSet);
+				for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
+					remove(key, value);
+				}
 			}
 		}
 	}
