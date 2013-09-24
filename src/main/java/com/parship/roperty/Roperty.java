@@ -71,9 +71,7 @@ public class Roperty {
 
 	private void initDomains(final String[] domains) {
 		this.domains = new CopyOnWriteArrayList<>();
-		for (String domain : domains) {
-			addDomain(domain);
-		}
+		addDomains(domains);
 	}
 
 	public Roperty(final Persistence persistence, final String... domains) {
@@ -151,9 +149,12 @@ public class Roperty {
 		return defaultValue;
 	}
 
-	public Roperty addDomain(final String domain) {
-		Ensure.notEmpty(domain, "domain");
-		domains.add(domain);
+	public Roperty addDomains(final String... domains) {
+		Ensure.notNull(domains, "domains");
+		for (String domain : domains) {
+			Ensure.notEmpty(domain, "domain");
+			this.domains.add(domain);
+		}
 		return this;
 	}
 
@@ -296,12 +297,16 @@ public class Roperty {
 		return keyValuesMap;
 	}
 
-	public void remove(final String key, final String... domainValues) {
+	public void removeWithChangeSet(final String key, final String changeSet, final String... domainValues) {
 		final String trimmedKey = trimKey(key);
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		if (keyValues != null) {
-			remove(trimmedKey, keyValues.remove(domainValues));
+			remove(trimmedKey, keyValues.remove(changeSet, domainValues));
 		}
+	}
+
+	public void remove(final String key, final String... domainValues) {
+		removeWithChangeSet(key, null, domainValues);
 	}
 
 	public void removeKey(final String key) {

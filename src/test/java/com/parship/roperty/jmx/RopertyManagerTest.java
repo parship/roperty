@@ -98,8 +98,8 @@ public class RopertyManagerTest {
 
 	@Test
 	public void listRoperties() {
-		Roperty r1 = new Roperty().addDomain("dom1");
-		Roperty r2 = new Roperty().addDomain("dom2");
+		Roperty r1 = new Roperty().addDomains("dom1");
+		Roperty r2 = new Roperty().addDomains("dom2");
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
 	}

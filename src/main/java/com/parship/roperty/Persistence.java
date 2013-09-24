@@ -45,7 +45,17 @@ public interface Persistence {
 
 	void store(final String key, final KeyValues keyValues);
 
+	/**
+	 * Remove a complete key from persistence.
+	 * @param key the key to remove
+	 * @param keyValues the KeyValues object roperty knows about or null, when unknown
+	 */
 	void remove(String key, KeyValues keyValues);
 
+	/**
+	 * Remove a DomainSpecificValue from persistence.
+	 * @param key the key for which to remove the overwritten value
+	 * @param domainSpecificValue the DomainSpecificValue to remove
+	 */
 	void remove(String key, DomainSpecificValue domainSpecificValue);
 }

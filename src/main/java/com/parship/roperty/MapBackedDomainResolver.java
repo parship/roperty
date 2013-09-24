@@ -49,8 +49,9 @@ public class MapBackedDomainResolver implements DomainResolver {
 		return this;
 	}
 
-	public void addActiveChangeSets(final String... changeSets) {
+	public MapBackedDomainResolver addActiveChangeSets(final String... changeSets) {
 		activeChangeSets.addAll(Arrays.asList(changeSets));
+		return this;
 	}
 
 	private void dumpMap(StringBuilder sb) {

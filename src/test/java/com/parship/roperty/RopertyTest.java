@@ -195,17 +195,17 @@ public class RopertyTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullDomainsAreNotAllowed() {
-		r.addDomain(null);
+		r.addDomains(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void emptyDomainsAreNotAllowed() {
-		r.addDomain("");
+		r.addDomains("");
 	}
 
 	@Test
 	public void getOverriddenValue() {
-		r.addDomain("domain1");
+		r.addDomains("domain1");
 		roperty = new RopertyWithResolver(r, resolver);
 		String defaultValue = "default value";
 		String overriddenValue = "overridden value";
@@ -223,7 +223,7 @@ public class RopertyTest {
 
 	@Test
 	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist() {
-		r.addDomain("domain1");
+		r.addDomains("domain1");
 		roperty = new RopertyWithResolver(r, resolver);
 		String overriddenValue = "overridden value";
 		roperty.set("key", "other value", null, "other");
@@ -235,7 +235,7 @@ public class RopertyTest {
 
 	@Test
 	public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
-		r.addDomain("domain1").addDomain("domain2");
+		r.addDomains("domain1", "domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
 		when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
 		when(mockResolver.getDomainValue("domain2")).thenReturn("domVal2");
@@ -251,7 +251,7 @@ public class RopertyTest {
 
 	@Test
 	public void getOverriddenValueTwoDomainsOnlyFirstDomainIsOverridden() {
-		r.addDomain("domain1").addDomain("domain2");
+		r.addDomains("domain1", "domain2");
 		roperty = new RopertyWithResolver(r, resolver);
 		String defaultValue = "default value";
 		String overriddenValue1 = "overridden value domain1";
@@ -263,7 +263,7 @@ public class RopertyTest {
 
 	@Test
 	public void domainValuesAreRequestedFromAResolver() {
-		roperty.getRoperty().addDomain("domain1").addDomain("domain2");
+		roperty.getRoperty().addDomains("domain1", "domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
 		roperty = new RopertyWithResolver(r, mockResolver);
 		roperty.set("key", "value", null);
@@ -276,7 +276,7 @@ public class RopertyTest {
 
 	@Test
 	public void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
-		r.addDomain("domain1").addDomain("domain2");
+		r.addDomains("domain1", "domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
 		roperty = new RopertyWithResolver(r, mockResolver);
 		roperty.get("key");
@@ -285,7 +285,7 @@ public class RopertyTest {
 
 	@Test
 	public void wildcardIsResolvedWhenOtherDomainsMatch() {
-		r.addDomain("domain1").addDomain("domain2");
+		r.addDomains("domain1", "domain2");
 		roperty = new RopertyWithResolver(r, resolver);
 		String value = "overridden value";
 		roperty.set("key", value, null, "*", "domain2");
@@ -402,13 +402,13 @@ public class RopertyTest {
 	@Test
 	public void toStringEmptyRoperty() {
 		assertThat(r.dump().toString(), is("Roperty{domains=[]\n}"));
-		r.addDomain("domain");
+		r.addDomains("domain");
 		assertThat(r.dump().toString(), is("Roperty{domains=[domain]\n}"));
 	}
 
 	@Test
 	public void toStringFilledRoperty() {
-		r.addDomain("domain1").addDomain("domain2");
+		r.addDomains("domain1", "domain2");
 		r.set("key", "value", null);
 		r.set("key", "value2", null, "domain1");
 		r.set(" otherKey ", "otherValue", null); // keys are always trimmed
@@ -427,7 +427,7 @@ public class RopertyTest {
 
 	@Test
 	public void dumpToStdout() throws UnsupportedEncodingException {
-		r.addDomain("dom1");
+		r.addDomains("dom1");
 		r.set("key", "value", "descr");
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		r.dump(new PrintStream(os));
@@ -447,7 +447,7 @@ public class RopertyTest {
 	@Test
 	public void domainResolverToNullIsIgnored() {
 		DomainResolver domainResolver = new MapBackedDomainResolver().set("dom", "domVal");
-		r.addDomain("dom").addDomain("dom2").addDomain("dom3");r.get("key", domainResolver);
+		r.addDomains("dom", "dom2", "dom3");r.get("key", domainResolver);
 		r.set("key", "value", "desc");
 		r.set("key", "valueDom", "desc", "domVal");
 		r.set("key", "valueDom2", "desc", "domVal", "dom2");
@@ -459,7 +459,7 @@ public class RopertyTest {
 	public void removeDefaultValue() {
 		Persistence persistenceMock = mock(Persistence.class);
 		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
-		ropertyWithPersistence.addDomain("dom1");
+		ropertyWithPersistence.addDomains("dom1");
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue", "desc", "dom1");
 
@@ -474,7 +474,7 @@ public class RopertyTest {
 	public void removeDomainSpecificValue() {
 		Persistence persistenceMock = mock(Persistence.class);
 		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
-		ropertyWithPersistence.addDomain("dom1").addDomain("dom2");
+		ropertyWithPersistence.addDomains("dom1", "dom2");
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
 		ropertyWithPersistence.set("key", "domValue2", "desc", "dom1", "dom2");
@@ -511,5 +511,15 @@ public class RopertyTest {
 		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
 		ropertyWithPersistence.removeKey("key");
 		verify(persistenceMock).remove("key", (KeyValues) null);
+	}
+
+	@Test
+	public void removeKeyFromChangeSet() {
+		r.set("key", "value", "descr");
+		r.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
+		DomainResolver resolver = new MapBackedDomainResolver().addActiveChangeSets("changeSet");
+		assertThat(r.<String>get("key", resolver), is("valueChangeSet"));
+		r.removeWithChangeSet("key", "changeSet");
+		assertThat(r.<String>get("key", resolver), is("value"));
 	}
 }

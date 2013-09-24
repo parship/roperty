@@ -137,7 +137,7 @@ public class KeyValues {
 		return get(emptyList, null, null);
 	}
 
-	public DomainSpecificValue remove(final String[] domainValues) {
+	public DomainSpecificValue remove(final String changeSet, final String[] domainValues) {
 		StringBuilder builder = new StringBuilder();
 		for (String domainValue : domainValues) {
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
@@ -145,7 +145,7 @@ public class KeyValues {
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
 			DomainSpecificValue value = iterator.next();
-			if (value.changeSetIs(null) && builder.toString().equals(value.getPatternStr())) {
+			if (value.changeSetIs(changeSet) && builder.toString().equals(value.getPatternStr())) {
 				iterator.remove();
 				return value;
 			}
