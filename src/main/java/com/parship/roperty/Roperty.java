@@ -30,6 +30,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
+ * The central class to access Roperty.
+ * Manages domains and key-to-value mappings.
+ *
  * @author mfinsterwalder
  * @since 2013-03-25 08:07
  */

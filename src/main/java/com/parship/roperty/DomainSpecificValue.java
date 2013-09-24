@@ -23,6 +23,12 @@ import java.util.Collection;
 
 
 /**
+ * Defines a value overridden for a specific domain.
+ * DomainSpecificValues are ordered according to the Roperty precedence rules for resolution of domain values.
+ * DomainSpecificValues can belong to a changeSet, which allows temporary changes which take precedence, when
+ * the changeSet is active and are ignored, when the changeSet is not active.
+ * ChangeSets are activated by the DomainResolver.
+ *
  * @author mfinsterwalder
  * @since 2013-04-09 18:20
  */
@@ -52,6 +58,10 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
 	/**
 	 * Sort DomainSpecificValue in reverse order as specified by ordering, changeSet and patternStr.
+	 * This ordering defines the order of resolution that Roperty uses when a key is accessed.
+	 * Values with a changeSet are ordered before values without a changeSet.
+	 * Values with a changeSet are ordered alphabetically with other changeSets.
+	 * Values with the same ordering (and changeSet) are ordered by patternStr, just to define a consistent ordering.
 	 */
 	@Override
 	public int compareTo(final DomainSpecificValue other) {

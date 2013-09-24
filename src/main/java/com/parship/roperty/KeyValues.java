@@ -26,12 +26,16 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 
 /**
+ * A collection of domain specifically overridden values for a single key.
+ * The different DomainSpecificValues are queried according to their ordering and changeSet.
+ * @see DomainSpecificValue
+ *
  * @author mfinsterwalder
  * @since 2013-03-26 09:18
  */
 public class KeyValues {
 
-	private static final String domainSeparator = "|";
+	private static final String DOMAIN_SEPARATOR = "|";
 	private String description;
 	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
 	private DomainSpecificValueFactory domainSpecificValueFactory;
@@ -58,8 +62,8 @@ public class KeyValues {
 			if (domainValue == null) {
 				domainValue = "";
 			}
-			Ensure.that(!domainValue.contains(domainSeparator), "domainValues can not contain '" + domainSeparator + "'");
-			builder.append(domainValue).append(domainSeparator);
+			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + "'");
+			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		return builder.toString();
 	}
@@ -76,7 +80,7 @@ public class KeyValues {
 			if (!"*".equals(domain)) {
 				order = order | (int)Math.pow(2, i);
 			}
-			builder.append(domain).append(domainSeparator);
+			builder.append(domain).append(DOMAIN_SEPARATOR);
 		}
 		return addDomainSpecificValue(builder.toString(), order, value, changeSet);
 	}
