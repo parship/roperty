@@ -522,4 +522,17 @@ public class RopertyTest {
 		r.removeWithChangeSet("key", "changeSet");
 		assertThat(r.<String>get("key", resolver), is("value"));
 	}
+
+	@Test
+	public void removeAChangeSet() {
+		r.set("key", "value", "descr");
+		r.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
+		r.setWithChangeSet("otherKey", "otherValueChangeSet", "descr", "changeSet");
+		DomainResolver resolver = new MapBackedDomainResolver().addActiveChangeSets("changeSet");
+		assertThat(r.<String>get("key", resolver), is("valueChangeSet"));
+		assertThat(r.<String>get("otherKey", resolver), is("otherValueChangeSet"));
+		r.removeChangeSet("changeSet");
+		assertThat(r.<String>get("key", resolver), is("value"));
+		assertThat(r.<String>get("otherKey", resolver), nullValue());
+	}
 }

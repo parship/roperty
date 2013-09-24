@@ -23,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,7 @@ public class Roperty {
 	private Persistence persistence;
 	private KeyValuesFactory keyValuesFactory;
 	private DomainSpecificValueFactory domainSpecificValueFactory;
+	private Map<String, Collection<String>> changeSets = new HashMap<>();
 
 	public Roperty(final Persistence persistence, final DomainInitializer domainInitializer, final FactoryProvider factoryProvider) {
 		this(persistence, domainInitializer, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory());
@@ -171,7 +174,17 @@ public class Roperty {
 		LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet, domains);
 		KeyValues keyValues = getOrCreateKeyValues(description, trimmedKey);
 		keyValues.putWithChangeSet(changeSet, value, domains);
+		getChangeSetKeys(changeSet).add(trimmedKey);
 		store(trimmedKey, keyValues);
+	}
+
+	private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
+		Collection<String> keys = changeSets.get(changeSet);
+		if (keys == null) {
+			keys = new ArrayList<>();
+			changeSets.put(changeSet, keys);
+		}
+		return keys;
 	}
 
 	private KeyValues getOrCreateKeyValues(final String description, final String trimmedKey) {
@@ -312,5 +325,14 @@ public class Roperty {
 	public void removeKey(final String key) {
 		final String trimmedKey = trimKey(key);
 		remove(trimmedKey, keyValuesMap.remove(trimmedKey));
+	}
+
+	public void removeChangeSet(String changeSet) {
+		for (String key : changeSets.get(changeSet)) {
+			KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+			if (keyValues != null) {
+				keyValues.removeChangeSet(changeSet);
+			}
+		}
 	}
 }

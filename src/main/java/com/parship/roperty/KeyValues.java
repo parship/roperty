@@ -152,4 +152,14 @@ public class KeyValues {
 		}
 		return null;
 	}
+
+	public void removeChangeSet(final String changeSet) {
+		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
+		while(iterator.hasNext()) {
+			DomainSpecificValue value = iterator.next();
+			if (value.changeSetIs(changeSet)) {
+				iterator.remove();
+			}
+		}
+	}
 }
