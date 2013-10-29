@@ -18,11 +18,15 @@
 package com.parship.roperty;
 
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -45,5 +49,16 @@ public class RopertyChangeSetTest {
 		DomainResolver resolver = mock(DomainResolver.class);
 		when(resolver.getActiveChangeSets()).thenReturn(asList("changeSet"));
 		assertThat(roperty.<String>get("key", resolver), is("valueForChangeSet"));
+	}
+
+	@Test
+	public void whenSetWithChangeSetIsCalledChangeSetWillBePersisted() {
+		Roperty ropertyWithPersistence = new Roperty();
+		Persistence persistenceMock = mock(Persistence.class);
+		ropertyWithPersistence.setPersistence(persistenceMock);
+
+		ropertyWithPersistence.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
+
+		verify(persistenceMock).store(eq("key"), Matchers.any(KeyValues.class), eq("changeSet"));
 	}
 }

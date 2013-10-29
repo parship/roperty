@@ -71,7 +71,7 @@ public class KeyValues {
 		return builder.toString();
 	}
 
-	private DomainSpecificValue createAndAddDomainSpecificValue(final Object value, final String[] domainValues, String changeSet) {
+	private DomainSpecificValue createAndAddDomainSpecificValue(final Object value, final String[] domainValues, final String changeSet) {
 		int order = 1;
 		if (domainValues.length == 0) {
 			return addDomainSpecificValue("", order, value, changeSet);
@@ -88,7 +88,7 @@ public class KeyValues {
 		return addDomainSpecificValue(builder.toString(), order, value, changeSet);
 	}
 
-	private synchronized DomainSpecificValue addDomainSpecificValue(final String pattern, final int order, final Object value, String changeSet) {
+	private synchronized DomainSpecificValue addDomainSpecificValue(final String pattern, final int order, final Object value, final String changeSet) {
 		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value, changeSet);
 		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
 		domainSpecificValues.add(domainSpecificValue);

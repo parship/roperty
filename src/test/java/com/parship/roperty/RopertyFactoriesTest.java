@@ -66,7 +66,7 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
-			public void store(final String key, final KeyValues keyValues) {
+			public void store(final String key, final KeyValues keyValues, final String changeSet) {
 				stringKeyValuesHashMap.put(key, keyValues);
 			}
 
@@ -116,7 +116,7 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
-			public void store(final String key, final KeyValues keyValues) {
+			public void store(final String key, final KeyValues keyValues, final String changeSet) {
 				stringKeyValuesHashMap.put(key, keyValues);
 			}
 

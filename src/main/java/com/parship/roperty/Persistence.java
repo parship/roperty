@@ -43,7 +43,7 @@ public interface Persistence {
 	 */
 	Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
 
-	void store(final String key, final KeyValues keyValues);
+	void store(final String key, final KeyValues keyValues, final String changeSet);
 
 	/**
 	 * Remove a complete key from persistence.

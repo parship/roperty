@@ -175,7 +175,7 @@ public class Roperty {
 		KeyValues keyValues = getOrCreateKeyValues(description, trimmedKey);
 		keyValues.putWithChangeSet(changeSet, value, domains);
 		getChangeSetKeys(changeSet).add(trimmedKey);
-		store(trimmedKey, keyValues);
+		store(trimmedKey, keyValues, changeSet);
 	}
 
 	private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
@@ -231,7 +231,13 @@ public class Roperty {
 
 	private void store(final String key, final KeyValues keyValues) {
 		if (persistence != null) {
-			persistence.store(key, keyValues);
+			persistence.store(key, keyValues, null);
+		}
+	}
+
+	private void store(final String key, final KeyValues keyValues, final String changeSet) {
+		if (persistence != null) {
+			persistence.store(key, keyValues, changeSet);
 		}
 	}
 
