@@ -71,11 +71,11 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
-			public void remove(final String key, final KeyValues keyValues) {
+			public void remove(final String key, final KeyValues keyValues, final String changeSet) {
 			}
 
 			@Override
-			public void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+			public void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
 			}
 		}, new DomainInitializer() {
 			@Override
@@ -121,11 +121,11 @@ public class RopertyFactoriesTest {
 			}
 
 			@Override
-			public void remove(final String key, final KeyValues keyValues) {
+			public void remove(final String key, final KeyValues keyValues, final String changeSet) {
 			}
 
 			@Override
-			public void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+			public void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
 			}
 		}, new FactoryProvider() {
 			@Override

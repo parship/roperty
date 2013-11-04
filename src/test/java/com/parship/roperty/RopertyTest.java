@@ -465,7 +465,7 @@ public class RopertyTest {
 
 		ropertyWithPersistence.remove("key");
 
-		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class));
+		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), anyString());
 		assertThat(ropertyWithPersistence.get("key", mock(DomainResolver.class)), nullValue());
 		assertThat(ropertyWithPersistence.<String>get("key", resolver), is("domValue"));
 	}
@@ -481,7 +481,7 @@ public class RopertyTest {
 
 		ropertyWithPersistence.remove("key", "dom1");
 
-		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class));
+		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), anyString());
 		assertThat(ropertyWithPersistence.<String>get("key", mock(DomainResolver.class)), is("value"));
 		assertThat(ropertyWithPersistence.<String>get("key", resolver), is("domValue2"));
 	}
@@ -491,7 +491,7 @@ public class RopertyTest {
 		Persistence persistenceMock = mock(Persistence.class);
 		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
 		ropertyWithPersistence.remove("key", "dom1");
-		verify(persistenceMock, never()).remove(anyString(), any(DomainSpecificValue.class));
+		verify(persistenceMock, never()).remove(anyString(), any(DomainSpecificValue.class), anyString());
 	}
 
 	@Test
@@ -501,7 +501,7 @@ public class RopertyTest {
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
 		ropertyWithPersistence.removeKey("key");
-		verify(persistenceMock).remove(eq("key"), any(KeyValues.class));
+		verify(persistenceMock).remove(eq("key"), any(KeyValues.class), anyString());
 		assertThat(ropertyWithPersistence.get("key", resolver), nullValue());
 	}
 
@@ -510,7 +510,7 @@ public class RopertyTest {
 		Persistence persistenceMock = mock(Persistence.class);
 		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
 		ropertyWithPersistence.removeKey("key");
-		verify(persistenceMock).remove("key", (KeyValues) null);
+		verify(persistenceMock).remove("key", (KeyValues) null, null);
 	}
 
 	@Test
@@ -534,8 +534,8 @@ public class RopertyTest {
 		assertThat(ropertyWithPersistence.<String>get("key", resolver), is("valueChangeSet"));
 		assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), is("otherValueChangeSet"));
 		ropertyWithPersistence.removeChangeSet("changeSet");
-		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class));
-		verify(persistenceMock).remove(eq("otherKey"), any(DomainSpecificValue.class));
+		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), eq("changeSet"));
+		verify(persistenceMock).remove(eq("otherKey"), any(DomainSpecificValue.class), eq("changeSet"));
 		assertThat(ropertyWithPersistence.<String>get("key", resolver), is("value"));
 		assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), nullValue());
 	}

@@ -241,15 +241,15 @@ public class Roperty {
 		}
 	}
 
-	private void remove(final String key, final KeyValues keyValues) {
+	private void remove(final String key, final KeyValues keyValues, final String changeSet) {
 		if (persistence != null) {
-			persistence.remove(key, keyValues);
+			persistence.remove(key, keyValues, changeSet);
 		}
 	}
 
-	private void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+	private void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
 		if (persistence != null) {
-			persistence.remove(key, domainSpecificValue);
+			persistence.remove(key, domainSpecificValue, changeSet);
 		}
 	}
 
@@ -320,7 +320,7 @@ public class Roperty {
 		final String trimmedKey = trimKey(key);
 		KeyValues keyValues = getKeyValuesFromMapOrPersistence(trimmedKey);
 		if (keyValues != null) {
-			remove(trimmedKey, keyValues.remove(changeSet, domainValues));
+			remove(trimmedKey, keyValues.remove(changeSet, domainValues), changeSet);
 		}
 	}
 
@@ -330,7 +330,7 @@ public class Roperty {
 
 	public void removeKey(final String key) {
 		final String trimmedKey = trimKey(key);
-		remove(trimmedKey, keyValuesMap.remove(trimmedKey));
+		remove(trimmedKey, keyValuesMap.remove(trimmedKey), null);
 	}
 
 	public void removeChangeSet(String changeSet) {
@@ -338,7 +338,7 @@ public class Roperty {
 			KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
 			if (keyValues != null) {
 				for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
-					remove(key, value);
+					remove(key, value, changeSet);
 				}
 			}
 		}

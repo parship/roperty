@@ -49,13 +49,15 @@ public interface Persistence {
 	 * Remove a complete key from persistence.
 	 * @param key the key to remove
 	 * @param keyValues the KeyValues object roperty knows about or null, when unknown
+	 * @param changeSet the changeSet to remove
 	 */
-	void remove(String key, KeyValues keyValues);
+	void remove(String key, KeyValues keyValues, final String changeSet);
 
 	/**
 	 * Remove a DomainSpecificValue from persistence.
 	 * @param key the key for which to remove the overwritten value
 	 * @param domainSpecificValue the DomainSpecificValue to remove
+	 * @param changeSet the changeSet for which to remove the overwritten value
 	 */
-	void remove(String key, DomainSpecificValue domainSpecificValue);
+	void remove(String key, DomainSpecificValue domainSpecificValue, final String changeSet);
 }
