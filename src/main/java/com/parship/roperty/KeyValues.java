@@ -47,51 +47,29 @@ public class KeyValues {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 
-	public DomainSpecificValue put(Object value, String... domainValues) {
-		return putWithChangeSet(null, value, domainValues);
+	public DomainSpecificValue put(Object value, String... domainKeyParts) {
+		return putWithChangeSet(null, value, domainKeyParts);
 	}
 
-	public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainValues) {
-		for (String domain : domainValues) {
+	public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainKeyParts) {
+		for (String domain : domainKeyParts) {
 			Ensure.notEmpty(domain, "domain");
 		}
-		return createAndAddDomainSpecificValue(value, domainValues, changeSet);
+		return addOrChangeDomainSpecificValue(changeSet, value, domainKeyParts);
 	}
 
-	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
-		StringBuilder builder = new StringBuilder();
-		for (String domain : domains) {
-			String domainValue = resolver.getDomainValue(domain);
-			if (domainValue == null) {
-				domainValue = "";
+	private synchronized DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String[] domainKeyParts) {
+		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainKeyParts);
+
+		if (domainSpecificValues.contains(domainSpecificValue)) {
+			for (DomainSpecificValue d: domainSpecificValues) {
+				if(d.compareTo(domainSpecificValue) == 0) {
+					d.setValue(domainSpecificValue.getValue());
+				}
 			}
-			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + "'");
-			builder.append(domainValue).append(DOMAIN_SEPARATOR);
+		} else {
+			domainSpecificValues.add(domainSpecificValue);
 		}
-		return builder.toString();
-	}
-
-	private DomainSpecificValue createAndAddDomainSpecificValue(final Object value, final String[] domainValues, final String changeSet) {
-		int order = 1;
-		if (domainValues.length == 0) {
-			return addDomainSpecificValue("", order, value, changeSet);
-		}
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
-		for (String domainValue : domainValues) {
-			i++;
-			if (!"*".equals(domainValue)) {
-				order = order | (int)Math.pow(2, i);
-			}
-			builder.append(domainValue).append(DOMAIN_SEPARATOR);
-		}
-		return addDomainSpecificValue(builder.toString(), order, value, changeSet);
-	}
-
-	private synchronized DomainSpecificValue addDomainSpecificValue(final String pattern, final int order, final Object value, final String changeSet) {
-		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(pattern, order, value, changeSet);
-		domainSpecificValues.remove(domainSpecificValue); // this needs to be done, so I can override values with the same key
-		domainSpecificValues.add(domainSpecificValue);
 		return domainSpecificValue;
 	}
 
@@ -105,6 +83,19 @@ public class KeyValues {
 			}
 		}
 		return defaultValue;
+	}
+
+	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
+		StringBuilder builder = new StringBuilder();
+		for (String domain : domains) {
+			String domainValue = resolver.getDomainValue(domain);
+			if (domainValue == null) {
+				domainValue = "";
+			}
+			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + "'");
+			builder.append(domainValue).append(DOMAIN_SEPARATOR);
+		}
+		return builder.toString();
 	}
 
 	public String getDescription() {
@@ -139,9 +130,9 @@ public class KeyValues {
 		return get(emptyList, null, null);
 	}
 
-	public DomainSpecificValue remove(final String changeSet, final String[] domainValues) {
+	public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {
 		StringBuilder builder = new StringBuilder();
-		for (String domainValue : domainValues) {
+		for (String domainValue : domainKeyParts) {
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();

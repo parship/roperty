@@ -35,24 +35,24 @@ import java.util.Collection;
 public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final String patternStr;
 	private final int ordering;
-	private final Object value;
+	private Object value;
 	private final Matcher matcher;
 	private String changeSet;
 
-	public DomainSpecificValue(final String domainPattern, final int order, Object value, String changeSet) {
-		this(domainPattern, order, value);
+	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet) {
+		this(orderedDomainPattern, value);
 		this.changeSet = changeSet;
 	}
 
-	public DomainSpecificValue(final String domainPattern, final int order, Object value) {
-		Ensure.notNull(domainPattern, "domainPattern");
-		this.patternStr = domainPattern;
+	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value) {
+		Ensure.notNull(orderedDomainPattern.getDomainPattern(), "domainPattern");
+		this.patternStr = orderedDomainPattern.getDomainPattern();
 		if (patternStr.contains("*")) {
 			matcher = new RegexMatcher(patternStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*");
 		} else {
-			matcher = new StringPrefixMatcher(domainPattern);
+			matcher = new StringPrefixMatcher(orderedDomainPattern.getDomainPattern());
 		}
-		this.ordering = order;
+		this.ordering = orderedDomainPattern.getOrder();
 		this.value = value;
 	}
 
@@ -101,6 +101,10 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
 	public Object getValue() {
 		return value;
+	}
+
+	public void setValue(final Object value) {
+		this.value = value;
 	}
 
 	public boolean matches(final String domainStr) {

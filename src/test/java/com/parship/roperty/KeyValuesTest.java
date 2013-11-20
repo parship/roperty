@@ -191,9 +191,9 @@ public class KeyValuesTest {
 		DefaultDomainSpecificValueFactory factoryMock = mock(DefaultDomainSpecificValueFactory.class);
 		keyValues.setDomainSpecificValueFactory(factoryMock);
 		String value = "value";
-		when(factoryMock.create("", 1, value, null)).thenReturn(new DomainSpecificValue("", 1, value));
+		when(factoryMock.create(value, null)).thenReturn(new DomainSpecificValue(new OrderedDomainPattern("", 1), value));
 		keyValues.put(value);
-		verify(factoryMock).create("", 1, value, null);
+		verify(factoryMock).create(value, null);
 	}
 
 	@Test

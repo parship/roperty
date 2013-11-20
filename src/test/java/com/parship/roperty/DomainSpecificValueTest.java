@@ -32,46 +32,54 @@ public class DomainSpecificValueTest {
 
 	@Test
 	public void valuesWithChangeSetAreOrderedBeforeValuesWithoutChangeSet() {
-		DomainSpecificValue dsv = new DomainSpecificValue("pattern", 45, "value");
-		DomainSpecificValue dsvWithChangeSet = new DomainSpecificValue("pattern", 45, "value", "changeSet");
+		OrderedDomainPattern pattern = new OrderedDomainPattern("pattern", 45);
+		DomainSpecificValue dsv = new DomainSpecificValue(pattern, "value");
+		DomainSpecificValue dsvWithChangeSet = new DomainSpecificValue(pattern, "value", "changeSet");
 		assertThat(dsv.compareTo(dsvWithChangeSet), greaterThan(0));
 		assertThat(dsvWithChangeSet.compareTo(dsv), lessThan(0));
 	}
 
 	@Test
 	public void valuesWithChangeAreComparedByChangeSetName() {
-		DomainSpecificValue dsvWithChangeSet_A = new DomainSpecificValue("pattern", 45, "value", "a_changeSet");
-		DomainSpecificValue dsvWithChangeSet_B = new DomainSpecificValue("pattern", 45, "value", "b_changeSet");
+		OrderedDomainPattern pattern = new OrderedDomainPattern("pattern", 45);
+		DomainSpecificValue dsvWithChangeSet_A = new DomainSpecificValue(pattern, "value", "a_changeSet");
+		DomainSpecificValue dsvWithChangeSet_B = new DomainSpecificValue(pattern, "value", "b_changeSet");
 		assertThat(dsvWithChangeSet_A.compareTo(dsvWithChangeSet_B), greaterThan(0));
 		assertThat(dsvWithChangeSet_B.compareTo(dsvWithChangeSet_A), lessThan(0));
 	}
 
 	@Test
 	public void valuesWithSameChangeAreComparedByPattern() {
-		DomainSpecificValue dsvWithChangeSet_A = new DomainSpecificValue("a_pattern", 45, "value", "changeSet");
-		DomainSpecificValue dsvWithChangeSet_B = new DomainSpecificValue("b_pattern", 45, "value", "changeSet");
+		OrderedDomainPattern aPattern = new OrderedDomainPattern("a_pattern", 45);
+		DomainSpecificValue dsvWithChangeSet_A = new DomainSpecificValue(aPattern, "value", "changeSet");
+		OrderedDomainPattern bPattern = new OrderedDomainPattern("b_pattern", 45);
+		DomainSpecificValue dsvWithChangeSet_B = new DomainSpecificValue(bPattern, "value", "changeSet");
 		assertThat(dsvWithChangeSet_A.compareTo(dsvWithChangeSet_B), not(equalTo(0)));
 		assertThat(dsvWithChangeSet_B.compareTo(dsvWithChangeSet_A), not(equalTo(0)));
 	}
 
 	@Test
 	public void valuesWithoutChangeSetAreComparedByOrder() {
-		DomainSpecificValue dsv_A = new DomainSpecificValue("pattern", 45, "value");
-		DomainSpecificValue dsv_B = new DomainSpecificValue("pattern", 67, "value");
+		OrderedDomainPattern aPattern = new OrderedDomainPattern("pattern", 45);
+		DomainSpecificValue dsv_A = new DomainSpecificValue(aPattern, "value");
+		OrderedDomainPattern bPattern = new OrderedDomainPattern("pattern", 67);
+		DomainSpecificValue dsv_B = new DomainSpecificValue(bPattern, "value");
 		assertThat(dsv_A.compareTo(dsv_B), greaterThan(0));
 		assertThat(dsv_B.compareTo(dsv_A), lessThan(0));
 	}
 
 	@Test
 	public void changeSetIs() {
-		DomainSpecificValue dsv = new DomainSpecificValue("p", 4, "val", "changeSet");
+		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
+		DomainSpecificValue dsv = new DomainSpecificValue(pattern, "val", "changeSet");
 		assertThat(dsv.changeSetIs("changeSet"), is(true));
 		assertThat(dsv.changeSetIs("other"), is(false));
 	}
 
 	@Test
 	public void changeSetIsWithoutChangeSet() {
-		DomainSpecificValue dsv = new DomainSpecificValue("p", 4, "val");
+		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
+		DomainSpecificValue dsv = new DomainSpecificValue(pattern, "val");
 		assertThat(dsv.changeSetIs(null), is(true));
 		assertThat(dsv.changeSetIs("other"), is(false));
 	}

@@ -21,10 +21,15 @@ package com.parship.roperty;
  * @author mfinsterwalder
  * @since 2013-06-03 14:34
  */
-public class DefaultDomainSpecificValueFactory implements DomainSpecificValueFactory {
+public class DefaultDomainSpecificValueFactory extends AbstractDomainSpecificValueFactory implements DomainSpecificValueFactory {
 
 	@Override
-	public DomainSpecificValue create(final String domainPattern, final int order, final Object value, String changeSet) {
-		return new DomainSpecificValue(domainPattern, order, value, changeSet);
+	public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {
+		if (domainKeyParts.length == 0) {
+			return new DomainSpecificValue(new OrderedDomainPattern("", 1), value, changeSet);
+		}
+
+		return new DomainSpecificValue(calculateOrderedDomainPattern(domainKeyParts), value, changeSet);
 	}
+
 }

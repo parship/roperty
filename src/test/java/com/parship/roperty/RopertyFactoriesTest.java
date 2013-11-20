@@ -43,7 +43,7 @@ public class RopertyFactoriesTest {
 	@Before
 	public void before() {
 		when(keyValueFactoryMock.create(domainSpecificValueFactoryMock)).thenReturn(new KeyValues(domainSpecificValueFactoryMock));
-		when(domainSpecificValueFactoryMock.create("", 1, defaultValue, null)).thenReturn(new DomainSpecificValue("", 1, defaultValue));
+		when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(new DomainSpecificValue(new OrderedDomainPattern("", 1), defaultValue));
 	}
 
 	@Test
@@ -152,6 +152,6 @@ public class RopertyFactoriesTest {
 	private void checkFactoryAccess(final Roperty r) {
 		r.getOrDefine(key, defaultValue, new MapBackedDomainResolver());
 		verify(keyValueFactoryMock).create(domainSpecificValueFactoryMock);
-		verify(domainSpecificValueFactoryMock).create("", 1, defaultValue, null);
+		verify(domainSpecificValueFactoryMock).create(defaultValue, null, new String[0]);
 	}
 }

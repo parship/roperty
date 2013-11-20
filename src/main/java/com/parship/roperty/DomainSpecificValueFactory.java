@@ -22,5 +22,6 @@ package com.parship.roperty;
  * @since 2013-06-03 14:33
  */
 public interface DomainSpecificValueFactory {
-	DomainSpecificValue create(final String domainPattern, final int order, Object value, String changeSet);
+
+	DomainSpecificValue create(final Object value, final String changeSet, final String... domainValues);
 }
