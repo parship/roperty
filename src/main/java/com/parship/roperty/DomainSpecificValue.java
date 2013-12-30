@@ -37,7 +37,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final int ordering;
 	private Object value;
 	private final Matcher matcher;
-	private String changeSet;
+	protected String changeSet;
 
 	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet) {
 		this(orderedDomainPattern, value);

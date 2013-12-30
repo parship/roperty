@@ -231,7 +231,7 @@ public class Roperty {
 
 	private void store(final String key, final KeyValues keyValues) {
 		if (persistence != null) {
-			persistence.store(key, keyValues, null);
+			persistence.store(key, keyValues, "");
 		}
 	}
 
