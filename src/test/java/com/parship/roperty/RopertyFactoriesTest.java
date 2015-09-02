@@ -48,7 +48,7 @@ public class RopertyFactoriesTest {
 
 	@Test
 	public void factoriesAreUsedToCreateObjectsViaFactoryProvider() {
-		Roperty r = new Roperty(new Persistence() {
+		RopertyImpl r = new RopertyImpl(new Persistence() {
 			HashMap<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 			@Override
 			public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
@@ -98,7 +98,7 @@ public class RopertyFactoriesTest {
 
 	@Test
 	public void factoriesAreUsedToCreateObjectsViaFactoryProviderAndDomainInitializer() {
-		Roperty r = new Roperty(new Persistence() {
+		RopertyImpl r = new RopertyImpl(new Persistence() {
 			HashMap<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 			@Override
 			public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
@@ -143,13 +143,13 @@ public class RopertyFactoriesTest {
 
 	@Test
 	public void factoriesAreUsedToCreateObjectsViaSet() {
-		Roperty r = new Roperty();
+		RopertyImpl r = new RopertyImpl();
 		r.setKeyValuesFactory(keyValueFactoryMock);
 		r.setDomainSpecificValueFactory(domainSpecificValueFactoryMock);
 		checkFactoryAccess(r);
 	}
 
-	private void checkFactoryAccess(final Roperty r) {
+	private void checkFactoryAccess(final RopertyImpl r) {
 		r.getOrDefine(key, defaultValue, new MapBackedDomainResolver());
 		verify(keyValueFactoryMock).create(domainSpecificValueFactoryMock);
 		verify(domainSpecificValueFactoryMock).create(defaultValue, null, new String[0]);

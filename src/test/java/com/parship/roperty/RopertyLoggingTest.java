@@ -31,7 +31,7 @@ public class RopertyLoggingTest {
 	@Rule
 	public LoggingTestRule rule = new LoggingTestRule(Level.DEBUG);
 
-	private Roperty r = new Roperty();
+	private Roperty r = new RopertyImpl();
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelDefaultValue() {

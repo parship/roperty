@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
  */
 public class RopertyChangeSetTest {
 
-	private Roperty roperty = new Roperty();
+	private Roperty roperty = new RopertyImpl();
 
 	@Test
 	public void whenChangeSetsAreActiveTheValuesForTheChangeSetAreReturned() {
@@ -53,7 +53,7 @@ public class RopertyChangeSetTest {
 
 	@Test
 	public void whenSetWithChangeSetIsCalledChangeSetWillBePersisted() {
-		Roperty ropertyWithPersistence = new Roperty();
+		RopertyImpl ropertyWithPersistence = new RopertyImpl();
 		Persistence persistenceMock = mock(Persistence.class);
 		ropertyWithPersistence.setPersistence(persistenceMock);
 

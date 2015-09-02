@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
  * @author mfinsterwalder
  * @since 2013-03-25 08:07
  */
-public class RopertyTest {
+public class RopertyImplTest {
 
 	private DomainResolver resolver = new DomainResolver() {
 		@Override
@@ -53,7 +53,7 @@ public class RopertyTest {
 			return new ArrayList<>();
 		}
 	};
-	private Roperty r = new Roperty();
+	private RopertyImpl r = new RopertyImpl();
 	private RopertyWithResolver roperty = new RopertyWithResolver(r, resolver);
 
 	@Test(expected = IllegalArgumentException.class)
@@ -263,7 +263,7 @@ public class RopertyTest {
 
 	@Test
 	public void domainValuesAreRequestedFromAResolver() {
-		roperty.getRoperty().addDomains("domain1", "domain2");
+		((RopertyImpl) roperty.getRoperty()).addDomains("domain1", "domain2");
 		DomainResolver mockResolver = mock(DomainResolver.class);
 		roperty = new RopertyWithResolver(r, mockResolver);
 		roperty.set("key", "value", null);
@@ -329,7 +329,7 @@ public class RopertyTest {
 	@Test
 	public void domainsThatAreInitializedAreUsed() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty roperty1 = new Roperty(persistenceMock, "dom1", "dom2");
+		Roperty roperty1 = new RopertyImpl(persistenceMock, "dom1", "dom2");
 		roperty1.set("key", "value", "dom1");
 		assertThat((String)roperty1.get("key", resolver), is("value"));
 	}
@@ -337,7 +337,7 @@ public class RopertyTest {
 	@Test
 	public void persistenceThatIsInitializedIsUsed() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty roperty1 = new Roperty(persistenceMock, "dom1", "dom2");
+		Roperty roperty1 = new RopertyImpl(persistenceMock, "dom1", "dom2");
 		verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 		roperty1.get("key", resolver);
 		verify(persistenceMock).load(eq("key"), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
@@ -347,7 +347,7 @@ public class RopertyTest {
 	public void domainInitializerAndPersistenceAreUsedDuringInitialization() {
 		Persistence persistenceMock = mock(Persistence.class);
 		DomainInitializer domainInitializerMock = mock(DomainInitializer.class);
-		new Roperty(persistenceMock, domainInitializerMock);
+		new RopertyImpl(persistenceMock, domainInitializerMock);
 		verify(domainInitializerMock).getInitialDomains();
 		verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 	}
@@ -355,7 +355,7 @@ public class RopertyTest {
 	@Test
 	public void reloadReplacesKeyValuesMap() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty roperty1 = new Roperty(persistenceMock);
+		RopertyImpl roperty1 = new RopertyImpl(persistenceMock);
 		verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
 		roperty1.set("key", "value", "descr");
 		assertThat((String)roperty1.get("key", null), is("value"));
@@ -374,7 +374,7 @@ public class RopertyTest {
 
 	@Test
 	public void domainsThatAreInitializedArePresent() {
-		Roperty roperty = new Roperty("domain1", "domain2");
+		RopertyImpl roperty = new RopertyImpl("domain1", "domain2");
 		assertThat(roperty.dump().toString(), is("Roperty{domains=[domain1, domain2]\n}"));
 	}
 
@@ -458,7 +458,7 @@ public class RopertyTest {
 	@Test
 	public void removeDefaultValue() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
 		ropertyWithPersistence.addDomains("dom1");
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue", "desc", "dom1");
@@ -473,7 +473,7 @@ public class RopertyTest {
 	@Test
 	public void removeDomainSpecificValue() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
 		ropertyWithPersistence.addDomains("dom1", "dom2");
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
@@ -489,7 +489,7 @@ public class RopertyTest {
 	@Test
 	public void removeDoesNotCallPersistenceWhenNoDomainSpecificValueExists() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
 		ropertyWithPersistence.remove("key", "dom1");
 		verify(persistenceMock, never()).remove(anyString(), any(DomainSpecificValue.class), anyString());
 	}
@@ -497,7 +497,7 @@ public class RopertyTest {
 	@Test
 	public void removeACompleteKey() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
 		ropertyWithPersistence.removeKey("key");
@@ -508,7 +508,7 @@ public class RopertyTest {
 	@Test
 	public void removeCallsPersistenceEvenWhenNoKeyExists() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
 		ropertyWithPersistence.removeKey("key");
 		verify(persistenceMock).remove("key", (KeyValues) null, null);
 	}
@@ -526,7 +526,7 @@ public class RopertyTest {
 	@Test
 	public void removeAChangeSet() {
 		Persistence persistenceMock = mock(Persistence.class);
-		Roperty ropertyWithPersistence = new Roperty(persistenceMock);
+		RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
 		ropertyWithPersistence.set("key", "value", "descr");
 		ropertyWithPersistence.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
 		ropertyWithPersistence.setWithChangeSet("otherKey", "otherValueChangeSet", "descr", "changeSet");

@@ -18,6 +18,7 @@
 package com.parship.roperty.jmx;
 
 import com.parship.roperty.Roperty;
+import com.parship.roperty.RopertyImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,13 +44,13 @@ public class RopertyManagerTest {
 	@Test
 	public void ropertyInstancesRegisterThemselvesWithTheManager() {
 		assertThat(manager.dump(), is(""));
-		new Roperty();
+		new RopertyImpl();
 		assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
 	}
 
 	@Test
 	public void ropertyInstancesAreRemovedFromManagerAfterDestruction() {
-		Roperty roperty = new Roperty();
+		Roperty roperty = new RopertyImpl();
 		assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
 		roperty = null;
 		System.gc();
@@ -59,9 +60,9 @@ public class RopertyManagerTest {
 	@Test
 	public void dumpSingleKeyIsDelegatedToAllRoperties() {
 		final String key = "key";
-		Roperty roperty1 = new Roperty();
+		Roperty roperty1 = new RopertyImpl();
 		roperty1.set(key, "value1", "descr");
-		Roperty roperty2 = new Roperty();
+		Roperty roperty2 = new RopertyImpl();
 		roperty2.set(key, "value2", "descr");
 		String dump = manager.dump("key");
 		assertThat(dump, containsString("KeyValues{\n" +
@@ -72,9 +73,9 @@ public class RopertyManagerTest {
 
 	@Test
 	public void reloadIsDelegatedToAllRoperties() {
-		Roperty ropertyMock1 = mock(Roperty.class);
+		Roperty ropertyMock1 = mock(RopertyImpl.class);
 		manager.add(ropertyMock1);
-		Roperty ropertyMock2 = mock(Roperty.class);
+		Roperty ropertyMock2 = mock(RopertyImpl.class);
 		manager.add(ropertyMock2);
 		manager.reload();
 		verify(ropertyMock1).reload();
@@ -83,9 +84,9 @@ public class RopertyManagerTest {
 
 	@Test
 	public void removedRopertiesAreNotCalled() {
-		Roperty ropertyMock1 = mock(Roperty.class);
+		Roperty ropertyMock1 = mock(RopertyImpl.class);
 		manager.add(ropertyMock1);
-		Roperty ropertyMock2 = mock(Roperty.class);
+		Roperty ropertyMock2 = mock(RopertyImpl.class);
 		manager.add(ropertyMock2);
 		manager.reload();
 		verify(ropertyMock1).reload();
@@ -98,8 +99,8 @@ public class RopertyManagerTest {
 
 	@Test
 	public void listRoperties() {
-		Roperty r1 = new Roperty().addDomains("dom1");
-		Roperty r2 = new Roperty().addDomains("dom2");
+		Roperty r1 = new RopertyImpl().addDomains("dom1");
+		Roperty r2 = new RopertyImpl().addDomains("dom2");
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
 	}
