@@ -14,15 +14,13 @@ public interface Roperty {
 	<T> T getOrDefine(String key, T defaultValue, DomainResolver resolver, String description);
 
 	Roperty addDomains(String... domains);
-//
+
 	void set(String key, Object value, String description, String... domains);
-//
+
 	void setWithChangeSet(String key, Object value, String description, String changeSet, String... domains);
-//
+
 	void setKeyValuesMap(Map<String, KeyValues> keyValuesMap);
-//
-//	void setPersistence(Persistence persistence);
-//
+
 	void reload();
 
 	StringBuilder dump();
@@ -30,10 +28,6 @@ public interface Roperty {
 	void dump(PrintStream out);
 
 	KeyValues getKeyValues(String key);
-
-//	void setKeyValuesFactory(KeyValuesFactory keyValuesFactory);
-//
-//	void setDomainSpecificValueFactory(DomainSpecificValueFactory domainSpecificValueFactory);
 
 	Map<String, KeyValues> getKeyValues();
 
