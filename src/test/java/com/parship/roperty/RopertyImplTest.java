@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -412,17 +413,18 @@ public class RopertyImplTest {
 		r.set("key", "value", null);
 		r.set("key", "value2", null, "domain1");
 		r.set(" otherKey ", "otherValue", null); // keys are always trimmed
-		assertThat(r.dump().toString(), is("Roperty{domains=[domain1, domain2]\n" +
-			"KeyValues for \"otherKey\": KeyValues{\n" +
-			"\tdescription=\"\"\n" +
-			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\"}\n" +
-			"}\n" +
-			"KeyValues for \"key\": KeyValues{\n" +
-			"\tdescription=\"\"\n" +
-			"\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\"}\n" +
-			"\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n" +
-			"}\n" +
-			"}"));
+		assertThat(r.dump().toString(), containsString(""));
+
+		assertThat(r.dump().toString(), containsString("Roperty{domains=[domain1, domain2]\n") );
+		assertThat(r.dump().toString(), containsString("KeyValues for \"otherKey\": KeyValues{\n") );
+		assertThat(r.dump().toString(), containsString("\tdescription=\"\"\n") );
+		assertThat(r.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\"}\n") );
+
+		assertThat(r.dump().toString(), containsString("KeyValues for \"key\": KeyValues{\n") );
+		assertThat(r.dump().toString(), containsString("\tdescription=\"\"\n") );
+		assertThat(r.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\"}\n") );
+		assertThat(r.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n") );
+
 	}
 
 	@Test
