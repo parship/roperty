@@ -46,7 +46,7 @@ public class RopertyImpl implements Roperty {
 	private Persistence persistence;
 	private KeyValuesFactory keyValuesFactory;
 	private DomainSpecificValueFactory domainSpecificValueFactory;
-	private Map<String, Collection<String>> changeSets = new HashMap<>();
+	private final Map<String, Collection<String>> changeSets = new HashMap<>();
 
 	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, final FactoryProvider factoryProvider) {
 		this(persistence, domainInitializer, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory());
