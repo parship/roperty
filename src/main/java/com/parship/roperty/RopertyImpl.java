@@ -111,7 +111,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	private static DomainSpecificValueFactory createDomainSpecificValueFactory() {
-		return new DefaultDomainSpecificValueFactory();
+		return new DomainSpecificValueFactoryWithStringInterning();
 	}
 
 	/* (non-Javadoc)
