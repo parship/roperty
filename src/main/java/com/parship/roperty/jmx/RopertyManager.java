@@ -42,7 +42,7 @@ public class RopertyManager implements RopertyManagerMBean {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyManager.class);
 	private static final RopertyManager instance = new RopertyManager();
 
-	private Map<Roperty, Roperty> roperties = new WeakHashMap<>();
+	private final Map<Roperty, Roperty> roperties = new WeakHashMap<>();
 
 	public static RopertyManager getInstance() {
 		return instance;

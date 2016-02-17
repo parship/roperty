@@ -40,7 +40,7 @@ public class KeyValues {
 
 	private static final String DOMAIN_SEPARATOR = "|";
 	private String description;
-	private Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
+	private final Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
 	private DomainSpecificValueFactory domainSpecificValueFactory;
 
 	public KeyValues(final DomainSpecificValueFactory domainSpecificValueFactory) {

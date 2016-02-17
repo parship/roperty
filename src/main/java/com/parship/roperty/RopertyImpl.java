@@ -46,7 +46,7 @@ public class RopertyImpl implements Roperty {
 	private Persistence persistence;
 	private KeyValuesFactory keyValuesFactory;
 	private DomainSpecificValueFactory domainSpecificValueFactory;
-	private Map<String, Collection<String>> changeSets = new HashMap<>();
+	private final Map<String, Collection<String>> changeSets = new HashMap<>();
 
 	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, final FactoryProvider factoryProvider) {
 		this(persistence, domainInitializer, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory());
@@ -60,7 +60,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer) {
-		this(persistence, domainInitializer, new DefaultKeyValuesFactory(), new DefaultDomainSpecificValueFactory());
+		this(persistence, domainInitializer, new DefaultKeyValuesFactory(), createDomainSpecificValueFactory());
 	}
 
 	public RopertyImpl(final Persistence persistence, final FactoryProvider factoryProvider, final String... domains) {
@@ -78,7 +78,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	public RopertyImpl(final Persistence persistence, final String... domains) {
-		this(persistence, new DefaultKeyValuesFactory(), new DefaultDomainSpecificValueFactory(), domains);
+		this(persistence, new DefaultKeyValuesFactory(), createDomainSpecificValueFactory(), domains);
 	}
 
 	private void initFromPersistence(final Persistence persistence, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
@@ -106,8 +106,12 @@ public class RopertyImpl implements Roperty {
 
 	private void initWithoutPersistence() {
 		this.keyValuesFactory = new DefaultKeyValuesFactory();
-		this.domainSpecificValueFactory = new DefaultDomainSpecificValueFactory();
+		this.domainSpecificValueFactory = createDomainSpecificValueFactory();
 		this.keyValuesMap = new HashMap<>();
+	}
+
+	private static DomainSpecificValueFactory createDomainSpecificValueFactory() {
+		return new DomainSpecificValueFactoryWithStringInterning();
 	}
 
 	/* (non-Javadoc)
