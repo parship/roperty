@@ -77,25 +77,25 @@ public class KeyValuesTest {
 
 	@Test
 	public void gettingFromAnEmptyKeyValuesGivesNull() {
-		assertThat(keyValues.get(asList("dom1"), null, resolver), nullValue());
+		assertThat(keyValues.get(Collections.singletonList("dom1"), null, resolver), nullValue());
 	}
 
 	@Test
 	public void whenNoPatternMatchesTheDefaultValueIsReturned() {
 		keyValues.put("value", "domain");
-		assertThat(keyValues.get(asList("x1"), "default", resolver), is("default"));
+		assertThat(keyValues.get(Collections.singletonList("x1"), "default", resolver), is("default"));
 	}
 
 	@Test
 	public void whenAPatternMatchesItIsReturnedAndNotTheDefault() {
 		keyValues.put("text");
-		assertThat(keyValues.get(asList("x1"), "default", resolver), is("text"));
+		assertThat(keyValues.get(Collections.singletonList("x1"), "default", resolver), is("text"));
 	}
 
 	@Test
 	public void whenNoPatternMatchesItIsReturnedAndNotTheDefault() {
 		keyValues.put("text", "domain");
-		assertThat(keyValues.get(asList("domain"), "default", resolver), is("text"));
+		assertThat(keyValues.get(Collections.singletonList("domain"), "default", resolver), is("text"));
 	}
 
 	@Test
@@ -161,7 +161,7 @@ public class KeyValuesTest {
 	public void domainValuesMustNotContainPipe() {
 		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("x1")).thenReturn("abc|def");
-		keyValues.get(asList("x1"), null, resolverMock);
+		keyValues.get(Collections.singletonList("x1"), null, resolverMock);
 	}
 
 	@Test
