@@ -20,6 +20,7 @@ package com.parship.roperty;
 import com.parship.commons.util.Ensure;
 
 import java.util.Collection;
+import java.util.Objects;
 
 
 /**
@@ -124,6 +125,6 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
 	public boolean changeSetIs(final String changeSet) {
 		return ((this.changeSet == null && changeSet == null)
-			|| (this.changeSet != null && this.changeSet.equals(changeSet)));
+			|| (Objects.equals(changeSet, changeSet)));
 	}
 }
