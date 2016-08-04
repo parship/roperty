@@ -66,7 +66,7 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	@Override
 	public String dump(String key) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
 		for (Roperty roperty : roperties.keySet()) {
 			KeyValues keyValues = roperty.getKeyValues(key);
 			if (keyValues != null) {
@@ -79,7 +79,7 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	@Override
 	public String dump() {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
 		for (Roperty roperty : roperties.keySet()) {
 			builder.append(roperty.dump());
 			builder.append("\n\n");

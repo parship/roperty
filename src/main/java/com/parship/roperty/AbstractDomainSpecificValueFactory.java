@@ -7,7 +7,7 @@ package com.parship.roperty;
  */
 public abstract class AbstractDomainSpecificValueFactory {
 	public static OrderedDomainPattern calculateOrderedDomainPattern(final String[] domainValues) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(domainValues.length * 8);
 		int order = 1;
 		int i = 0;
 		for (String domainValue : domainValues) {

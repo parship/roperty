@@ -131,7 +131,7 @@ public class KeyValues {
 	}
 
 	public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(domainKeyParts.length * 8);
 		for (String domainValue : domainKeyParts) {
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
