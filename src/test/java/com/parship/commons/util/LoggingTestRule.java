@@ -85,7 +85,7 @@ public class LoggingTestRule extends TestWatcher {
 		verifyLog(Level.ERROR, expectedLog);
 	}
 
-	public void verifyLog(final Level level, final String expectedLog) {
+	public void verifyLog(final Level level, final CharSequence expectedLog) {
 		verify(appenderMock, atLeastOnce())
 			.doAppend(Matchers.<ILoggingEvent>argThat(new ArgumentMatcher() {
 

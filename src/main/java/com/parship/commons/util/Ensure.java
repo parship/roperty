@@ -58,7 +58,7 @@ public class Ensure {
 	 * @param str string to check
 	 * @param parameterName name of the parameter to display in the error message
 	 */
-	public static void notEmpty(final String str, final String parameterName) {
+	public static void notEmpty(final CharSequence str, final String parameterName) {
 		if (str == null || str.length() == 0) {
 			throw new IllegalArgumentException("\"" + parameterName + "\" must not be null or empty, but was: " + str);
 		}

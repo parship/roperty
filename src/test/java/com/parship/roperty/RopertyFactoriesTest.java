@@ -49,7 +49,7 @@ public class RopertyFactoriesTest {
 	@Test
 	public void factoriesAreUsedToCreateObjectsViaFactoryProvider() {
 		RopertyImpl r = new RopertyImpl(new Persistence() {
-			HashMap<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
+			Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 			@Override
 			public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
 				return stringKeyValuesHashMap.get(key);
@@ -99,7 +99,7 @@ public class RopertyFactoriesTest {
 	@Test
 	public void factoriesAreUsedToCreateObjectsViaFactoryProviderAndDomainInitializer() {
 		RopertyImpl r = new RopertyImpl(new Persistence() {
-			HashMap<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
+			Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 			@Override
 			public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
 				return stringKeyValuesHashMap.get(key);
@@ -149,7 +149,7 @@ public class RopertyFactoriesTest {
 		checkFactoryAccess(r);
 	}
 
-	private void checkFactoryAccess(final RopertyImpl r) {
+	private void checkFactoryAccess(final Roperty r) {
 		r.getOrDefine(key, defaultValue, new MapBackedDomainResolver());
 		verify(keyValueFactoryMock).create(domainSpecificValueFactoryMock);
 		verify(domainSpecificValueFactoryMock).create(defaultValue, null, new String[0]);

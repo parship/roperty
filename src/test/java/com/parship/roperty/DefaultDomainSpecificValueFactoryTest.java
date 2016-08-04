@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
  */
 public class DefaultDomainSpecificValueFactoryTest {
 
-	private final DefaultDomainSpecificValueFactory factory = new DefaultDomainSpecificValueFactory();
+	private final DomainSpecificValueFactory factory = new DefaultDomainSpecificValueFactory();
 
 	@Test
 	public void factoryCreatesCorrectDSVForBaseKey() {

@@ -32,7 +32,7 @@ import java.util.Set;
 public class MapBackedDomainResolver implements DomainResolver {
 
 	private final Map<String, String> map = new HashMap<>();
-	private final Set<String> activeChangeSets = new HashSet<>();
+	private final Collection<String> activeChangeSets = new HashSet<>();
 
 	@Override
 	public String getDomainValue(final String domain) {

@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  */
 public class DomainSpecificValueFactoryWithStringInterningTest {
 
-    private final DomainSpecificValueFactoryWithStringInterning factory = new DomainSpecificValueFactoryWithStringInterning();
+    private final DomainSpecificValueFactory factory = new DomainSpecificValueFactoryWithStringInterning();
 
     @Test
     public void factoryCreatesCorrectDSVForBaseKey() {
