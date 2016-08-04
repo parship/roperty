@@ -147,7 +147,7 @@ public class KeyValues {
 	}
 
 	public Collection<DomainSpecificValue> removeChangeSet(final String changeSet) {
-		Collection<DomainSpecificValue> removedValues = new ArrayList<>();
+		Collection<DomainSpecificValue> removedValues = new ArrayList<>(domainSpecificValues.size());
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
 			DomainSpecificValue value = iterator.next();
