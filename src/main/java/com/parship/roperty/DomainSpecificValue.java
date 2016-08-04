@@ -125,6 +125,6 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
 	public boolean changeSetIs(final String changeSet) {
 		return ((this.changeSet == null && changeSet == null)
-			|| (Objects.equals(changeSet, changeSet)));
+			|| (Objects.equals(this.changeSet, changeSet)));
 	}
 }
