@@ -92,7 +92,7 @@ public class KeyValues {
 			if (domainValue == null) {
 				domainValue = "";
 			}
-			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + "'");
+			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + '\'');
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		return builder.toString();
@@ -111,9 +111,9 @@ public class KeyValues {
 		StringBuilder builder = new StringBuilder("KeyValues{\n\tdescription=\"");
 		builder.append(getDescription()).append("\"\n");
 		for(DomainSpecificValue entry:domainSpecificValues) {
-			builder.append("\t").append(entry).append("\n");
+			builder.append('\t').append(entry).append('\n');
 		}
-		builder.append("}");
+		builder.append('}');
 		return builder.toString();
 	}
 

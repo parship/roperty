@@ -36,7 +36,7 @@ public class Ensure {
 	 */
 	public static void notNull(final Object obj, final String parameterName) {
 		if (obj == null) {
-			throw new IllegalArgumentException("\"" + parameterName + "\" must not be null");
+			throw new IllegalArgumentException('"' + parameterName + "\" must not be null");
 		}
 	}
 
@@ -48,7 +48,7 @@ public class Ensure {
 	 */
 	public static void isNull(final Object obj, final String parameterName) {
 		if (obj != null) {
-			throw new IllegalArgumentException("\"" + parameterName + "\" must be null");
+			throw new IllegalArgumentException('"' + parameterName + "\" must be null");
 		}
 	}
 
@@ -60,7 +60,7 @@ public class Ensure {
 	 */
 	public static void notEmpty(final CharSequence str, final String parameterName) {
 		if (str == null || str.length() == 0) {
-			throw new IllegalArgumentException("\"" + parameterName + "\" must not be null or empty, but was: " + str);
+			throw new IllegalArgumentException('"' + parameterName + "\" must not be null or empty, but was: " + str);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class Ensure {
 	 */
 	public static void notEmpty(final Collection<?> collection, final String parameterName) {
 		if (collection.isEmpty()) {
-			throw new IllegalArgumentException("\"" + parameterName + "\" must not be null or empty, but was: " + collection);
+			throw new IllegalArgumentException('"' + parameterName + "\" must not be null or empty, but was: " + collection);
 		}
 	}
 
@@ -84,7 +84,7 @@ public class Ensure {
 	 */
 	public static void that(final boolean cond, final String conditionName) {
 		if (!cond) {
-			throw new IllegalArgumentException("\"" + conditionName + "\" must be true");
+			throw new IllegalArgumentException('"' + conditionName + "\" must be true");
 		}
 	}
 }

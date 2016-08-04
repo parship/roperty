@@ -92,7 +92,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		return "DomainSpecificValue{" +
 			"pattern=\"" + patternStr +
 			"\", ordering=" + ordering +
-			(changeSet != null ? ", changeSet=\"" + changeSet + "\"" : "") +
+			(changeSet != null ? ", changeSet=\"" + changeSet + '"' : "") +
 			", value=\"" + value +
 			"\"}";
 	}

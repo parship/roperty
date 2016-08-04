@@ -15,7 +15,7 @@ public abstract class AbstractDomainSpecificValueFactory {
 			if (!"*".equals(domainValue)) {
 				order = order | (int)Math.pow(2, i);
 			}
-			builder.append(domainValue).append("|");
+			builder.append(domainValue).append('|');
 		}
 		return new OrderedDomainPattern(builder.toString(), order);
 	}
