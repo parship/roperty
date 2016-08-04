@@ -118,10 +118,8 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public boolean isInChangeSets(final Collection<String> activeChangeSets) {
-		if (changeSet == null)
-			return true;
-		return activeChangeSets.contains(changeSet);
-	}
+        return changeSet == null || activeChangeSets.contains(changeSet);
+    }
 
 	public boolean changeSetIs(final String changeSet) {
 		return ((this.changeSet == null && changeSet == null)
