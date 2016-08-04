@@ -20,8 +20,9 @@ package com.parship.roperty;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import java.util.Collections;
+
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
@@ -47,7 +48,7 @@ public class RopertyChangeSetTest {
 		assertThat(roperty.<String>get("key", resolverWithoutChangeSet), is("value"));
 
 		DomainResolver resolver = mock(DomainResolver.class);
-		when(resolver.getActiveChangeSets()).thenReturn(asList("changeSet"));
+		when(resolver.getActiveChangeSets()).thenReturn(Collections.singletonList("changeSet"));
 		assertThat(roperty.<String>get("key", resolver), is("valueForChangeSet"));
 	}
 

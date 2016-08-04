@@ -74,7 +74,7 @@ public class KeyValues {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(List<String> domains, T defaultValue, final DomainResolver resolver) {
+	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
 		Ensure.notNull(domains, "domains");
 		String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
@@ -85,14 +85,14 @@ public class KeyValues {
 		return defaultValue;
 	}
 
-	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
+	private static String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
 			String domainValue = resolver.getDomainValue(domain);
 			if (domainValue == null) {
 				domainValue = "";
 			}
-			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + "'");
+			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + '\'');
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		return builder.toString();
@@ -111,9 +111,9 @@ public class KeyValues {
 		StringBuilder builder = new StringBuilder("KeyValues{\n\tdescription=\"");
 		builder.append(getDescription()).append("\"\n");
 		for(DomainSpecificValue entry:domainSpecificValues) {
-			builder.append("\t").append(entry).append("\n");
+			builder.append('\t').append(entry).append('\n');
 		}
-		builder.append("}");
+		builder.append('}');
 		return builder.toString();
 	}
 
@@ -131,7 +131,7 @@ public class KeyValues {
 	}
 
 	public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {
-		StringBuilder builder = new StringBuilder();
+		StringBuilder builder = new StringBuilder(domainKeyParts.length * 8);
 		for (String domainValue : domainKeyParts) {
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
@@ -147,7 +147,7 @@ public class KeyValues {
 	}
 
 	public Collection<DomainSpecificValue> removeChangeSet(final String changeSet) {
-		Collection<DomainSpecificValue> removedValues = new ArrayList<>();
+		Collection<DomainSpecificValue> removedValues = new ArrayList<>(domainSpecificValues.size());
 		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
 			DomainSpecificValue value = iterator.next();

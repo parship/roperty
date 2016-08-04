@@ -19,7 +19,7 @@ public class DomainSpecificValueFactoryWithStringInterning extends AbstractDomai
         return new DomainSpecificValue(calculateOrderedDomainPattern(internDomainKeyParts), internValue, internChangeSet);
     }
 
-    private String[] internDomainKeyParts(String[] domainKeyParts) {
+    private static String[] internDomainKeyParts(String[] domainKeyParts) {
         String[] internDomainKeyParts;
 
         internDomainKeyParts=new String[domainKeyParts.length];
@@ -31,7 +31,7 @@ public class DomainSpecificValueFactoryWithStringInterning extends AbstractDomai
         return internDomainKeyParts;
     }
 
-    private Object internIfInstanceOfString(Object o) {
+    private static Object internIfInstanceOfString(Object o) {
         if(o instanceof String) {
             return ((String) o).intern();
         } else {

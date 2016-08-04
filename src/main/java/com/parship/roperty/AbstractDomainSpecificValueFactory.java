@@ -6,8 +6,8 @@ package com.parship.roperty;
  * Time: 11:43
  */
 public abstract class AbstractDomainSpecificValueFactory {
-	protected OrderedDomainPattern calculateOrderedDomainPattern(final String[] domainValues) {
-		StringBuilder builder = new StringBuilder();
+	public static OrderedDomainPattern calculateOrderedDomainPattern(final String[] domainValues) {
+		StringBuilder builder = new StringBuilder(domainValues.length * 8);
 		int order = 1;
 		int i = 0;
 		for (String domainValue : domainValues) {
@@ -15,7 +15,7 @@ public abstract class AbstractDomainSpecificValueFactory {
 			if (!"*".equals(domainValue)) {
 				order = order | (int)Math.pow(2, i);
 			}
-			builder.append(domainValue).append("|");
+			builder.append(domainValue).append('|');
 		}
 		return new OrderedDomainPattern(builder.toString(), order);
 	}

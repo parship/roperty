@@ -138,7 +138,7 @@ public class RopertyImpl implements Roperty {
 		return result;
 	}
 
-	private String trimKey(final String key) {
+	private static String trimKey(final String key) {
 		Ensure.notEmpty(key, "key");
 		return key.trim();
 	}
@@ -299,14 +299,14 @@ public class RopertyImpl implements Roperty {
 
 	@Override
 	public String toString() {
-		return "Roperty{domains=" + domains + "}";
+		return "Roperty{domains=" + domains + '}';
 	}
 
 	@Override
 	public StringBuilder dump() {
 		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
 		for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
-			builder.append("\n").append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());
+			builder.append('\n').append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());
 		}
 		builder.append("\n}");
 		return builder;

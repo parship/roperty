@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -32,7 +31,7 @@ import java.util.Set;
 public class MapBackedDomainResolver implements DomainResolver {
 
 	private final Map<String, String> map = new HashMap<>();
-	private final Set<String> activeChangeSets = new HashSet<>();
+	private final Collection<String> activeChangeSets = new HashSet<>();
 
 	@Override
 	public String getDomainValue(final String domain) {
@@ -78,7 +77,7 @@ public class MapBackedDomainResolver implements DomainResolver {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((map == null) ? 0 : map.hashCode());
+		result = prime * result + map.hashCode();
 		return result;
 	}
 
@@ -91,10 +90,7 @@ public class MapBackedDomainResolver implements DomainResolver {
 		if (getClass() != obj.getClass())
 			return false;
 		MapBackedDomainResolver other = (MapBackedDomainResolver)obj;
-		if (map == null) {
-			if (other.map != null)
-				return false;
-		} else if (!map.equals(other.map))
+		if (!map.equals(other.map))
 			return false;
 		return true;
 	}

@@ -20,6 +20,7 @@ package com.parship.roperty;
 import com.parship.commons.util.Ensure;
 
 import java.util.Collection;
+import java.util.Objects;
 
 
 /**
@@ -90,7 +91,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		return "DomainSpecificValue{" +
 			"pattern=\"" + patternStr +
 			"\", ordering=" + ordering +
-			(changeSet != null ? ", changeSet=\"" + changeSet + "\"" : "") +
+			(changeSet != null ? ", changeSet=\"" + changeSet + '"' : "") +
 			", value=\"" + value +
 			"\"}";
 	}
@@ -117,13 +118,11 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public boolean isInChangeSets(final Collection<String> activeChangeSets) {
-		if (changeSet == null)
-			return true;
-		return activeChangeSets.contains(changeSet);
-	}
+        return changeSet == null || activeChangeSets.contains(changeSet);
+    }
 
 	public boolean changeSetIs(final String changeSet) {
 		return ((this.changeSet == null && changeSet == null)
-			|| (this.changeSet != null && this.changeSet.equals(changeSet)));
+			|| (Objects.equals(this.changeSet, changeSet)));
 	}
 }
