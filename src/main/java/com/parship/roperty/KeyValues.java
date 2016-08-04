@@ -85,7 +85,7 @@ public class KeyValues {
 		return defaultValue;
 	}
 
-	private String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
+	private static String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
 		for (String domain : domains) {
 			String domainValue = resolver.getDomainValue(domain);

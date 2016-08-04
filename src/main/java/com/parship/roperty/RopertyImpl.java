@@ -138,7 +138,7 @@ public class RopertyImpl implements Roperty {
 		return result;
 	}
 
-	private String trimKey(final String key) {
+	private static String trimKey(final String key) {
 		Ensure.notEmpty(key, "key");
 		return key.trim();
 	}
