@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -343,7 +344,7 @@ public class RopertyImpl implements Roperty {
 
 	@Override
 	public Map<String, KeyValues> getKeyValues() {
-		return keyValuesMap;
+		return Collections.unmodifiableMap(keyValuesMap);
 	}
 
 	@Override

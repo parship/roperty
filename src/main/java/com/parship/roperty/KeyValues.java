@@ -119,7 +119,7 @@ public class KeyValues {
 	}
 
 	public Set<DomainSpecificValue> getDomainSpecificValues() {
-		return domainSpecificValues;
+		return Collections.unmodifiableSet(domainSpecificValues);
 	}
 
 	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
