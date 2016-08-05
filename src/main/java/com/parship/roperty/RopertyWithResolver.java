@@ -17,7 +17,7 @@
 
 package com.parship.roperty;
 
-import com.parship.commons.util.Ensure;
+import java.util.Objects;
 
 
 /**
@@ -30,9 +30,9 @@ public class RopertyWithResolver {
 	private final DomainResolver domainResolver;
 
 	public RopertyWithResolver(final Roperty roperty, final DomainResolver domainResolver) {
-		Ensure.notNull(roperty, "roperty");
-		Ensure.notNull(domainResolver, "domainResolver");
-		this.roperty = roperty;
+        Objects.requireNonNull((Object) roperty, '"' + "roperty" + "\" must not be null");
+        Objects.requireNonNull((Object) domainResolver, '"' + "domainResolver" + "\" must not be null");
+        this.roperty = roperty;
 		this.domainResolver = domainResolver;
 	}
 

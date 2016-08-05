@@ -29,18 +29,6 @@ import java.util.Collection;
 public class Ensure {
 
 	/**
-	 * Check that the provided object is not null.
-	 *
-	 * @param obj Object to check
-	 * @param parameterName name of the parameter to display in the error message
-	 */
-	public static void notNull(final Object obj, final String parameterName) {
-		if (obj == null) {
-			throw new IllegalArgumentException('"' + parameterName + "\" must not be null");
-		}
-	}
-
-	/**
 	 * Check that the provided object is null.
 	 *
 	 * @param obj Object to check
