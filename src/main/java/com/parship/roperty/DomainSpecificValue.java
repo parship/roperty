@@ -17,8 +17,6 @@
 
 package com.parship.roperty;
 
-import com.parship.commons.util.Ensure;
-
 import java.util.Collection;
 import java.util.Objects;
 
@@ -46,8 +44,8 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value) {
-		Ensure.notNull(orderedDomainPattern.getDomainPattern(), "domainPattern");
-		this.patternStr = orderedDomainPattern.getDomainPattern();
+        Objects.requireNonNull((Object) orderedDomainPattern.getDomainPattern(), '"' + "domainPattern" + "\" must not be null");
+        this.patternStr = orderedDomainPattern.getDomainPattern();
 		if (patternStr.contains("*")) {
 			matcher = new RegexMatcher(patternStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*");
 		} else {
@@ -113,8 +111,8 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public void setChangeSet(final String changeSet) {
-		Ensure.notNull(changeSet, "changeSet");
-		this.changeSet = changeSet;
+        Objects.requireNonNull((Object) changeSet, '"' + "changeSet" + "\" must not be null");
+        this.changeSet = changeSet;
 	}
 
 	public boolean isInChangeSets(final Collection<String> activeChangeSets) {

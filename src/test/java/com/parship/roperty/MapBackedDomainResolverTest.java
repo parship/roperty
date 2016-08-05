@@ -19,7 +19,9 @@ package com.parship.roperty;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 
@@ -48,5 +50,46 @@ public class MapBackedDomainResolverTest {
 	@Test
 	public void toStringTest() {
 		assertThat(resolver.toString(), is("com.parship.roperty.MapBackedDomainResolver with {dom1=val1, dom2=val2}"));
+	}
+
+	@Test
+	public void resolversWithSameValuesShouldBeEqual() {
+		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+		aResolver.set("domain", "value");
+
+		MapBackedDomainResolver anotherResolver = new MapBackedDomainResolver();
+		anotherResolver.set("domain", "value");
+
+		assertThat(aResolver, equalTo(anotherResolver));
+		assertThat(aResolver.hashCode(), is(anotherResolver.hashCode()));
+	}
+
+	@Test
+	public void resolverShouldBeEqualToItself() {
+		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+		assertThat(aResolver, equalTo(aResolver));
+	}
+
+	@Test
+	public void resolverShouldNotBeEqualToNull() {
+		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+		assertThat(aResolver, not(equalTo(null)));
+	}
+
+	@Test
+	public void domainResolverOfDifferentClassShouldNotBeEqual() {
+		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+		assertThat(aResolver, not(equalTo(new Object())));
+	}
+
+	@Test
+	public void differentResolversShouldNotBeEqual() {
+		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+		aResolver.set("domain", "value");
+
+		MapBackedDomainResolver anotherResolver = new MapBackedDomainResolver();
+		anotherResolver.set("anotherDomain", "anotherValue");
+
+		assertThat(aResolver, not(equalTo(anotherResolver)));
 	}
 }

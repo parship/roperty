@@ -19,6 +19,7 @@ package com.parship.roperty;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class MapBackedDomainResolver implements DomainResolver {
 
 	@Override
 	public Collection<String> getActiveChangeSets() {
-		return activeChangeSets;
+		return Collections.unmodifiableCollection(activeChangeSets);
 	}
 
 	public MapBackedDomainResolver set(final String domain, final String domainValue) {

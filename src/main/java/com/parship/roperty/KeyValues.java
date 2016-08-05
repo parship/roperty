@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -75,8 +76,8 @@ public class KeyValues {
 
 	@SuppressWarnings("unchecked")
 	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
-		Ensure.notNull(domains, "domains");
-		String domainStr = buildDomain(domains, resolver);
+        Objects.requireNonNull((Object) domains, '"' + "domains" + "\" must not be null");
+        String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
 			if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(domainStr)) {
 				return (T)domainSpecificValue.getValue();
@@ -118,7 +119,7 @@ public class KeyValues {
 	}
 
 	public Set<DomainSpecificValue> getDomainSpecificValues() {
-		return domainSpecificValues;
+		return Collections.unmodifiableSet(domainSpecificValues);
 	}
 
 	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
