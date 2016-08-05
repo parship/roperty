@@ -44,7 +44,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value) {
-        Objects.requireNonNull((Object) orderedDomainPattern.getDomainPattern(), "\"domainPattern\" must not be null");
+        Objects.requireNonNull(orderedDomainPattern.getDomainPattern(), "\"domainPattern\" must not be null");
         this.patternStr = orderedDomainPattern.getDomainPattern();
 		if (patternStr.contains("*")) {
 			matcher = new RegexMatcher(patternStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*");
@@ -111,7 +111,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	public void setChangeSet(final String changeSet) {
-        Objects.requireNonNull((Object) changeSet, "\"changeSet\" must not be null");
+        Objects.requireNonNull(changeSet, "\"changeSet\" must not be null");
         this.changeSet = changeSet;
 	}
 
