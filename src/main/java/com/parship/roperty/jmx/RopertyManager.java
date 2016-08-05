@@ -60,7 +60,7 @@ public class RopertyManager implements RopertyManagerMBean {
 	}
 
 	public void add(Roperty roperty) {
-        Objects.requireNonNull((Object) roperty, '"' + "roperty" + "\" must not be null");
+        Objects.requireNonNull((Object) roperty, "\"roperty\" must not be null");
         roperties.put(roperty, null);
 	}
 

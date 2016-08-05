@@ -30,8 +30,8 @@ public class RopertyWithResolver {
 	private final DomainResolver domainResolver;
 
 	public RopertyWithResolver(final Roperty roperty, final DomainResolver domainResolver) {
-        Objects.requireNonNull((Object) roperty, '"' + "roperty" + "\" must not be null");
-        Objects.requireNonNull((Object) domainResolver, '"' + "domainResolver" + "\" must not be null");
+        Objects.requireNonNull((Object) roperty, "\"roperty\" must not be null");
+        Objects.requireNonNull((Object) domainResolver, "\"domainResolver\" must not be null");
         this.roperty = roperty;
 		this.domainResolver = domainResolver;
 	}
