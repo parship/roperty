@@ -83,4 +83,19 @@ public class DomainSpecificValueTest {
 		assertThat(dsv.changeSetIs(null), is(true));
 		assertThat(dsv.changeSetIs("other"), is(false));
 	}
+
+	@Test
+	public void changeSetIsSet() {
+		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
+		DomainSpecificValue dsv = new DomainSpecificValue(pattern, "val");
+		dsv.setChangeSet("Some changeset");
+		assertThat(dsv.changeSetIs("Some changeset"), is(true));
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void nullChangeSetFails() {
+		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
+		DomainSpecificValue dsv = new DomainSpecificValue(pattern, "val");
+		dsv.setChangeSet(null);
+	}
 }
