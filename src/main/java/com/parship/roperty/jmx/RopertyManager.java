@@ -19,6 +19,7 @@ package com.parship.roperty.jmx;
 
 import java.lang.management.ManagementFactory;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -28,7 +29,6 @@ import javax.management.ObjectName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.parship.commons.util.Ensure;
 import com.parship.roperty.KeyValues;
 import com.parship.roperty.Roperty;
 
@@ -60,8 +60,8 @@ public class RopertyManager implements RopertyManagerMBean {
 	}
 
 	public void add(Roperty roperty) {
-		Ensure.notNull(roperty, "roperty");
-		roperties.put(roperty, null);
+        Objects.requireNonNull((Object) roperty, "\"roperty\" must not be null");
+        roperties.put(roperty, null);
 	}
 
 	@Override
