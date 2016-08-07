@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.commons.util;
+package com.parship.roperty;
 
 /**
  * A simple Design-by-contract helper class to make parameter checks explicit.

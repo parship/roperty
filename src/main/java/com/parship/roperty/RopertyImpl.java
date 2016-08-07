@@ -17,7 +17,6 @@
 
 package com.parship.roperty;
 
-import com.parship.commons.util.Ensure;
 import com.parship.roperty.jmx.RopertyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
