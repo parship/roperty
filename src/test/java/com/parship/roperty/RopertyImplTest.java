@@ -322,15 +322,13 @@ public class RopertyImplTest {
 	}
 
 	@Test
-	public void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheMap() {
+	public void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheValueStore() {
 		String key = "key";
-		Map<String, KeyValues> mockMap = mock(HashMap.class);
 		KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
 		when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
 		ropertyImpl.setPersistence(persistenceMock);
-		ropertyImpl.setKeyValuesMap(mockMap);
 		ropertyWithResolver.get(key);
-		verify(mockMap).put(key, keyValues);
+		assertThat(ropertyImpl.getKeyValues(key), notNullValue());
 	}
 
 	@Test
