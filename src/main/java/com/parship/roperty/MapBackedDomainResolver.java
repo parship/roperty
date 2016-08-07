@@ -91,8 +91,6 @@ public class MapBackedDomainResolver implements DomainResolver {
 		if (getClass() != obj.getClass())
 			return false;
 		MapBackedDomainResolver other = (MapBackedDomainResolver)obj;
-		if (!map.equals(other.map))
-			return false;
-		return true;
+		return map.equals(other.map);
 	}
 }
