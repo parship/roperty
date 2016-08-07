@@ -93,7 +93,9 @@ public class KeyValues {
 			if (domainValue == null) {
 				domainValue = "";
 			}
-			Ensure.that(!domainValue.contains(DOMAIN_SEPARATOR), "domainValues can not contain '" + DOMAIN_SEPARATOR + '\'');
+			if (domainValue.contains(DOMAIN_SEPARATOR)) {
+                throw new IllegalArgumentException("domainValues may not contain '" + DOMAIN_SEPARATOR + '\'');
+            }
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
 		return builder.toString();

@@ -37,15 +37,4 @@ public class Ensure {
 		}
 	}
 
-	/**
-	 * Check, that the given condition is true
-	 *
-	 * @param cond condition to evaluate
-	 * @param conditionName name to display in the error message
-	 */
-	public static void that(final boolean cond, final String conditionName) {
-		if (!cond) {
-			throw new IllegalArgumentException('"' + conditionName + "\" must be true");
-		}
-	}
 }
