@@ -55,7 +55,7 @@ public class RopertyImpl implements Roperty {
 
 	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory
 		domainSpecificValueFactory) {
-        Objects.requireNonNull((Object) domainInitializer, '"' + "domainInitializer" + "\" must not be null");
+        Objects.requireNonNull(domainInitializer, "\"domainInitializer\" must not be null");
         this.domains = domainInitializer.getInitialDomains();
 		initFromPersistence(persistence, keyValuesFactory, domainSpecificValueFactory);
 	}
@@ -83,9 +83,9 @@ public class RopertyImpl implements Roperty {
 	}
 
 	private void initFromPersistence(final Persistence persistence, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
-        Objects.requireNonNull((Object) keyValuesFactory, '"' + "keyValuesFactory" + "\" must not be null");
-        Objects.requireNonNull((Object) domainSpecificValueFactory, '"' + "domainSpecificValueFactory" + "\" must not be null");
-        Objects.requireNonNull((Object) persistence, '"' + "persistence" + "\" must not be null");
+        Objects.requireNonNull(keyValuesFactory, "\"keyValuesFactory\" must not be null");
+        Objects.requireNonNull(domainSpecificValueFactory, "\"domainSpecificValueFactory\" must not be null");
+        Objects.requireNonNull(persistence, "\"persistence\" must not be null");
         this.keyValuesFactory = keyValuesFactory;
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 		this.persistence = persistence;
@@ -175,7 +175,7 @@ public class RopertyImpl implements Roperty {
 	
 	@Override
 	public Roperty addDomains(final String... domains) {
-        Objects.requireNonNull((Object) domains, '"' + "domains" + "\" must not be null");
+        Objects.requireNonNull(domains, "\"domains\" must not be null");
         for (String domain : domains) {
 			Ensure.notEmpty(domain, "domain");
 			this.domains.add(domain);
@@ -279,14 +279,14 @@ public class RopertyImpl implements Roperty {
 
 	@Override
 	public void setKeyValuesMap(final Map<String, KeyValues> keyValuesMap) {
-        Objects.requireNonNull((Object) keyValuesMap, '"' + "keyValuesMap" + "\" must not be null");
+        Objects.requireNonNull(keyValuesMap, "\"keyValuesMap\" must not be null");
         synchronized (keyValuesMap) {
 			this.keyValuesMap = keyValuesMap;
 		}
 	}
 
 	public void setPersistence(final Persistence persistence) {
-        Objects.requireNonNull((Object) persistence, '"' + "persistence" + "\" must not be null");
+        Objects.requireNonNull(persistence, "\"persistence\" must not be null");
         this.persistence = persistence;
 		RopertyManager.getInstance().add(this);
 	}

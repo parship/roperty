@@ -74,7 +74,7 @@ public class KeyValues {
 
 	@SuppressWarnings("unchecked")
 	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
-        Objects.requireNonNull((Object) domains, '"' + "domains" + "\" must not be null");
+        Objects.requireNonNull(domains, "\"domains\" must not be null");
         String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
 			if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(domainStr)) {
