@@ -23,7 +23,7 @@ package com.parship.roperty;
  * @author mfinsterwalder
  * @since 2010-10-13
  */
-public class Ensure {
+class Ensure {
 
 	/**
 	 * Check that the provided string is not empty (not null, not "").
