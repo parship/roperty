@@ -265,9 +265,9 @@ public class RopertyImpl implements Roperty {
 		}
 	}
 
-	private void remove(final String key, final KeyValues keyValues, final String changeSet) {
+	private void remove(final String key, final KeyValues keyValues) {
 		if (persistence != null) {
-			persistence.remove(key, keyValues, changeSet);
+			persistence.remove(key, keyValues, null);
 		}
 	}
 
@@ -363,7 +363,7 @@ public class RopertyImpl implements Roperty {
 	@Override
 	public void removeKey(final String key) {
 		final String trimmedKey = trimKey(key);
-		remove(trimmedKey, keyValuesMap.remove(trimmedKey), null);
+		remove(trimmedKey, keyValuesMap.remove(trimmedKey));
 	}
 
 	@Override
