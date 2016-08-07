@@ -330,7 +330,7 @@ public class RopertyImpl implements Roperty {
 
 	@Override
 	public KeyValues getKeyValues(final String key) {
-		Ensure.notEmpty("key", key);
+		Ensure.notEmpty(key, "key");
 		return keyValuesMap.get(key.trim());
 	}
 
