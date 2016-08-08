@@ -42,7 +42,7 @@ DomainResolver domainResolver = new MapBackedDomainResolver()
 
 Roperty would then try to find the best match for the "keyToQuery" according to the resolved domain values.
 
-So for example, there might be the following values stored in roperty for "keyToQuery":
+So for example, there might be the following values stored in Roperty for "keyToQuery":
 (Notation: domain pattern => value)
 
     de| => Deutsche Übersetzung
