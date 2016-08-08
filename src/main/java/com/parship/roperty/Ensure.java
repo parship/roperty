@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.commons.util;
+package com.parship.roperty;
 
 /**
  * A simple Design-by-contract helper class to make parameter checks explicit.
@@ -23,7 +23,7 @@ package com.parship.commons.util;
  * @author mfinsterwalder
  * @since 2010-10-13
  */
-public class Ensure {
+class Ensure {
 
 	/**
 	 * Check that the provided string is not empty (not null, not "").
@@ -37,15 +37,4 @@ public class Ensure {
 		}
 	}
 
-	/**
-	 * Check, that the given condition is true
-	 *
-	 * @param cond condition to evaluate
-	 * @param conditionName name to display in the error message
-	 */
-	public static void that(final boolean cond, final String conditionName) {
-		if (!cond) {
-			throw new IllegalArgumentException('"' + conditionName + "\" must be true");
-		}
-	}
 }

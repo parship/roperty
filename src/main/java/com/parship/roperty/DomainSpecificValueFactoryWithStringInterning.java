@@ -20,9 +20,8 @@ public class DomainSpecificValueFactoryWithStringInterning extends AbstractDomai
     }
 
     private static String[] internDomainKeyParts(String[] domainKeyParts) {
-        String[] internDomainKeyParts;
 
-        internDomainKeyParts=new String[domainKeyParts.length];
+        String[] internDomainKeyParts = new String[domainKeyParts.length];
         int position=0;
         for (String domainKeyPart : domainKeyParts) {
             internDomainKeyParts[position] = domainKeyPart.intern();

@@ -9,7 +9,7 @@ The main task for Roperty is to serve values to a key according to a domain hier
 
 Domain hierarchies can be freely defined. As an example, a possible hierarchy for translation could be something like:
 
-Language | Country | Partner | A/B-Testgroup  
+    Language | Country | Partner | A/B-Testgroup
 
 When a key is accessed from Roperty, a DomainResolver needs to be provided.
 
@@ -42,25 +42,25 @@ DomainResolver domainResolver = new MapBackedDomainResolver()
 
 Roperty would then try to find the best match for the "keyToQuery" according to the resolved domain values.
 
-So for example, there might be the following values stored in roperty for "keyToQuery":
+So for example, there might be the following values stored in Roperty for "keyToQuery":
 (Notation: domain pattern => value)
 
-de| => Deutsche Übersetzung  
-de|DE| => Spezielle Übersetzung für Deutschland  
-en| => English translation  
-en|US| => Special translation for the US  
-en|US|google| => Special translation for the partner account "google"  
+    de| => Deutsche Übersetzung
+    de|DE| => Spezielle Übersetzung für Deutschland
+    en| => English translation
+    en|US| => Special translation for the US
+    en|US|google| => Special translation for the partner account "google"
 
 Accessing this Roperty instance with the given domainResolver would return "Spezielle Übersetzung für Deutschland".
 
 In addition Roperty also supports wildcards for domain keys. For example I could add a key translation like:
 
-de|*|google| => Deutscher Text für Google Partner Konto  
-\*|*|google| => Special translation for google partner account  
-\*|*|*|3| => A/B-Testgroup 3 translation
-\*|CH|*|3| => A/B-Testgroup 3 translation for Switzerland all languages
+    de|*|google| => Deutscher Text für Google Partner Konto
+    *|*|google| => Special translation for google partner account
+    *|*|*|3| => A/B-Testgroup 3 translation
+    *|CH|*|3| => A/B-Testgroup 3 translation for Switzerland all languages
 
-Accessing this Roperty with the given domainResolver instance would return "Deutscher Text für Google Partner Konto".
+Accessing this Roperty with the given `domainResolver` instance would return "Deutscher Text für Google Partner Konto".
 So Roperty always does a best match resolution, where most of the keys match. Explicit values match better than wildcards.
 Values further to the right bind more than values to the left. So in the example above, when a query has a
 domain value for "A/B-Testgroup" of 3, the final translation is used, no matter what the language etc. are,

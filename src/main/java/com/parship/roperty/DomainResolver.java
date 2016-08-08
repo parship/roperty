@@ -22,7 +22,7 @@ import java.util.Collection;
 
 /**
  * Callback interface to resolve values for the different domains for the current query to Roperty.
- * Passed as a paramter to Roperty.get-methods this interface is called for each domain configured
+ * Passed as a parameter to Roperty.get-methods this interface is called for each domain configured
  * in the Roperty instance queried. Roperty will call this interface once for each domain configured.
  *
  * @author mfinsterwalder
