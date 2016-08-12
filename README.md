@@ -3,15 +3,15 @@ Roperty
 
 Roperty - An advanced property management and retrival system
 
-Roperty is roughly a hierarchical id-value-store. All keys accessed are cached in memory.
+Roperty is roughly a hierarchical key-value-store. All keys accessed are cached in memory.
 Depending of the persistence implementation, all keys are also preloaded into memory upon startup.
-The main task for Roperty is to serve values to a id according to a domain hierarchy.
+The main task for Roperty is to serve values to a key according to a domain hierarchy.
 
 Domain hierarchies can be freely defined. As an example, a possible hierarchy for translation could be something like:
 
     Language | Country | Partner | A/B-Testgroup
 
-When a id is accessed from Roperty, a DomainResolver needs to be provided.
+When a key is accessed from Roperty, a DomainResolver needs to be provided.
 
 ```java
 DomainResolver domainResolver = ....;
@@ -53,7 +53,7 @@ So for example, there might be the following values stored in Roperty for "keyTo
 
 Accessing this Roperty instance with the given domainResolver would return "Spezielle Übersetzung für Deutschland".
 
-In addition Roperty also supports wildcards for domain keys. For example I could add a id translation like:
+In addition Roperty also supports wildcards for domain keys. For example I could add a key translation like:
 
     de|*|google| => Deutscher Text für Google Partner Konto
     *|*|google| => Special translation for google partner account
