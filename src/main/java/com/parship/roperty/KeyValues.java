@@ -51,6 +51,7 @@ public class KeyValues {
 	}
 
 	public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainKeyParts) {
+		Objects.requireNonNull(domainKeyParts, "Domain key parts may no be null");
 		for (String domain : domainKeyParts) {
 			Ensure.notEmpty(domain, "domain");
 		}
@@ -72,7 +73,6 @@ public class KeyValues {
 		return domainSpecificValue;
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
         Objects.requireNonNull(domains, "\"domains\" must not be null");
         String domainStr = buildDomain(domains, resolver);
