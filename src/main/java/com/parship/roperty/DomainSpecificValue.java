@@ -85,6 +85,29 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		DomainSpecificValue that = (DomainSpecificValue) o;
+
+		if (ordering != that.ordering) return false;
+		if (!patternStr.equals(that.patternStr)) return false;
+		if (!value.equals(that.value)) return false;
+		return changeSet != null ? changeSet.equals(that.changeSet) : that.changeSet == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = patternStr.hashCode();
+		result = 31 * result + ordering;
+		result = 31 * result + value.hashCode();
+		result = 31 * result + (changeSet != null ? changeSet.hashCode() : 0);
+		return result;
+	}
+
+	@Override
 	public String toString() {
 		return "DomainSpecificValue{" +
 			"pattern=\"" + patternStr +
