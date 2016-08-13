@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ValuesStore {
 
@@ -17,6 +18,7 @@ public class ValuesStore {
     }
 
     public void setAllValues(Map<? extends String, ? extends KeyValues> values) {
+        Objects.requireNonNull(values, "Values must not be null");
         keyValuesMap.clear();
         keyValuesMap.putAll(values);
     }
