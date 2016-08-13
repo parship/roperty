@@ -212,7 +212,7 @@ public class RopertyImpl implements Roperty {
 
 	private void store(final String key, final KeyValues keyValues) {
 		if (persistence != null) {
-			persistence.store(key, keyValues, "");
+			persistence.store(key, keyValues, null);
 		}
 	}
 
