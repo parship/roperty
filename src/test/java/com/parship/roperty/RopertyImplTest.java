@@ -166,7 +166,7 @@ public class RopertyImplTest {
 		KeyValues keyValue = new KeyValues(new DefaultDomainSpecificValueFactory());
 		when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
 		ropertyWithResolver.set(key, "value", null);
-		verify(persistenceMock).store(key, keyValue, "");
+		verify(persistenceMock).store(key, keyValue, null);
 	}
 
 	@Test
