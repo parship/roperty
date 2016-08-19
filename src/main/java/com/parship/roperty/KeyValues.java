@@ -58,7 +58,7 @@ public class KeyValues {
 		return addOrChangeDomainSpecificValue(changeSet, value, domainKeyParts);
 	}
 
-	private synchronized DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String[] domainKeyParts) {
+	private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String[] domainKeyParts) {
 		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainKeyParts);
 
 		if (domainSpecificValues.contains(domainSpecificValue)) {
