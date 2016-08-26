@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.parship</groupId>
 	<artifactId>roperty</artifactId>
-	<version>0.13</version>
+	<version>0.14-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Roperty</name>
 	<description>Roperty - An advanced property management and retrieval system with hierarchical resolution of values</description>
@@ -25,7 +25,7 @@
 		<url>git@github.com:parship/roperty.git</url>
 		<connection>scm:git:git@github.com:parship/roperty.git</connection>
 		<developerConnection>scm:git:git@github.com:parship/roperty.git</developerConnection>
-		<tag>roperty-0.13</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
