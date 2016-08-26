@@ -217,7 +217,7 @@ public class RopertyImplTest {
 
 	@Test(expected = NullPointerException.class)
 	public void nullDomainsAreNotAllowed() {
-		ropertyImpl.addDomains(null);
+		ropertyImpl.addDomains((String[]) null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
