@@ -75,9 +75,10 @@ public class KeyValues {
 
 	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
         Objects.requireNonNull(domains, "\"domains\" must not be null");
+		Objects.requireNonNull(resolver, "\"resolver\" must not be null");
         String domainStr = buildDomain(domains, resolver);
 		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
-			if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(domainStr)) {
+			if (domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets()) && domainSpecificValue.matches(domainStr)) {
 				return (T)domainSpecificValue.getValue();
 			}
 		}
