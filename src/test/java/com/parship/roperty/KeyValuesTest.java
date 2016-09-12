@@ -17,21 +17,23 @@
 
 package com.parship.roperty;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -138,8 +140,8 @@ public class KeyValuesTest {
 		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), is("val"));
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void callingGetWithoutAResolverGivesNullPointerException() {
+	@Test(expected = IllegalArgumentException.class)
+	public void callingGetWithDomainsButWithoutAResolverGivesNullPointerException() {
 		keyValues.get(asList("dom1", "dom2"), null, null);
 	}
 

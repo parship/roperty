@@ -75,19 +75,23 @@ public class KeyValues {
 
 	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
         Objects.requireNonNull(domains, "\"domains\" must not be null");
-		Objects.requireNonNull(resolver, "\"resolver\" must not be null");
-        String domainStr = buildDomain(domains, resolver);
+		Iterator<String> domainsIterator = domains.iterator();
+		if (domainsIterator.hasNext() && resolver == null) {
+			throw new IllegalArgumentException("If a domain is specified, the domain resolver must not be null");
+		}
+        String domainStr = buildDomain(domainsIterator, resolver);
 		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
-			if (domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets()) && domainSpecificValue.matches(domainStr)) {
+			if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(domainStr)) {
 				return (T)domainSpecificValue.getValue();
 			}
 		}
 		return defaultValue;
 	}
 
-	private static String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
+	private static String buildDomain(final Iterator<String> domainsIterator, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
-		for (String domain : domains) {
+		while (domainsIterator.hasNext()) {
+			String domain = domainsIterator.next();
 			String domainValue = resolver.getDomainValue(domain);
 			if (domainValue == null) {
 				domainValue = "";
