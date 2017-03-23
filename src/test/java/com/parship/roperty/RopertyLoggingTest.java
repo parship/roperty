@@ -18,7 +18,6 @@
 package com.parship.roperty;
 
 import ch.qos.logback.classic.Level;
-import com.parship.commons.util.LoggingTestRule;
 import org.junit.Rule;
 import org.junit.Test;
 

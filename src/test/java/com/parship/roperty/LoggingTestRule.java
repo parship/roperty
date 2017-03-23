@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.commons.util;
+package com.parship.roperty;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -23,8 +23,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.slf4j.LoggerFactory;
 
 import static org.mockito.Mockito.*;
@@ -87,18 +86,7 @@ public class LoggingTestRule extends TestWatcher {
 
 	public void verifyLog(final Level level, final CharSequence expectedLog) {
 		verify(appenderMock, atLeastOnce())
-			.doAppend(Matchers.<ILoggingEvent>argThat(new ArgumentMatcher() {
-
-				@Override
-				public boolean matches(final Object argument) {
-					return ((ILoggingEvent)argument).getLevel().equals(level)
-						&& ((ILoggingEvent)argument).getFormattedMessage().contains(expectedLog);
-				}
-
-				@Override
-				public void describeTo(final org.hamcrest.Description description) {
-					description.appendText("[" + level + "] ..." + expectedLog + "...");
-				}
-			}));
+			.doAppend(ArgumentMatchers.<ILoggingEvent>argThat(new LogArgumentMatcher(level, expectedLog)));
 	}
+
 }
