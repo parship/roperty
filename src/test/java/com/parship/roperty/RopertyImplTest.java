@@ -17,10 +17,10 @@
 
 package com.parship.roperty;
 
+import com.sun.org.apache.xpath.internal.Arg;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -38,6 +38,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -56,8 +57,10 @@ public class RopertyImplTest {
 
     @Mock
 	private DomainResolver resolverMock;
+
     @Mock
-    Persistence persistenceMock;
+    private Persistence persistenceMock;
+
     @Mock
     private DomainResolver domainResolverMock;
 
@@ -480,7 +483,7 @@ public class RopertyImplTest {
 
 		ropertyWithPersistence.remove("key");
 
-		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), anyString());
+		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), isNull());
 		assertThat(ropertyWithPersistence.get("key", domainResolverMock), nullValue());
 		assertThat(ropertyWithPersistence.<String>get("key", resolverMock), is("domValue"));
 	}
@@ -495,7 +498,7 @@ public class RopertyImplTest {
 
 		ropertyWithPersistence.remove("key", "dom1");
 
-		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), anyString());
+		verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), isNull());
 		assertThat(ropertyWithPersistence.<String>get("key", domainResolverMock), is("value"));
 		assertThat(ropertyWithPersistence.<String>get("key", resolverMock), is("domValue2"));
 	}
@@ -513,7 +516,7 @@ public class RopertyImplTest {
 		ropertyWithPersistence.set("key", "value", "desc");
 		ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
 		ropertyWithPersistence.removeKey("key");
-		verify(persistenceMock).remove(eq("key"), any(KeyValues.class), anyString());
+		verify(persistenceMock).remove(eq("key"), any(KeyValues.class), isNull());
 		assertThat(ropertyWithPersistence.get("key", resolverMock), nullValue());
 	}
 
