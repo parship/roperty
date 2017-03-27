@@ -202,12 +202,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
-		Collection<String> keys = changeSets.get(changeSet);
-		if (keys == null) {
-			keys = new ArrayList<>();
-			changeSets.put(changeSet, keys);
-		}
-		return keys;
+		return changeSets.computeIfAbsent(changeSet, k -> new ArrayList<>());
 	}
 
 	private void store(final String key, final KeyValues keyValues) {
