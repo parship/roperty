@@ -171,7 +171,7 @@ public class RopertyImpl implements Roperty {
 		set(key, defaultValue, description);
 		return defaultValue;
 	}
-	
+
 	@Override
 	public Roperty addDomains(final String... domains) {
         Objects.requireNonNull(domains, "\"domains\" must not be null");
@@ -181,7 +181,7 @@ public class RopertyImpl implements Roperty {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public void set(final String key, final Object value, final String description, final String... domains) {
 		final String trimmedKey = trimKey(key);
@@ -319,5 +319,10 @@ public class RopertyImpl implements Roperty {
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<String> findKeys(String regexPattern) {
+		return persistence.findKeys(regexPattern);
 	}
 }
