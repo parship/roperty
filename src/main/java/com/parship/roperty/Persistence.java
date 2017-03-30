@@ -67,11 +67,13 @@ public interface Persistence {
     void remove(String key, DomainSpecificValue domainSpecificValue, final String changeSet);
 
     /**
-     * Queries the persistence to return the keys that match to the given regular expression.
+     * Queries the persistence to return the keys that include the given substring.
      *
-     * @param regexPattern A regular expression according to the Java Pattern definition
-     * @return A list of keys that match to the given regular expression
+     * Should be case insensitive.
+     *
+     * @param substring A part of the key to search.
+     * @return A list of keys that contain the given substring.
      */
-    List<String> findKeys(String regexPattern);
+    List<String> findKeys(String substring);
 
 }

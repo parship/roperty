@@ -322,7 +322,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	@Override
-	public List<String> findKeys(String regexPattern) {
-		return persistence.findKeys(regexPattern);
+	public List<String> findKeys(String substring) {
+		return persistence.findKeys(substring);
 	}
 }

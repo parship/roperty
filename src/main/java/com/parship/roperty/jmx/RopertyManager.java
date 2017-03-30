@@ -54,7 +54,7 @@ public class RopertyManager implements RopertyManagerMBean {
 			mbs.registerMBean(this, new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
 		} catch (InstanceAlreadyExistsException e) {
 			// nothing to do
-		} catch (Exception e) {
+        } catch (Exception e) {
 			LOGGER.warn("Could not register MBean for Roperty", e);
 		}
 	}

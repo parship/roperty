@@ -40,6 +40,6 @@ public interface Roperty {
 
 	void removeChangeSet(String changeSet);
 
-    List<String> findKeys(String regexPattern);
+    List<String> findKeys(String substring);
 
 }

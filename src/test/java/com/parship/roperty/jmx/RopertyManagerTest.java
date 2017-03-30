@@ -22,6 +22,8 @@ import com.parship.roperty.RopertyImpl;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.PrintStream;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
@@ -104,4 +106,30 @@ public class RopertyManagerTest {
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
 		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
 	}
+
+	@Test
+    public void dumpsToSystemOut() {
+	    PrintStream out = mock(PrintStream.class);
+	    System.setOut(out);
+
+	    Roperty roperty1 = mock(Roperty.class);
+	    manager.add(roperty1);
+
+        Roperty roperty2 = mock(Roperty.class);
+        manager.add(roperty2);
+
+	    manager.dumpToSystemOut();
+
+	    verify(roperty1).dump(out);
+	    verify(roperty2).dump(out);
+
+	    verify(out, times(2)).println();
+    }
+
+    @Test
+    public void ignoresInstanceAlreadyExistsException() {
+        new RopertyManager();
+        new RopertyManager();
+    }
+
 }

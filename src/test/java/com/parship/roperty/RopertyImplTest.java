@@ -536,4 +536,12 @@ public class RopertyImplTest {
         assertThat(ropertyWithPersistence.<String>get("key", resolver), is("value"));
         assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), nullValue());
     }
+
+    @Test
+    public void findKeysUsingPersistence() {
+        String substring = "substring";
+        RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
+        ropertyWithPersistence.findKeys(substring);
+        verify(persistenceMock).findKeys(substring);
+    }
 }
