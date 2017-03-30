@@ -76,4 +76,11 @@ public interface Persistence {
      */
     List<String> findKeys(String substring);
 
+    /**
+     * Retrieves all keys from the persistence.
+     *
+     * @return A list of all keys that exist in this persistence.
+     */
+    List<String> getAllKeys();
+
 }

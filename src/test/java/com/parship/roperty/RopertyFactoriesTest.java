@@ -20,6 +20,7 @@ package com.parship.roperty;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -88,6 +91,11 @@ public class RopertyFactoriesTest {
                     .collect(Collectors.toList());
             }
 
+            @Override
+            public List<String> getAllKeys() {
+                return new ArrayList<>(stringKeyValuesHashMap.keySet());
+            }
+
         }, () -> new CopyOnWriteArrayList<>(), new FactoryProvider() {
             @Override
             public KeyValuesFactory getKeyValuesFactory() {
@@ -141,6 +149,11 @@ public class RopertyFactoriesTest {
                     .stream()
                     .filter(key -> Pattern.matches(regexPattern, key))
                     .collect(Collectors.toList());
+            }
+
+            @Override
+            public List<String> getAllKeys() {
+                return new ArrayList<>(stringKeyValuesHashMap.keySet());
             }
 
         }, new FactoryProvider() {
