@@ -171,7 +171,7 @@ public class RopertyImpl implements Roperty {
 		set(key, defaultValue, description);
 		return defaultValue;
 	}
-	
+
 	@Override
 	public Roperty addDomains(final String... domains) {
         Objects.requireNonNull(domains, "\"domains\" must not be null");
@@ -181,7 +181,7 @@ public class RopertyImpl implements Roperty {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public void set(final String key, final Object value, final String description, final String... domains) {
 		final String trimmedKey = trimKey(key);
@@ -202,12 +202,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
-		Collection<String> keys = changeSets.get(changeSet);
-		if (keys == null) {
-			keys = new ArrayList<>();
-			changeSets.put(changeSet, keys);
-		}
-		return keys;
+		return changeSets.computeIfAbsent(changeSet, k -> new ArrayList<>());
 	}
 
 	private void store(final String key, final KeyValues keyValues) {
@@ -324,5 +319,10 @@ public class RopertyImpl implements Roperty {
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<String> findKeys(String substring) {
+		return persistence.findKeys(substring);
 	}
 }
