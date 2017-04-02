@@ -15,6 +15,11 @@
     <description>Roperty - An advanced property management and retrieval system with hierarchical resolution of values
     </description>
     <url>https://github.com/parship/roperty</url>
+    <inceptionYear>2013</inceptionYear>
+    <organization>
+        <name>PARSHIP ELITE Group</name>
+        <url>http://www.parshipelite.com/</url>
+    </organization>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
