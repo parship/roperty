@@ -15,12 +15,16 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.factory;
+
+import java.util.List;
+
 
 /**
  * @author mfinsterwalder
- * @since 2013-06-03 14:35
+ * @since 2013-05-24 08:52
  */
-public interface KeyValuesFactory {
-	KeyValues create(final DomainSpecificValueFactory factory);
+@FunctionalInterface
+public interface DomainInitializer {
+	List<String> getInitialDomains();
 }

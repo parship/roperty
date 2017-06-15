@@ -23,17 +23,17 @@ package com.parship.roperty;
  * @author mfinsterwalder
  * @since 2010-10-13
  */
-class Ensure {
+public class Ensure {
 
 	/**
 	 * Check that the provided string is not empty (not null, not "").
 	 *
-	 * @param str string to check
+	 * @param charSequence characters to check
 	 * @param parameterName name of the parameter to display in the error message
 	 */
-	public static void notEmpty(final CharSequence str, final String parameterName) {
-		if (str == null || str.length() == 0) {
-			throw new IllegalArgumentException('"' + parameterName + "\" must not be null or empty, but was: " + str);
+	public static void notEmpty(final CharSequence charSequence, final String parameterName) {
+		if (charSequence == null || charSequence.length() == 0) {
+			throw new IllegalArgumentException('"' + parameterName + "\" must not be null or empty, but was: " + charSequence);
 		}
 	}
 

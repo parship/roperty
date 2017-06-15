@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.keyvalues;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValue;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValueFactory;
 
 
 /**
  * @author mfinsterwalder
- * @since 2013-05-24 08:52
+ * @since 2013-06-03 14:37
  */
-public interface DomainInitializer {
-	CopyOnWriteArrayList<String> getInitialDomains();
+public class DefaultKeyValuesFactory<D extends DomainSpecificValue> implements KeyValuesFactory<D, KeyValues<D>> {
+
+    @Override
+	public KeyValues<D> create(DomainSpecificValueFactory<D> factory) {
+		return new KeyValues<>(factory);
+	}
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.domainspecificvalue;
 
 import java.util.Collection;
 import java.util.Objects;

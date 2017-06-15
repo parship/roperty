@@ -4,31 +4,42 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-public class ValuesStore {
+import com.parship.roperty.domainspecificvalue.DomainSpecificValue;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValueFactory;
+import com.parship.roperty.keyvalues.KeyValues;
+import com.parship.roperty.keyvalues.KeyValuesFactory;
 
-    private final Map<String, KeyValues> keyValuesMap = new HashMap<>();
-    private KeyValuesFactory keyValuesFactory;
-    private DomainSpecificValueFactory domainSpecificValueFactory;
-    private Persistence persistence;
+import static java.util.Objects.requireNonNull;
 
-    public Map<String, KeyValues> getAllValues() {
+
+public class ValuesStore<D extends DomainSpecificValue, K extends KeyValues<D>> {
+
+    private final Map<String, K> keyValuesMap = new HashMap<>();
+    private KeyValuesFactory<D, K> keyValuesFactory;
+    private DomainSpecificValueFactory<D> domainSpecificValueFactory;
+    private Persistence<D, K> persistence;
+
+    public Map<String, K> getAllValues() {
         return Collections.unmodifiableMap(keyValuesMap);
     }
 
-    public void setAllValues(Map<? extends String, ? extends KeyValues> values) {
+    public void setAllValues(Map<String, K> values) {
         keyValuesMap.clear();
         keyValuesMap.putAll(values);
     }
 
-    public KeyValues getOrCreateKeyValues(final String key, final String description) {
-        KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
+    public K getOrCreateKeyValues(final String key, final String description) {
+        K keyValues = getKeyValuesFromMapOrPersistence(key);
         if (keyValues == null) {
             synchronized (keyValuesMap) {
                 keyValues = keyValuesMap.get(key);
                 if (keyValues == null) {
+                    requireNonNull(keyValuesFactory, "keyValuesFactory must not be null");
                     keyValues = keyValuesFactory.create(domainSpecificValueFactory);
-                    if (description != null && description.trim().length() > 0) {
+                    requireNonNull(keyValues, "keyValues must not be null");
+                    if (description != null && !description.trim().isEmpty()) {
                         keyValues.setDescription(description);
                     }
                     keyValuesMap.put(key, keyValues);
@@ -38,13 +49,13 @@ public class ValuesStore {
         return keyValues;
     }
 
-    public KeyValues getKeyValuesFromMapOrPersistence(final String key) {
-        KeyValues keyValues = keyValuesMap.get(key);
+    public K getKeyValuesFromMapOrPersistence(final String key) {
+        K keyValues = keyValuesMap.get(key);
         if (keyValues == null) {
             keyValues = load(key);
             if (keyValues != null) {
                 synchronized (keyValuesMap) {
-                    KeyValues keyValuesSecondTry = keyValuesMap.get(key);
+                    K keyValuesSecondTry = keyValuesMap.get(key);
                     if (keyValuesSecondTry == null) {
                         keyValuesMap.put(key, keyValues);
                     } else {
@@ -58,14 +69,14 @@ public class ValuesStore {
 
     public String dump() {
         StringBuilder builder = new StringBuilder(keyValuesMap.size() * 16);
-        for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
+        for (Entry<String, K> entry : keyValuesMap.entrySet()) {
             builder.append('\n').append("KeyValues for \"").append(entry.getKey()).append("\": ").append(entry.getValue());
         }
         return builder.toString();
     }
 
     public void dump(PrintStream out) {
-        for (Map.Entry<String, KeyValues> entry : keyValuesMap.entrySet()) {
+        for (Entry<String, K> entry : keyValuesMap.entrySet()) {
             out.println();
             out.print("KeyValues for \"");
             out.print(entry.getKey());
@@ -74,36 +85,38 @@ public class ValuesStore {
         }
     }
 
-    public KeyValues getValuesFor(String key) {
+    public K getValuesFor(String key) {
         return keyValuesMap.get(key);
     }
 
-    public KeyValues remove(String key) {
+    public K remove(String key) {
         return keyValuesMap.remove(key);
     }
 
-    private KeyValues load(final String key) {
+    private K load(final String key) {
         if (persistence != null) {
             return persistence.load(key, keyValuesFactory, domainSpecificValueFactory);
         }
         return null;
     }
 
-    public void setKeyValuesFactory(KeyValuesFactory keyValuesFactory) {
+    public void setKeyValuesFactory(KeyValuesFactory<D, K> keyValuesFactory) {
         this.keyValuesFactory = keyValuesFactory;
     }
 
-    public void setDomainSpecificValueFactory(DomainSpecificValueFactory domainSpecificValueFactory) {
+    public void setDomainSpecificValueFactory(DomainSpecificValueFactory<D> domainSpecificValueFactory) {
         this.domainSpecificValueFactory = domainSpecificValueFactory;
     }
 
-    public void setPersistence(Persistence persistence) {
+    public void setPersistence(Persistence<D, K> persistence) {
         this.persistence = persistence;
     }
 
     public void reload() {
         if (persistence != null) {
-            setAllValues(persistence.reload(getAllValues(), keyValuesFactory, domainSpecificValueFactory));
+            Map<String, K> oldValues = getAllValues();
+            Map<String, K> newValues = persistence.reload(oldValues, keyValuesFactory, domainSpecificValueFactory);
+            setAllValues(newValues);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.parship.roperty;
+package com.parship.roperty.domainspecificvalue;
 
 public class OrderedDomainPattern {
 	private final String domainPattern;

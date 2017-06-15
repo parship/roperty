@@ -15,13 +15,19 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.factory;
+
+import com.parship.roperty.domainspecificvalue.DomainSpecificValue;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValueFactory;
+import com.parship.roperty.keyvalues.KeyValues;
+import com.parship.roperty.keyvalues.KeyValuesFactory;
+
 
 /**
  * @author mfinsterwalder
  * @since 2013-06-03 17:48
  */
-public interface FactoryProvider {
-	KeyValuesFactory getKeyValuesFactory();
-	DomainSpecificValueFactory getDomainSpecificValueFactory();
+public interface FactoryProvider<D extends DomainSpecificValue, K extends KeyValues<D>> {
+	KeyValuesFactory<D, K> getKeyValuesFactory();
+	DomainSpecificValueFactory<D> getDomainSpecificValueFactory();
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.domainresolver;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,7 +35,7 @@ public class MapBackedDomainResolver implements DomainResolver {
 	private final Collection<String> activeChangeSets = new HashSet<>();
 
 	@Override
-	public String getDomainValue(final String domain) {
+	public String getDomainKey(final String domain) {
 		return map.get(domain);
 	}
 

@@ -1,5 +1,14 @@
 package com.parship.roperty;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.parship.roperty.domainspecificvalue.DomainSpecificValue;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValueFactory;
+import com.parship.roperty.keyvalues.KeyValues;
+import com.parship.roperty.keyvalues.KeyValuesFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,39 +17,34 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
 public class ValuesStoreTest {
 
     @InjectMocks
-    private ValuesStore valuesStore = new ValuesStore();
+    private ValuesStore<DomainSpecificValue, KeyValues<DomainSpecificValue>> valuesStore = new ValuesStore<>();
 
     @Mock
-    private KeyValues keyValues;
+    private KeyValues<DomainSpecificValue> keyValues;
 
     @Mock
-    private Persistence persistence;
+    private Persistence<DomainSpecificValue, KeyValues<DomainSpecificValue>> persistence;
 
     @Mock
-    private KeyValuesFactory keyValuesFactory;
-    
+    private KeyValuesFactory<DomainSpecificValue, KeyValues<DomainSpecificValue>> keyValuesFactory;
+
     @Mock
-    private DomainSpecificValueFactory domainSpecificValueFactory;
+    private DomainSpecificValueFactory<DomainSpecificValue> domainSpecificValueFactory;
 
     @Test
     public void valuesAreEmptyOnInitialization() {
@@ -56,8 +60,8 @@ public class ValuesStoreTest {
 
     @Test
     public void valuesShouldBeAdded() {
-        when(keyValues.toString()).thenReturn("keyValues.toString()");
-        Map<String, KeyValues> values = new HashMap<>();
+        given(keyValues.toString()).willReturn("keyValues.toString()");
+        Map<String, KeyValues<DomainSpecificValue>> values = new HashMap<>();
         values.put("key", keyValues);
 
         valuesStore.setAllValues(values);
@@ -70,9 +74,9 @@ public class ValuesStoreTest {
 
     @Test
     public void loadUnknownValuesFromPersistence() {
-        when(persistence.load("key", keyValuesFactory, domainSpecificValueFactory)).thenReturn(keyValues);
+        given(persistence.load("key", keyValuesFactory, domainSpecificValueFactory)).willReturn(keyValues);
 
-        KeyValues result = valuesStore.getKeyValuesFromMapOrPersistence("key");
+        KeyValues<DomainSpecificValue> result = valuesStore.getKeyValuesFromMapOrPersistence("key");
 
         verify(persistence).load("key", keyValuesFactory, domainSpecificValueFactory);
         assertThat(result, is(keyValues));
@@ -81,11 +85,11 @@ public class ValuesStoreTest {
 
     @Test
     public void loadKnownValuesFromMap() {
-        Map<String, KeyValues> values = new HashMap<>();
+        Map<String, KeyValues<DomainSpecificValue>> values = new HashMap<>();
         values.put("key", keyValues);
         valuesStore.setAllValues(values);
 
-        KeyValues result = valuesStore.getKeyValuesFromMapOrPersistence("key");
+        KeyValues<DomainSpecificValue> result = valuesStore.getKeyValuesFromMapOrPersistence("key");
 
         assertThat(result, is(keyValues));
         assertThat(valuesStore.getAllValues().size(), is(1));
@@ -93,8 +97,8 @@ public class ValuesStoreTest {
 
     @Test
     public void valueShouldBeAdded() {
-        when(keyValuesFactory.create(domainSpecificValueFactory)).thenReturn(keyValues);
-        KeyValues result = valuesStore.getOrCreateKeyValues("key", "description");
+        given(keyValuesFactory.create(domainSpecificValueFactory)).willReturn(keyValues);
+        KeyValues<DomainSpecificValue> result = valuesStore.getOrCreateKeyValues("key", "description");
 
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(keyValues).setDescription(captor.capture());
@@ -105,12 +109,11 @@ public class ValuesStoreTest {
 
     @Test
     public void dumpShouldBeFormatted() {
-        when(keyValuesFactory.create(domainSpecificValueFactory)).thenReturn(keyValues);
+        given(keyValuesFactory.create(domainSpecificValueFactory)).willReturn(keyValues);
         valuesStore.getOrCreateKeyValues("key", "description");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(byteArrayOutputStream);
-
 
         valuesStore.dump(out);
 
@@ -120,30 +123,36 @@ public class ValuesStoreTest {
 
     @Test
     public void valueShouldBeRemoved() {
-        when(keyValuesFactory.create(domainSpecificValueFactory)).thenReturn(keyValues);
+        given(keyValuesFactory.create(domainSpecificValueFactory)).willReturn(keyValues);
 
         valuesStore.getOrCreateKeyValues("key", "description");
 
-        KeyValues result = valuesStore.remove("key");
+        KeyValues<DomainSpecificValue> result = valuesStore.remove("key");
 
         assertThat(valuesStore.getValuesFor("key"), not(is(result)));
         assertThat(valuesStore.getValuesFor("key"), not(is(keyValues)));
         assertThat(valuesStore.getAllValues().size(), is(0));
     }
-    
+
     @Test
     public void valuesShouldBeReloaded() {
-        Map<String, KeyValues> values = new HashMap<>();
-        values.put("key", keyValues);
-        when(persistence.reload(any(Map.class), eq(keyValuesFactory), eq(domainSpecificValueFactory))).thenReturn(values);
 
+        // given
+        Map<String, KeyValues<DomainSpecificValue>> values = new HashMap<>();
+        values.put("key", keyValues);
+        given(persistence.reload(any(Map.class), eq(keyValuesFactory), eq(domainSpecificValueFactory))).willReturn(values);
+        given(keyValuesFactory.create(domainSpecificValueFactory)).willReturn(keyValues);
+
+        // when
         valuesStore.getOrCreateKeyValues("another key", null);
         valuesStore.reload();
 
+        // then
         assertThat(valuesStore.getValuesFor("key"), is(keyValues));
         assertThat(valuesStore.getValuesFor("another key"), nullValue());
         assertThat(valuesStore.getAllValues().size(), is(1));
-    }
+        verify(keyValuesFactory).create(domainSpecificValueFactory);
 
+    }
 
 }

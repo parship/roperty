@@ -20,23 +20,28 @@ package com.parship.roperty;
 import java.util.List;
 import java.util.Map;
 
+import com.parship.roperty.domainspecificvalue.DomainSpecificValue;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValueFactory;
+import com.parship.roperty.keyvalues.KeyValues;
+import com.parship.roperty.keyvalues.KeyValuesFactory;
+
 
 /**
  * @author mfinsterwalder
  * @since 2013-05-17 13:01
  */
-public interface Persistence {
+public interface Persistence<D extends DomainSpecificValue, K extends KeyValues<D>> {
     /**
      * Load all overridden values for a single key. Is called by Roperty when an unknown key is queried.
      */
-    KeyValues load(final String key, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+    K load(final String key, KeyValuesFactory<D, K> keyValuesFactory, DomainSpecificValueFactory<D> domainSpecificValueFactory);
 
     /**
      * Load all values persisted (Preloading). Is called by Roperty when it is started.
      *
      * @return A map that is either empty or prefilled with some data.
      */
-    Map<String, KeyValues> loadAll(KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+    Map<String, K> loadAll(KeyValuesFactory<D, K> keyValuesFactory, DomainSpecificValueFactory<D> domainSpecificValueFactory);
 
     /**
      * Reload the data from persistence to synchronize changes.
@@ -44,9 +49,9 @@ public interface Persistence {
      *
      * @param keyValuesMap current keyValuesMap with keys already known
      */
-    Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+    Map<String, K> reload(Map<String, K> keyValuesMap, KeyValuesFactory<D, K> keyValuesFactory, DomainSpecificValueFactory<D> domainSpecificValueFactory);
 
-    void store(final String key, final KeyValues keyValues, final String changeSet);
+    void store(final String key, final K keyValues, final String changeSet);
 
     /**
      * Remove a complete key from persistence.
@@ -55,7 +60,7 @@ public interface Persistence {
      * @param keyValues the KeyValues object roperty knows about or null, when unknown
      * @param changeSet the changeSet to remove
      */
-    void remove(String key, KeyValues keyValues, final String changeSet);
+    void remove(String key, K keyValues, final String changeSet);
 
     /**
      * Remove a DomainSpecificValue from persistence.

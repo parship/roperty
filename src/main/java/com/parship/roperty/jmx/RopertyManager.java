@@ -17,20 +17,12 @@
 
 package com.parship.roperty.jmx;
 
-import java.lang.management.ManagementFactory;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Objects;
-import java.util.WeakHashMap;
+import java.util.Set;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.parship.roperty.KeyValues;
 import com.parship.roperty.Roperty;
+import com.parship.roperty.keyvalues.KeyValues;
 
 
 /**
@@ -39,38 +31,20 @@ import com.parship.roperty.Roperty;
  */
 public class RopertyManager implements RopertyManagerMBean {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyManager.class);
-	private static final RopertyManager instance = new RopertyManager();
+	private final Set<Roperty<?, ?>> roperties = new HashSet<>();
 
-	private final Map<Roperty, Roperty> roperties = new WeakHashMap<>();
-
-	public static RopertyManager getInstance() {
-		return instance;
-	}
-
-	public RopertyManager() {
-		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-		try {
-			mbs.registerMBean(this, new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
-		} catch (InstanceAlreadyExistsException e) {
-			// nothing to do
-        } catch (Exception e) {
-			LOGGER.warn("Could not register MBean for Roperty", e);
-		}
-	}
-
-	public void add(Roperty roperty) {
+	public void add(Roperty<?,?> roperty) {
         Objects.requireNonNull(roperty, "\"roperty\" must not be null");
-        roperties.put(roperty, null);
+        roperties.add(roperty);
 	}
 
 	@Override
 	public String dump(String key) {
-		StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
-		for (Roperty roperty : roperties.keySet()) {
-			KeyValues keyValues = roperty.getKeyValues(key);
+		StringBuilder builder = new StringBuilder(roperties.size() * 8);
+		for (Roperty<?,?> roperty : roperties) {
+			KeyValues<?> keyValues = roperty.getKeyValues(key);
 			if (keyValues != null) {
-				builder.append(keyValues.toString());
+				builder.append(keyValues);
 				builder.append("\n\n");
 			}
 		}
@@ -79,8 +53,8 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	@Override
 	public String dump() {
-		StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
-		for (Roperty roperty : roperties.keySet()) {
+		StringBuilder builder = new StringBuilder(roperties.size() * 8);
+		for (Roperty<?,?> roperty : roperties) {
 			builder.append(roperty.dump());
 			builder.append("\n\n");
 		}
@@ -89,7 +63,7 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	@Override
 	public void dumpToSystemOut() {
-		for (Roperty roperty : roperties.keySet()) {
+		for (Roperty<?,?> roperty : roperties) {
 			roperty.dump(System.out);
 			System.out.println();
 		}
@@ -97,21 +71,21 @@ public class RopertyManager implements RopertyManagerMBean {
 
 	@Override
 	public void reload() {
-		for (Roperty roperty : roperties.keySet()) {
+		for (Roperty<?,?> roperty : roperties) {
 			roperty.reload();
 		}
 	}
 
 	@Override
 	public String listRoperties() {
-		return roperties.keySet().toString();
+		return roperties.toString();
 	}
 
 	public void reset() {
 		roperties.clear();
 	}
 
-	public void remove(final Roperty roperty) {
+	public void remove(final Roperty<?,?> roperty) {
 		roperties.remove(roperty);
 	}
 }

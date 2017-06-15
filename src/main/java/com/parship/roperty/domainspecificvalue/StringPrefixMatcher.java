@@ -15,25 +15,22 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
-
-import java.util.regex.Pattern;
-
+package com.parship.roperty.domainspecificvalue;
 
 /**
  * @author mfinsterwalder
  * @since 2013-09-13 10:49
  */
-public class RegexMatcher implements Matcher {
+class StringPrefixMatcher implements Matcher {
 
-	private final Pattern pattern;
+	private final String prefixString;
 
-	public RegexMatcher(final String regex) {
-		this.pattern = Pattern.compile(regex);
+	StringPrefixMatcher(final String prefixString) {
+		this.prefixString = prefixString;
 	}
 
 	@Override
 	public boolean matches(String domainString) {
-		return pattern.matcher(domainString).matches();
+		return prefixString.equals(domainString.substring(0, Math.min(domainString.length(), prefixString.length())));
 	}
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.keyvalues;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +26,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import com.parship.roperty.Ensure;
+import com.parship.roperty.domainresolver.DomainResolver;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValue;
+import com.parship.roperty.domainspecificvalue.DomainSpecificValueFactory;
+
 
 /**
  * A collection of domain specifically overridden values for a single key.
@@ -35,22 +40,22 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * @author mfinsterwalder
  * @since 2013-03-26 09:18
  */
-public class KeyValues {
+public class KeyValues<D extends DomainSpecificValue> {
 
 	private static final String DOMAIN_SEPARATOR = "|";
 	private String description;
-	private final Set<DomainSpecificValue> domainSpecificValues = new ConcurrentSkipListSet<>();
-	private DomainSpecificValueFactory domainSpecificValueFactory;
+	private final Set<D> domainSpecificValues = new ConcurrentSkipListSet<>();
+	private DomainSpecificValueFactory<D> domainSpecificValueFactory;
 
-	public KeyValues(final DomainSpecificValueFactory domainSpecificValueFactory) {
+	public KeyValues(final DomainSpecificValueFactory<D> domainSpecificValueFactory) {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 
-	public DomainSpecificValue put(Object value, String... domainKeyParts) {
+	public D put(Object value, String... domainKeyParts) {
 		return putWithChangeSet(null, value, domainKeyParts);
 	}
 
-	public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainKeyParts) {
+	public D putWithChangeSet(final String changeSet, final Object value, final String... domainKeyParts) {
 		Objects.requireNonNull(domainKeyParts, "Domain key parts may no be null");
 		for (String domain : domainKeyParts) {
 			Ensure.notEmpty(domain, "domain");
@@ -58,29 +63,29 @@ public class KeyValues {
 		return addOrChangeDomainSpecificValue(changeSet, value, domainKeyParts);
 	}
 
-	private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String[] domainKeyParts) {
-		DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainKeyParts);
+	private D addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String[] domainKeyParts) {
+		D newDomainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainKeyParts);
 
-		if (domainSpecificValues.contains(domainSpecificValue)) {
-			for (DomainSpecificValue d: domainSpecificValues) {
-				if(d.compareTo(domainSpecificValue) == 0) {
-					d.setValue(domainSpecificValue.getValue());
+		if (domainSpecificValues.contains(newDomainSpecificValue)) {
+			for (D domainSpecificValue: domainSpecificValues) {
+				if(domainSpecificValue.compareTo(newDomainSpecificValue) == 0) {
+					domainSpecificValue.setValue(newDomainSpecificValue.getValue());
 				}
 			}
 		} else {
-			domainSpecificValues.add(domainSpecificValue);
+			domainSpecificValues.add(newDomainSpecificValue);
 		}
-		return domainSpecificValue;
+		return newDomainSpecificValue;
 	}
 
-	public <T> T get(Iterable<String> domains, T defaultValue, final DomainResolver resolver) {
-        Objects.requireNonNull(domains, "\"domains\" must not be null");
-		Iterator<String> domainsIterator = domains.iterator();
-		if (domainsIterator.hasNext() && resolver == null) {
+	public <T> T get(Iterable<String> domainNames, T defaultValue, final DomainResolver resolver) {
+        Objects.requireNonNull(domainNames, "\"domainNames\" must not be null");
+		Iterator<String> domainNamesIterator = domainNames.iterator();
+		if (domainNamesIterator.hasNext() && resolver == null) {
 			throw new IllegalArgumentException("If a domain is specified, the domain resolver must not be null");
 		}
-        String domainStr = buildDomain(domainsIterator, resolver);
-		for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
+        String domainStr = buildDomain(domainNamesIterator, resolver);
+		for (D domainSpecificValue : domainSpecificValues) {
 			if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(domainStr)) {
 				return (T)domainSpecificValue.getValue();
 			}
@@ -88,11 +93,11 @@ public class KeyValues {
 		return defaultValue;
 	}
 
-	private static String buildDomain(final Iterator<String> domainsIterator, final DomainResolver resolver) {
+	private static String buildDomain(final Iterator<String> domainNamesIterator, final DomainResolver resolver) {
 		StringBuilder builder = new StringBuilder();
-		while (domainsIterator.hasNext()) {
-			String domain = domainsIterator.next();
-			String domainValue = resolver.getDomainValue(domain);
+		while (domainNamesIterator.hasNext()) {
+			String domain = domainNamesIterator.next();
+			String domainValue = resolver.getDomainKey(domain);
 			if (domainValue == null) {
 				domainValue = "";
 			}
@@ -116,18 +121,18 @@ public class KeyValues {
 	public String toString() {
 		StringBuilder builder = new StringBuilder("KeyValues{\n\tdescription=\"");
 		builder.append(getDescription()).append("\"\n");
-		for(DomainSpecificValue entry:domainSpecificValues) {
+		for(D entry:domainSpecificValues) {
 			builder.append('\t').append(entry).append('\n');
 		}
 		builder.append('}');
 		return builder.toString();
 	}
 
-	public Set<DomainSpecificValue> getDomainSpecificValues() {
+	public Set<D> getDomainSpecificValues() {
 		return Collections.unmodifiableSet(domainSpecificValues);
 	}
 
-	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
+	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory<D> domainSpecificValueFactory) {
 		this.domainSpecificValueFactory = domainSpecificValueFactory;
 	}
 
@@ -136,15 +141,15 @@ public class KeyValues {
 		return get(emptyList, null, null);
 	}
 
-	public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {
+	public D remove(final String changeSet, final String... domainKeyParts) {
 		StringBuilder builder = new StringBuilder(domainKeyParts.length * 8);
 		for (String domainValue : domainKeyParts) {
 			builder.append(domainValue).append(DOMAIN_SEPARATOR);
 		}
-		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
+		Iterator<D> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
-			DomainSpecificValue value = iterator.next();
-			if (value.changeSetIs(changeSet) && builder.toString().equals(value.getPatternStr())) {
+			D value = iterator.next();
+			if (value.changeSetIs(changeSet) && Objects.equals(builder.toString(), value.getPatternStr())) {
 				iterator.remove();
 				return value;
 			}
@@ -152,11 +157,11 @@ public class KeyValues {
 		return null;
 	}
 
-	public Collection<DomainSpecificValue> removeChangeSet(final String changeSet) {
-		Collection<DomainSpecificValue> removedValues = new ArrayList<>(domainSpecificValues.size());
-		Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
+	public Collection<D> removeChangeSet(final String changeSet) {
+		Collection<D> removedValues = new ArrayList<>(domainSpecificValues.size());
+		Iterator<D> iterator = domainSpecificValues.iterator();
 		while(iterator.hasNext()) {
-			DomainSpecificValue value = iterator.next();
+			D value = iterator.next();
 			if (value.changeSetIs(changeSet)) {
 				removedValues.add(value);
 				iterator.remove();

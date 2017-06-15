@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.parship.roperty;
+package com.parship.roperty.domainresolver;
 
 import java.util.Collection;
 
@@ -35,7 +35,7 @@ public interface DomainResolver {
 	 * @param domain The domain to translate to a value
 	 * @return The value for the domain or null, when the domain should be ignored
 	 */
-	String getDomainValue(String domain);
+	String getDomainKey(String domain);
 
 	Collection<String> getActiveChangeSets();
 }
