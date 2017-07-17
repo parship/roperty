@@ -17,9 +17,6 @@
 
 package com.parship.roperty;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +24,9 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -84,10 +84,10 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public List<String> findKeys(String regexPattern) {
+            public List<String> findKeys(String substring, String containerName) {
                 return stringKeyValuesHashMap.keySet()
                     .stream()
-                    .filter(key -> Pattern.matches(regexPattern, key))
+                    .filter(key -> Pattern.matches(substring, key))
                     .collect(Collectors.toList());
             }
 
@@ -144,10 +144,10 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public List<String> findKeys(String regexPattern) {
+            public List<String> findKeys(String substring, String containerName) {
                 return stringKeyValuesHashMap.keySet()
                     .stream()
-                    .filter(key -> Pattern.matches(regexPattern, key))
+                    .filter(key -> Pattern.matches(substring, key))
                     .collect(Collectors.toList());
             }
 

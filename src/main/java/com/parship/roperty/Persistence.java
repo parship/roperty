@@ -72,9 +72,10 @@ public interface Persistence {
      * Should be case insensitive.
      *
      * @param substring A part of the key to search.
+     * @param containerName Specifies a container (null if no container)
      * @return A list of keys that contain the given substring.
      */
-    List<String> findKeys(String substring);
+    List<String> findKeys(String substring, String containerName);
 
     /**
      * Retrieves all keys from the persistence.

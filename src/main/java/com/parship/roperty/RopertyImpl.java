@@ -17,10 +17,6 @@
 
 package com.parship.roperty;
 
-import com.parship.roperty.jmx.RopertyManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.parship.roperty.jmx.RopertyManager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -322,7 +323,7 @@ public class RopertyImpl implements Roperty {
 	}
 
 	@Override
-	public List<String> findKeys(String substring) {
-		return persistence.findKeys(substring);
+	public List<String> findKeys(String substring, String containerName) {
+		return persistence.findKeys(substring, containerName);
 	}
 }
