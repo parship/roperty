@@ -8,7 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.parship</groupId>
     <artifactId>roperty</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Roperty</name>
     <description>Roperty - An advanced property management and retrieval system with hierarchical resolution of values
