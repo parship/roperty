@@ -66,3 +66,40 @@ Values further to the right bind more than values to the left. So in the example
 domain value for "A/B-Testgroup" of 3, the final translation is used, no matter what the language etc. are,
 unless country is CH.
 
+## Building
+
+The module can be built using Maven:
+
+    mvn package
+
+## Installing to local Maven repository
+
+To install a snapshot version to your local repository use
+
+    mvn install
+
+## Usage
+
+To add a dependency on Roperty using Maven, use the following:
+
+```xml
+<dependency>
+  <groupId>com.parship</groupId>
+  <artifactId>roperty</artifactId>
+  <version>1.1.0</version>
+</dependency>
+```
+
+To add a dependency using Gradle:
+
+```
+dependencies {
+  compile 'com.parship:roperty:1.1.0'
+}
+```
+
+## Links
+
+- [GitHub project](https://github.com/parship/roperty)
+- [Issue tracker: Report a defect or feature request](https://github.com/parship/roperty/issues/new)
+- [StackOverflow: Ask "how-to" and "why-didn't-it-work" questions](https://stackoverflow.com/questions/ask?tags=roperty)
