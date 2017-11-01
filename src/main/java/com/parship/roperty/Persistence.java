@@ -78,10 +78,17 @@ public interface Persistence {
     List<String> findKeys(String substring, String containerName);
 
     /**
+     * Retrieves all keys from specific container.
+     *
+     * @param containerName Specifies a container (null if no container)
+     * @return A list of keys by specific container.
+     */
+    List<String> findKeysBy(String containerName);
+
+    /**
      * Retrieves all keys from the persistence.
      *
      * @return A list of all keys that exist in this persistence.
      */
     List<String> getAllKeys();
-
 }
