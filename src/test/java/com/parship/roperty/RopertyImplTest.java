@@ -545,6 +545,13 @@ public class RopertyImplTest {
         assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), nullValue());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void removeChangeSetThrowsIllegalArgumentException() {
+        RopertyImpl ropertyImpl = new RopertyImpl(persistenceMock);
+
+        ropertyImpl.removeChangeSet(null);
+    }
+
     @Test
     public void findKeysUsingPersistence() {
         String substring = "substring";
@@ -554,4 +561,13 @@ public class RopertyImplTest {
         verify(persistenceMock).findKeys(substring, containerName);
     }
 
+    @Test
+    public void findKeysByUsingPersistence() {
+        String containerName = "containerName";
+        RopertyImpl ropertyImpl = new RopertyImpl(persistenceMock);
+
+        ropertyImpl.findKeysBy(containerName);
+
+        verify(persistenceMock).findKeysBy(containerName);
+    }
 }

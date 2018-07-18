@@ -312,6 +312,7 @@ public class RopertyImpl implements Roperty {
 
 	@Override
 	public void removeChangeSet(String changeSet) {
+        Objects.requireNonNull(changeSet, "\"changeSet\" must not be null");
 		for (String key : changeSets.get(changeSet)) {
 			KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(key);
 			if (keyValues != null) {
