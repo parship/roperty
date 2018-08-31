@@ -54,7 +54,7 @@ public class RopertyImpl implements Roperty {
 	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory
 		domainSpecificValueFactory) {
         Objects.requireNonNull(domainInitializer, "\"domainInitializer\" must not be null");
-        this.domains = domainInitializer.getInitialDomains();
+        domains = domainInitializer.getInitialDomains();
 		initFromPersistence(persistence, keyValuesFactory, domainSpecificValueFactory);
 	}
 
@@ -85,7 +85,7 @@ public class RopertyImpl implements Roperty {
         Objects.requireNonNull(domainSpecificValueFactory, "\"domainSpecificValueFactory\" must not be null");
         Objects.requireNonNull(persistence, "\"persistence\" must not be null");
 		this.persistence = persistence;
-		this.valuesStore = new ValuesStore();
+        valuesStore = new ValuesStore();
 		valuesStore.setKeyValuesFactory(keyValuesFactory);
 		valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
 		valuesStore.setPersistence(persistence);
@@ -100,13 +100,13 @@ public class RopertyImpl implements Roperty {
 	}
 
 	public RopertyImpl() {
-		this.domains = new CopyOnWriteArrayList<>();
+        domains = new CopyOnWriteArrayList<>();
 		initWithoutPersistence();
 		RopertyManager.getInstance().add(this);
 	}
 
 	private void initWithoutPersistence() {
-		this.valuesStore = new ValuesStore();
+        valuesStore = new ValuesStore();
 		valuesStore.setKeyValuesFactory(new DefaultKeyValuesFactory());
 		valuesStore.setDomainSpecificValueFactory(createDomainSpecificValueFactory());
 	}
@@ -313,7 +313,12 @@ public class RopertyImpl implements Roperty {
 	@Override
 	public void removeChangeSet(String changeSet) {
         Objects.requireNonNull(changeSet, "\"changeSet\" must not be null");
-		for (String key : changeSets.get(changeSet)) {
+        Collection<String> changeSetKeyValues = changeSets.get(changeSet);
+        if(changeSetKeyValues==null){
+            LOGGER.warn("No key/values found for changeSet: {}", changeSet);
+            return;
+        }
+        for (String key : changeSetKeyValues) {
 			KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(key);
 			if (keyValues != null) {
 				for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
