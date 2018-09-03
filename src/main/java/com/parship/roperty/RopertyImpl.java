@@ -332,10 +332,4 @@ public class RopertyImpl implements Roperty {
 	public List<String> findKeys(String substring, String containerName) {
 		return persistence.findKeys(substring, containerName);
 	}
-
-    @Override
-    public List<String> findKeysBy(String containerName) {
-        return persistence.findKeysBy(containerName);
-    }
-
 }
