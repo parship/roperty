@@ -92,11 +92,6 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public List<String> findKeysBy(String containerName) {
-                return new ArrayList<>(stringKeyValuesHashMap.keySet());
-            }
-
-            @Override
             public List<String> getAllKeys() {
                 return new ArrayList<>(stringKeyValuesHashMap.keySet());
             }
@@ -154,11 +149,6 @@ public class RopertyFactoriesTest {
                     .stream()
                     .filter(key -> Pattern.matches(substring, key))
                     .collect(Collectors.toList());
-            }
-
-            @Override
-            public List<String> findKeysBy(String containerName) {
-                return new ArrayList<>(stringKeyValuesHashMap.keySet());
             }
 
             @Override
