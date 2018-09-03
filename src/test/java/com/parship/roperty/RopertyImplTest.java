@@ -568,14 +568,4 @@ public class RopertyImplTest {
         ropertyWithPersistence.findKeys(substring, containerName);
         verify(persistenceMock).findKeys(substring, containerName);
     }
-
-    @Test
-    public void findKeysByUsingPersistence() {
-        String containerName = "containerName";
-        RopertyImpl ropertyImpl = new RopertyImpl(persistenceMock);
-
-        ropertyImpl.findKeysBy(containerName);
-
-        verify(persistenceMock).findKeysBy(containerName);
-    }
 }
