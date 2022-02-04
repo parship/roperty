@@ -60,9 +60,6 @@ public class RopertyImplTest {
     @Mock
     private Persistence persistenceMock;
 
-    @Mock
-    private DomainResolver domainResolverMock;
-
     private RopertyImpl ropertyImpl;
     private RopertyWithResolver ropertyWithResolver;
 
@@ -252,7 +249,7 @@ public class RopertyImplTest {
     @Test
     public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
         ropertyImpl.addDomains("domain1", "domain2");
-        DomainResolver mockResolver = domainResolverMock;
+        DomainResolver mockResolver = mock(DomainResolver.class);
         when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
         when(mockResolver.getDomainValue("domain2")).thenReturn("domVal2");
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
@@ -280,7 +277,7 @@ public class RopertyImplTest {
     @Test
     public void domainValuesAreRequestedFromAResolver() {
         ropertyWithResolver.getRoperty().addDomains("domain1", "domain2");
-        DomainResolver mockResolver = domainResolverMock;
+        DomainResolver mockResolver = mock(DomainResolver.class);
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
         ropertyWithResolver.set("key", "value", null);
         ropertyWithResolver.get("key");
@@ -293,7 +290,7 @@ public class RopertyImplTest {
     @Test
     public void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
         ropertyImpl.addDomains("domain1", "domain2");
-        DomainResolver mockResolver = domainResolverMock;
+        DomainResolver mockResolver = mock(DomainResolver.class);
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
         ropertyWithResolver.get("key");
         verifyNoMoreInteractions(mockResolver);
@@ -460,7 +457,7 @@ public class RopertyImplTest {
         ropertyWithPersistence.remove("key");
 
         verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), isNull());
-        assertThat(ropertyWithPersistence.get("key", domainResolverMock), nullValue());
+        assertThat(ropertyWithPersistence.get("key", mock(DomainResolver.class)), nullValue());
         assertThat(ropertyWithPersistence.get("key", resolverMock), is("domValue"));
     }
 
@@ -475,7 +472,7 @@ public class RopertyImplTest {
         ropertyWithPersistence.remove("key", "dom1");
 
         verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), isNull());
-        assertThat(ropertyWithPersistence.get("key", domainResolverMock), is("value"));
+        assertThat(ropertyWithPersistence.get("key", mock(DomainResolver.class)), is("value"));
         assertThat(ropertyWithPersistence.get("key", resolverMock), is("domValue2"));
     }
 

@@ -1,17 +1,38 @@
 Roperty
 =======
 
-Roperty - An advanced property management and retrival system
+Roperty - An advanced property management and retrieval system
 
 Roperty is roughly a hierarchical key-value-store. All keys accessed are cached in memory.
-Depending of the persistence implementation, all keys are also preloaded into memory upon startup.
+Depending on the persistence implementation, all keys are also preloaded into memory upon startup.
 The main task for Roperty is to serve values to a key according to a domain hierarchy.
+One typical example is serving different translations for translation keys.
 
 Domain hierarchies can be freely defined. As an example, a possible hierarchy for translation could be something like:
 
     Language | Country | Partner | A/B-Testgroup
 
-When a key is accessed from Roperty, a DomainResolver needs to be provided.
+So you want to ask Roperty: What is the translation for the key "GREETING", when the user whats to have language en
+in the country CANADA for the partner Google and is in A/B-Testgroup 2.
+
+Roperty will than search for a "best match" to answer this query, according to the data stored in Roperty before.
+
+So maybe for the key "GREETING" there are three values stored:
+
+One for language en, country USA, any Partner, any Testgroup
+One for language en, any country, any Partner, Testgroup 1
+One for language en, any country, any Partner, Testgroup 2
+One for language en, any country, Google, Testgroup 7
+
+When Roperty is queried with the above values (en|CANADA|Google|2), the last translation would be picked, since it's
+the best match. You can also ignore a domain in a query by providing no value.
+So it's also possible to query for (en|UK|<any>|7), which would find the fourth value. 
+(en|UK|<any>|1) on the other hand would find the second value.
+
+When a key is accessed from Roperty, a DomainResolver needs to be provided. The DomainResolver determines the current
+values for each domain to use when querying Roperty. So in the above case (en|CANADA|Google|2) the DomainResolver
+would return "en" when asked for the domainValue for "Language", "CANADA" when asked for the domainValue for "Country" and so on.
+The DomainResolver can return null to ignore a domain, as noted with <any> above.
 
 ```java
 DomainResolver domainResolver = ....;
@@ -53,7 +74,7 @@ So for example, there might be the following values stored in Roperty for "keyTo
 
 Accessing this Roperty instance with the given domainResolver would return "Spezielle Übersetzung für Deutschland".
 
-In addition Roperty also supports wildcards for domain keys. For example I could add a key translation like:
+In addition Roperty also supports wildcards for domain keys. For example, I could add a key translation like:
 
     de|*|google| => Deutscher Text für Google Partner Konto
     *|*|google| => Special translation for google partner account
