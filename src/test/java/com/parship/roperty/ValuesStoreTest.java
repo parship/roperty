@@ -1,30 +1,30 @@
 package com.parship.roperty;
 
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
-
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 public class ValuesStoreTest {
 
     @InjectMocks
@@ -38,7 +38,7 @@ public class ValuesStoreTest {
 
     @Mock
     private KeyValuesFactory keyValuesFactory;
-    
+
     @Mock
     private DomainSpecificValueFactory domainSpecificValueFactory;
 
@@ -48,9 +48,9 @@ public class ValuesStoreTest {
         assertThat(valuesStore.getValuesFor("key"), nullValue());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void cannotModifyMapFromOuterClass() {
-        valuesStore.getAllValues().put("key", mock(KeyValues.class));
+        assertThrows(UnsupportedOperationException.class, () -> valuesStore.getAllValues().put("key", mock(KeyValues.class)));
         assertThat(valuesStore.getAllValues().size(), is(0));
     }
 
@@ -130,7 +130,7 @@ public class ValuesStoreTest {
         assertThat(valuesStore.getValuesFor("key"), not(is(keyValues)));
         assertThat(valuesStore.getAllValues().size(), is(0));
     }
-    
+
     @Test
     public void valuesShouldBeReloaded() {
         Map<String, KeyValues> values = new HashMap<>();

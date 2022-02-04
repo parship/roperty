@@ -17,18 +17,16 @@
 
 package com.parship.roperty;
 
-import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-
-import java.util.Collections;
-
-import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 
 /**

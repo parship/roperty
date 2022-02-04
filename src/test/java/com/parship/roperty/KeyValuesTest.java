@@ -17,23 +17,23 @@
 
 package com.parship.roperty;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -140,9 +140,9 @@ public class KeyValuesTest {
 		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), is("val"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void callingGetWithDomainsButWithoutAResolverGivesNullPointerException() {
-		keyValues.get(asList("dom1", "dom2"), null, null);
+		assertThrows(IllegalArgumentException.class, () -> keyValues.get(asList("dom1", "dom2"), null, null));
 	}
 
 	@Test
@@ -159,11 +159,11 @@ public class KeyValuesTest {
 		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value"));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void domainValuesMustNotContainPipe() {
 		DomainResolver resolverMock = mock(DomainResolver.class);
 		when(resolverMock.getDomainValue("x1")).thenReturn("abc|def");
-		keyValues.get(Collections.singletonList("x1"), null, resolverMock);
+		assertThrows(IllegalArgumentException.class, () -> keyValues.get(Collections.singletonList("x1"), null, resolverMock));
 	}
 
 	@Test

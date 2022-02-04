@@ -17,6 +17,10 @@
 
 package com.parship.roperty;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +28,8 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -44,7 +43,7 @@ public class RopertyFactoriesTest {
     final String key = "key";
     final String defaultValue = "default";
 
-    @Before
+    @BeforeEach
     public void before() {
         when(keyValueFactoryMock.create(domainSpecificValueFactoryMock)).thenReturn(new KeyValues(domainSpecificValueFactoryMock));
         when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(new DomainSpecificValue(new OrderedDomainPattern("", 1), defaultValue));

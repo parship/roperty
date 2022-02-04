@@ -17,12 +17,15 @@
 
 package com.parship.roperty;
 
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.Test;
 
 /**
  * @author mfinsterwalder
@@ -92,11 +95,11 @@ public class DomainSpecificValueTest {
 		assertThat(dsv.changeSetIs("Some changeset"), is(true));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void nullChangeSetFails() {
 		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
 		DomainSpecificValue dsv = new DomainSpecificValue(pattern, "val");
-		dsv.setChangeSet(null);
+		assertThrows(NullPointerException.class, () -> dsv.setChangeSet(null));
 	}
 
 	@Test

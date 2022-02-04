@@ -17,25 +17,13 @@
 
 package com.parship.roperty;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
@@ -43,9 +31,21 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 
 /**
@@ -66,7 +66,7 @@ public class RopertyImplTest {
     private RopertyImpl ropertyImpl;
     private RopertyWithResolver ropertyWithResolver;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
@@ -77,34 +77,34 @@ public class RopertyImplTest {
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void keyMayNotBeNull() {
-        ropertyWithResolver.get(null);
+        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.get(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void keyMayNotBeNullWithDefault() {
-        ropertyWithResolver.getOrDefine(null, "default");
+        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.getOrDefine(null, "default"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void keyMayNotBeEmpty() {
-        ropertyWithResolver.get("");
+        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.get(""));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void keyMayNotBeEmptyWithDefault() {
-        ropertyWithResolver.getOrDefine("", "default");
+        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.getOrDefine("", "default"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void canNotSetValueForNullKey() {
-        ropertyWithResolver.set(null, "value", "descr");
+        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.set(null, "value", "descr"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void canNotSetValueForEmptyKey() {
-        ropertyWithResolver.set("", "value", "descr");
+        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.set("", "value", "descr"));
     }
 
     @Test
@@ -195,11 +195,11 @@ public class RopertyImplTest {
         assertThat(value, is(7));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
         String text = "value";
         ropertyWithResolver.set("key", text, null);
-        Integer value = ropertyWithResolver.get("key");
+        assertThrows(ClassCastException.class, () -> {Integer value = ropertyWithResolver.get("key");});
     }
 
     @Test
@@ -211,14 +211,14 @@ public class RopertyImplTest {
         assertThat(value, is(text));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void nullDomainsAreNotAllowed() {
-        ropertyImpl.addDomains((String[]) null);
+        assertThrows(NullPointerException.class, () -> ropertyImpl.addDomains((String[]) null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void emptyDomainsAreNotAllowed() {
-        ropertyImpl.addDomains("");
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.addDomains(""));
     }
 
     @Test
@@ -546,18 +546,18 @@ public class RopertyImplTest {
         assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), nullValue());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void removeChangeSetThrowsIllegalArgumentException() {
         RopertyImpl ropertyImpl = new RopertyImpl(persistenceMock);
 
-        ropertyImpl.removeChangeSet(null);
+        assertThrows(NullPointerException.class, () -> ropertyImpl.removeChangeSet(null));
     }
 
     @Test
     public void removeUnexistingChangeSet() {
         ropertyImpl.removeChangeSet("notExistingChangeSet");
 
-        verifyZeroInteractions(persistenceMock);
+        verifyNoInteractions(persistenceMock);
     }
 
     @Test

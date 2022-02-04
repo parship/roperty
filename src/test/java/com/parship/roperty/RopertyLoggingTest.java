@@ -18,8 +18,8 @@
 package com.parship.roperty;
 
 import ch.qos.logback.classic.Level;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 
 /**
@@ -27,21 +27,22 @@ import org.junit.Test;
  * @since 2013-05-28 11:45
  */
 public class RopertyLoggingTest {
-	@Rule
-	public LoggingTestRule rule = new LoggingTestRule(Level.DEBUG);
+
+    @RegisterExtension
+	private LoggingTestExtension logExtension = new LoggingTestExtension(Level.DEBUG);
 
 	private Roperty r = new RopertyImpl();
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelDefaultValue() {
 		r.get("key", "default", null);
-		rule.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'default'");
+		logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'default'");
 	}
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelSetValue() {
 		r.set("key", "otherValue", null);
 		r.get("key", "default", null);
-		rule.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'otherValue'");
+		logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'otherValue'");
 	}
 }

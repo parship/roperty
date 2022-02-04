@@ -17,17 +17,18 @@
 
 package com.parship.roperty.jmx;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.parship.roperty.Roperty;
 import com.parship.roperty.RopertyImpl;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.PrintStream;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -38,7 +39,7 @@ public class RopertyManagerTest {
 
 	private RopertyManager manager = RopertyManager.getInstance();
 
-	@Before
+	@BeforeEach
 	public void before() {
 		manager.reset();
 	}
@@ -131,5 +132,4 @@ public class RopertyManagerTest {
         new RopertyManager();
         new RopertyManager();
     }
-
 }
