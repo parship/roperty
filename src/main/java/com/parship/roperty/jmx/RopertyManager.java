@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.parship.roperty.KeyValues;
 import com.parship.roperty.Roperty;
 
-
 /**
  * @author mfinsterwalder
  * @since 2013-05-28 12:08
@@ -70,7 +69,7 @@ public class RopertyManager implements RopertyManagerMBean {
 		for (Roperty roperty : roperties.keySet()) {
 			KeyValues keyValues = roperty.getKeyValues(key);
 			if (keyValues != null) {
-				builder.append(keyValues.toString());
+				builder.append(keyValues);
 				builder.append("\n\n");
 			}
 		}
