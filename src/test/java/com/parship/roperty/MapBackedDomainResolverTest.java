@@ -25,14 +25,13 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 import org.junit.jupiter.api.Test;
 
-
 /**
  * @author mfinsterwalder
  * @since 2013-05-15 15:26
  */
 public class MapBackedDomainResolverTest {
 
-	private MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
+	private final MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
 
 	@Test
 	public void setAndGetDomainValues() {

@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 /**
  * @author mfinsterwalder
  * @since 2013-06-07 16:05
@@ -52,7 +51,7 @@ public class RopertyFactoriesTest {
     @Test
     public void factoriesAreUsedToCreateObjectsViaFactoryProvider() {
         RopertyImpl r = new RopertyImpl(new Persistence() {
-            Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
+            final Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 
             @Override
             public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
@@ -95,7 +94,7 @@ public class RopertyFactoriesTest {
                 return new ArrayList<>(stringKeyValuesHashMap.keySet());
             }
 
-        }, () -> new CopyOnWriteArrayList<>(), new FactoryProvider() {
+        }, CopyOnWriteArrayList::new, new FactoryProvider() {
             @Override
             public KeyValuesFactory getKeyValuesFactory() {
                 return keyValueFactoryMock;
@@ -112,7 +111,7 @@ public class RopertyFactoriesTest {
     @Test
     public void factoriesAreUsedToCreateObjectsViaFactoryProviderAndDomainInitializer() {
         RopertyImpl r = new RopertyImpl(new Persistence() {
-            Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
+            final Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 
             @Override
             public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {

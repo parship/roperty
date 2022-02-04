@@ -94,7 +94,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		if (ordering != that.ordering) return false;
 		if (!patternStr.equals(that.patternStr)) return false;
 		if (!value.equals(that.value)) return false;
-		return changeSet != null ? changeSet.equals(that.changeSet) : that.changeSet == null;
+		return Objects.equals(changeSet, that.changeSet);
 
 	}
 

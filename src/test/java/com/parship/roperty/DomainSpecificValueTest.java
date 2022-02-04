@@ -114,8 +114,7 @@ public class DomainSpecificValueTest {
     public void nullValueIsNotEqual() {
         OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
         DomainSpecificValue dsv = new DomainSpecificValue(pattern, "val");
-        boolean equals = dsv.equals(null);
-        assertThat(equals, is(false));
+        assertThat(dsv.equals(null), is(false));
     }
 
     @Test
@@ -124,8 +123,7 @@ public class DomainSpecificValueTest {
         DomainSpecificValue dsv1 = new DomainSpecificValue(pattern1, "val");
         OrderedDomainPattern pattern2 = new OrderedDomainPattern("p", 5);
         DomainSpecificValue dsv2 = new DomainSpecificValue(pattern2, "val");
-        boolean equals = dsv1.equals(dsv2);
-        assertThat(equals, is(false));
+        assertThat(dsv1.equals(dsv2), is(false));
     }
 
     @Test
@@ -134,8 +132,7 @@ public class DomainSpecificValueTest {
         DomainSpecificValue dsv1 = new DomainSpecificValue(pattern1, "val");
         OrderedDomainPattern pattern2 = new OrderedDomainPattern("p2", 4);
         DomainSpecificValue dsv2 = new DomainSpecificValue(pattern2, "val");
-        boolean equals = dsv1.equals(dsv2);
-        assertThat(equals, is(false));
+        assertThat(dsv1.equals(dsv2), is(false));
     }
 
     @Test
@@ -144,8 +141,7 @@ public class DomainSpecificValueTest {
         DomainSpecificValue dsv1 = new DomainSpecificValue(pattern1, "val1");
         OrderedDomainPattern pattern2 = new OrderedDomainPattern("p", 4);
         DomainSpecificValue dsv2 = new DomainSpecificValue(pattern2, "val2");
-        boolean equals = dsv1.equals(dsv2);
-        assertThat(equals, is(false));
+        assertThat(dsv1.equals(dsv2), is(false));
     }
 
     @Test
@@ -154,8 +150,7 @@ public class DomainSpecificValueTest {
         DomainSpecificValue dsv1 = new DomainSpecificValue(pattern1, "val", "changeSet1");
         OrderedDomainPattern pattern2 = new OrderedDomainPattern("p", 4);
         DomainSpecificValue dsv2 = new DomainSpecificValue(pattern2, "val", "changeSet2");
-        boolean equals = dsv1.equals(dsv2);
-        assertThat(equals, is(false));
+        assertThat(dsv1.equals(dsv2), is(false));
     }
 
     @Test

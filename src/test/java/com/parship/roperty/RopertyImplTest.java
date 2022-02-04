@@ -39,22 +39,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author mfinsterwalder
  * @since 2013-03-25 08:07
  */
+@ExtendWith(MockitoExtension.class)
 public class RopertyImplTest {
 
-    @Mock
+    @Mock(lenient = true)
     private DomainResolver resolverMock;
 
     @Mock
@@ -68,8 +68,6 @@ public class RopertyImplTest {
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         when(resolverMock.getActiveChangeSets()).thenReturn(new ArrayList<>());
         when(resolverMock.getDomainValue(anyString())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
 
@@ -328,19 +326,6 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void whenKeyValueIsNotInTheMapButCanBeLoadedFromPersistenceItIsOnlyInsertedInsideTheSynchronizedBlockWhenNotAlreadyThere() {
-        String key = "key";
-        Map<String, KeyValues> mockMap = mock(HashMap.class);
-        KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
-        when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
-        ropertyImpl.setPersistence(persistenceMock);
-        when(mockMap.get(key)).thenReturn(null).thenReturn(new KeyValues(new DefaultDomainSpecificValueFactory()));
-        ropertyImpl.setKeyValuesMap(mockMap);
-        ropertyWithResolver.get(key);
-        verify(mockMap, never()).put(key, keyValues);
-    }
-
-    @Test
     public void domainsThatAreInitializedAreUsed() {
         Roperty roperty1 = new RopertyImpl(persistenceMock, "dom1", "dom2");
         roperty1.set("key", "value", "dom1");
@@ -371,8 +356,6 @@ public class RopertyImplTest {
         assertThat(roperty1.get("key", null), is("value"));
         roperty1.reload();
         verify(persistenceMock).reload(any(Map.class), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
-//		assertThat(roperty1.get("key", null), nullValue());
-//		verify(persistenceMock, times(2)).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
     }
 
     @Test

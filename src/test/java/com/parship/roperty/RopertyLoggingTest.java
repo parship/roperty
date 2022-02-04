@@ -21,7 +21,6 @@ import ch.qos.logback.classic.Level;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-
 /**
  * @author mfinsterwalder
  * @since 2013-05-28 11:45
@@ -29,9 +28,9 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class RopertyLoggingTest {
 
     @RegisterExtension
-	private LoggingTestExtension logExtension = new LoggingTestExtension(Level.DEBUG);
+	private final TestLoggingExtension logExtension = new TestLoggingExtension(Level.DEBUG);
 
-	private Roperty r = new RopertyImpl();
+	private final Roperty r = new RopertyImpl();
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelDefaultValue() {

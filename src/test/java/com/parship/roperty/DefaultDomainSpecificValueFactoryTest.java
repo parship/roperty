@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.Test;
 
-
 /**
  * User: mjaeckel
  * Date: 15.11.13

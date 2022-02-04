@@ -1,6 +1,5 @@
 package com.parship.roperty;
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -22,7 +21,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 
 @ExtendWith(MockitoExtension.class)
 public class ValuesStoreTest {

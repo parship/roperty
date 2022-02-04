@@ -17,7 +17,7 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
     public void factoryCreatesCorrectDSVForBaseKey() {
         String value = "value";
         DomainSpecificValue dsv = factory.create(value, null);
-        assertThat((String)dsv.getValue(), is(value));
+        assertThat((String) dsv.getValue(), is(value));
         assertThat(dsv.getPatternStr(), is(""));
     }
 
@@ -27,7 +27,7 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
 
         DomainSpecificValue dsv = factory.create(value, null, "DE", "de_DE");
 
-        assertThat((String)dsv.getValue(), is(value));
+        assertThat((String) dsv.getValue(), is(value));
         assertThat(dsv.getPatternStr(), is("DE|de_DE|"));
     }
 
@@ -42,18 +42,17 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
     }
 
     @Test
-    public void testInterningOfStrings() throws Exception {
+    public void testInterningOfStrings() {
 
-        final String value1=new String("testString");
-        final String value2=new String("testString");
-        assertThat("precondition",value1==(value2), is(false));
-        assertThat("precondition",value1, is(value2));
-
+        final String value1 = new String("testString");
+        final String value2 = new String("testString");
+        assertThat("precondition", value1 == value2, is(false));
+        assertThat("precondition", value1, is(value2));
 
         DomainSpecificValue dsv1 = factory.create(value1, null, "DE", "de_DE");
         DomainSpecificValue dsv2 = factory.create(value2, null, "DE", "de_DE");
 
-        assertThat("both strings should map to the same object",dsv1.getValue()==dsv2.getValue(),is(true));
-        assertThat((String)dsv1.getValue(),is("testString"));
+        assertThat("both strings should map to the same object", dsv1.getValue() == dsv2.getValue(), is(true));
+        assertThat((String) dsv1.getValue(), is("testString"));
     }
 }

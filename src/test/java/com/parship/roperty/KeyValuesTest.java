@@ -35,14 +35,13 @@ import java.util.Set;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 
-
 /**
  * @author mfinsterwalder
  * @since 2013-04-02 22:32
  */
 public class KeyValuesTest {
 
-	private KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
+	private final KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
 	private DomainResolver resolver = new DomainResolver() {
 		@Override
 		public String getDomainValue(final String domain) {
@@ -134,10 +133,10 @@ public class KeyValuesTest {
 	}
 
 	@Test
-	public void callingGetWithAnEmtpyDomainListDoesNotUseTheResolver() {
-		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), nullValue());
+	public void callingGetWithAnEmptyDomainListDoesNotUseTheResolver() {
+		assertThat(keyValues.<String>get(Collections.emptyList(), null, null), nullValue());
 		keyValues.put("val");
-		assertThat(keyValues.<String>get(Collections.<String>emptyList(), null, null), is("val"));
+		assertThat(keyValues.get(Collections.emptyList(), null, null), is("val"));
 	}
 
 	@Test
@@ -149,14 +148,14 @@ public class KeyValuesTest {
 	public void getAWildcardOverriddenValueIsReturnedByBestMatch() {
 		keyValues.put("value_1", "*", "*", "domain3");
 		keyValues.put("value_2", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value_2"));
+		assertThat(keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value_2"));
 	}
 
 	@Test
 	public void getAWildcardOverriddenValueIsReturnedWhenAllDomainsMatch() {
 		keyValues.put("other value", "aaa", "*", "domain3");
 		keyValues.put("value", "domain1", "*", "domain3");
-		assertThat((String)keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value"));
+		assertThat(keyValues.get(asList("domain1", "domain2", "domain3"), null, resolver), is("value"));
 	}
 
 	@Test
@@ -185,7 +184,7 @@ public class KeyValuesTest {
 		assertThat(keyValues.getDefaultValue(), nullValue());
 		keyValues.put("default");
 		keyValues.put("other", "domain");
-		assertThat((String)keyValues.getDefaultValue(), is("default"));
+		assertThat(keyValues.getDefaultValue(), is("default"));
 	}
 
 	@Test
@@ -202,7 +201,7 @@ public class KeyValuesTest {
 	public void domainsWithTheSamePrefixReturnTheCorrectValue() {
 		keyValues.put("valuePrefix", "dom1", "prefix");
 		keyValues.put("value1", "dom1", "prefixDom2");
-		assertThat(keyValues.<String>get(asList("dom1", "prefix"), null, resolver), is("valuePrefix"));
-		assertThat(keyValues.<String>get(asList("dom1", "prefixDom2"), null, resolver), is("value1"));
+		assertThat(keyValues.get(asList("dom1", "prefix"), null, resolver), is("valuePrefix"));
+		assertThat(keyValues.get(asList("dom1", "prefixDom2"), null, resolver), is("value1"));
 	}
 }

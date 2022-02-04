@@ -36,22 +36,22 @@ import org.slf4j.LoggerFactory;
  * @author mfinsterwalder
  * @since 2013-05-24 13:25
  */
-public class LoggingTestExtension implements BeforeEachCallback, AfterEachCallback {
+public class TestLoggingExtension implements BeforeEachCallback, AfterEachCallback {
 
-    private Level levelToSet;
+    private final Level levelToSet;
     private Level levelToRestore;
-    private Appender<ILoggingEvent> appenderMock = mock(Appender.class);
+    private final Appender<ILoggingEvent> appenderMock = mock(Appender.class);
 
-    public LoggingTestExtension() {
+    public TestLoggingExtension() {
         this.levelToSet = Level.DEBUG;
     }
 
-    public LoggingTestExtension(final Level logLevelToSet) {
+    public TestLoggingExtension(final Level logLevelToSet) {
         this.levelToSet = logLevelToSet;
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) throws Exception {
+    public void beforeEach(ExtensionContext extensionContext) {
         when(appenderMock.getName()).thenReturn("MOCK");
         getRootLogger().addAppender(appenderMock);
         if (levelToSet != null) {
@@ -61,7 +61,7 @@ public class LoggingTestExtension implements BeforeEachCallback, AfterEachCallba
     }
 
     @Override
-    public void afterEach(ExtensionContext extensionContext) throws Exception {
+    public void afterEach(ExtensionContext extensionContext) {
         getRootLogger().detachAppender(appenderMock);
         if (levelToRestore != null) {
             getRootLogger().setLevel(levelToRestore);
@@ -90,6 +90,6 @@ public class LoggingTestExtension implements BeforeEachCallback, AfterEachCallba
 
     public void verifyLog(final Level level, final CharSequence expectedLog) {
         verify(appenderMock, atLeastOnce())
-            .doAppend(ArgumentMatchers.<ILoggingEvent>argThat(new LogArgumentMatcher(level, expectedLog)));
+            .doAppend(ArgumentMatchers.argThat(new LogArgumentMatcher(level, expectedLog)));
     }
 }

@@ -28,14 +28,13 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
-
 /**
  * @author mfinsterwalder
  * @since 2013-09-23 16:45
  */
 public class RopertyChangeSetTest {
 
-	private Roperty roperty = new RopertyImpl();
+	private final Roperty roperty = new RopertyImpl();
 
 	@Test
 	public void whenChangeSetsAreActiveTheValuesForTheChangeSetAreReturned() {
@@ -43,11 +42,11 @@ public class RopertyChangeSetTest {
 		roperty.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
 
 		DomainResolver resolverWithoutChangeSet = mock(DomainResolver.class);
-		assertThat(roperty.<String>get("key", resolverWithoutChangeSet), is("value"));
+		assertThat(roperty.get("key", resolverWithoutChangeSet), is("value"));
 
 		DomainResolver resolver = mock(DomainResolver.class);
 		when(resolver.getActiveChangeSets()).thenReturn(Collections.singletonList("changeSet"));
-		assertThat(roperty.<String>get("key", resolver), is("valueForChangeSet"));
+		assertThat(roperty.get("key", resolver), is("valueForChangeSet"));
 	}
 
 	@Test
