@@ -17,7 +17,6 @@
 
 package com.parship.roperty;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -65,23 +64,4 @@ public interface Persistence {
      * @param changeSet           the changeSet for which to remove the overwritten value
      */
     void remove(String key, DomainSpecificValue domainSpecificValue, final String changeSet);
-
-    /**
-     * Queries the persistence to return the keys that include the given substring.
-     *
-     * Should be case insensitive.
-     *
-     * @param substring A part of the key to search.
-     * @param containerName Specifies a container (null if no container)
-     * @return A list of keys that contain the given substring.
-     */
-    List<String> findKeys(String substring, String containerName);
-
-    /**
-     * Retrieves all keys from the persistence.
-     *
-     * @return A list of all keys that exist in this persistence.
-     */
-    List<String> getAllKeys();
-
 }

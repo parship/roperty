@@ -539,13 +539,4 @@ public class RopertyImplTest {
 
         verifyNoInteractions(persistenceMock);
     }
-
-    @Test
-    public void findKeysUsingPersistence() {
-        String substring = "substring";
-        String containerName = "containerName";
-        RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
-        ropertyWithPersistence.findKeys(substring, containerName);
-        verify(persistenceMock).findKeys(substring, containerName);
-    }
 }

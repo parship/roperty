@@ -1,7 +1,6 @@
 package com.parship.roperty;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Map;
 
 public interface Roperty {
@@ -39,7 +38,4 @@ public interface Roperty {
 	void removeKey(String key);
 
 	void removeChangeSet(String changeSet);
-
-    List<String> findKeys(String substring, String containerName);
-
 }
