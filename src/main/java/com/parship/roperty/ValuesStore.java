@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The internal in memory storage for Ropertys KeyValues
+ */
 public class ValuesStore {
 
     private final Map<String, KeyValues> keyValuesMap = new HashMap<>();
