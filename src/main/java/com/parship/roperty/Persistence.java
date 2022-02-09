@@ -28,14 +28,14 @@ public interface Persistence {
     /**
      * Load all overridden values for a single key. Is called by Roperty when an unknown key is queried.
      */
-    KeyValues load(final String key, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+    KeyValues load(final String key, DomainSpecificValueFactory domainSpecificValueFactory);
 
     /**
      * Load all values persisted (Preloading). Is called by Roperty when it is started.
      *
      * @return A map that is either empty or prefilled with some data.
      */
-    Map<String, KeyValues> loadAll(KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+    Map<String, KeyValues> loadAll(DomainSpecificValueFactory domainSpecificValueFactory);
 
     /**
      * Reload the data from persistence to synchronize changes.
@@ -43,18 +43,16 @@ public interface Persistence {
      *
      * @param keyValuesMap current keyValuesMap with keys already known
      */
-    Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory);
+    Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, DomainSpecificValueFactory domainSpecificValueFactory);
 
     void store(final String key, final KeyValues keyValues, final String changeSet);
 
     /**
      * Remove a complete key from persistence.
-     *
-     * @param key       the key to remove
-     * @param keyValues the KeyValues object roperty knows about or null, when unknown
+     *  @param key       the key to remove
      * @param changeSet the changeSet to remove
      */
-    void remove(String key, KeyValues keyValues, final String changeSet);
+    void remove(String key, final String changeSet);
 
     /**
      * Remove a DomainSpecificValue from persistence.

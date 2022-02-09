@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,9 +32,6 @@ public class ValuesStoreTest {
 
     @Mock
     private Persistence persistence;
-
-    @Mock
-    private KeyValuesFactory keyValuesFactory;
 
     @Mock
     private DomainSpecificValueFactory domainSpecificValueFactory;
@@ -68,11 +64,11 @@ public class ValuesStoreTest {
 
     @Test
     public void loadUnknownValuesFromPersistence() {
-        when(persistence.load("key", keyValuesFactory, domainSpecificValueFactory)).thenReturn(keyValues);
+        when(persistence.load("key", domainSpecificValueFactory)).thenReturn(keyValues);
 
         KeyValues result = valuesStore.getKeyValuesFromMapOrPersistence("key");
 
-        verify(persistence).load("key", keyValuesFactory, domainSpecificValueFactory);
+        verify(persistence).load("key", domainSpecificValueFactory);
         assertThat(result, is(keyValues));
         assertThat(valuesStore.getAllValues().size(), is(1));
     }
@@ -91,35 +87,28 @@ public class ValuesStoreTest {
 
     @Test
     public void valueShouldBeAdded() {
-        when(keyValuesFactory.create(domainSpecificValueFactory)).thenReturn(keyValues);
         KeyValues result = valuesStore.getOrCreateKeyValues("key", "description");
 
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(keyValues).setDescription(captor.capture());
+        assertThat(result.getDescription(), is("description"));
 
         assertThat(valuesStore.getValuesFor("key"), is(result));
-        assertThat(captor.getValue(), is("description"));
     }
 
     @Test
     public void dumpShouldBeFormatted() {
-        when(keyValuesFactory.create(domainSpecificValueFactory)).thenReturn(keyValues);
         valuesStore.getOrCreateKeyValues("key", "description");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(byteArrayOutputStream);
 
-
         valuesStore.dump(out);
 
-        assertThat(new String(byteArrayOutputStream.toByteArray()), is("\nKeyValues for \"key\": keyValues"));
+        assertThat(new String(byteArrayOutputStream.toByteArray()), is("\nKeyValues for \"key\": KeyValues{\n\tdescription=\"description\"\n}"));
         assertThat(valuesStore.getAllValues().size(), is(1));
     }
 
     @Test
     public void valueShouldBeRemoved() {
-        when(keyValuesFactory.create(domainSpecificValueFactory)).thenReturn(keyValues);
-
         valuesStore.getOrCreateKeyValues("key", "description");
 
         KeyValues result = valuesStore.remove("key");
@@ -133,7 +122,7 @@ public class ValuesStoreTest {
     public void valuesShouldBeReloaded() {
         Map<String, KeyValues> values = new HashMap<>();
         values.put("key", keyValues);
-        when(persistence.reload(any(Map.class), eq(keyValuesFactory), eq(domainSpecificValueFactory))).thenReturn(values);
+        when(persistence.reload(any(Map.class), eq(domainSpecificValueFactory))).thenReturn(values);
 
         valuesStore.getOrCreateKeyValues("another key", null);
         valuesStore.reload();

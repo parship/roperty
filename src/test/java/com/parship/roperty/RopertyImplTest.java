@@ -112,7 +112,7 @@ public class RopertyImplTest {
     public void gettingAPropertyThatDoesNotExistQueriesPersistence() {
         ropertyImpl.setPersistence(persistenceMock);
         ropertyWithResolver.get("key");
-        verify(persistenceMock).load(eq("key"), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).load(eq("key"), any(DomainSpecificValueFactory.class));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class RopertyImplTest {
         String key = "key";
         ropertyImpl.setPersistence(persistenceMock);
         KeyValues keyValue = new KeyValues(new DefaultDomainSpecificValueFactory());
-        when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
+        when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
         ropertyWithResolver.set(key, "value", null);
         verify(persistenceMock).store(key, keyValue, "");
     }
@@ -316,7 +316,7 @@ public class RopertyImplTest {
     public void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheValueStore() {
         String key = "key";
         KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
-        when(persistenceMock.load(eq(key), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
+        when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
         ropertyImpl.setPersistence(persistenceMock);
         ropertyWithResolver.get(key);
         assertThat(ropertyImpl.getKeyValues(key), notNullValue());
@@ -332,9 +332,9 @@ public class RopertyImplTest {
     @Test
     public void persistenceThatIsInitializedIsUsed() {
         Roperty roperty1 = new RopertyImpl(persistenceMock, "dom1", "dom2");
-        verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
         roperty1.get("key", resolverMock);
-        verify(persistenceMock).load(eq("key"), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).load(eq("key"), any(DomainSpecificValueFactory.class));
     }
 
     @Test
@@ -342,17 +342,17 @@ public class RopertyImplTest {
         DomainInitializer domainInitializerMock = mock(DomainInitializer.class);
         new RopertyImpl(persistenceMock, domainInitializerMock);
         verify(domainInitializerMock).getInitialDomains();
-        verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
     }
 
     @Test
     public void reloadReplacesKeyValuesMap() {
         RopertyImpl roperty1 = new RopertyImpl(persistenceMock);
-        verify(persistenceMock).loadAll(any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
         roperty1.set("key", "value", "descr");
         assertThat(roperty1.get("key", null), is("value"));
         roperty1.reload();
-        verify(persistenceMock).reload(any(Map.class), any(KeyValuesFactory.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).reload(any(Map.class), any(DomainSpecificValueFactory.class));
     }
 
     @Test
@@ -489,7 +489,7 @@ public class RopertyImplTest {
         ropertyWithPersistence.set("key", "value", "desc");
         ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
         ropertyWithPersistence.removeKey("key");
-        verify(persistenceMock).remove(eq("key"), any(KeyValues.class), isNull());
+        verify(persistenceMock).remove(eq("key"), isNull());
         assertThat(ropertyWithPersistence.get("key", resolverMock), nullValue());
     }
 
@@ -497,7 +497,7 @@ public class RopertyImplTest {
     public void removeCallsPersistenceEvenWhenNoKeyExists() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.removeKey("key");
-        verify(persistenceMock).remove("key", (KeyValues) null, null);
+        verify(persistenceMock).remove("key", null);
     }
 
     @Test

@@ -21,13 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,14 +33,12 @@ import org.junit.jupiter.api.Test;
  */
 public class RopertyFactoriesTest {
 
-    final KeyValuesFactory keyValueFactoryMock = mock(KeyValuesFactory.class);
     final DomainSpecificValueFactory domainSpecificValueFactoryMock = mock(DomainSpecificValueFactory.class);
     final String key = "key";
     final String defaultValue = "default";
 
     @BeforeEach
     public void before() {
-        when(keyValueFactoryMock.create(domainSpecificValueFactoryMock)).thenReturn(new KeyValues(domainSpecificValueFactoryMock));
         when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(new DomainSpecificValue(new OrderedDomainPattern("", 1), defaultValue));
     }
 
@@ -54,17 +48,17 @@ public class RopertyFactoriesTest {
             final Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 
             @Override
-            public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public KeyValues load(final String key, final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return stringKeyValuesHashMap.get(key);
             }
 
             @Override
-            public Map<String, KeyValues> loadAll(final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public Map<String, KeyValues> loadAll(final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return stringKeyValuesHashMap;
             }
 
             @Override
-            public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return keyValuesMap;
             }
 
@@ -74,37 +68,13 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public void remove(final String key, final KeyValues keyValues, final String changeSet) {
+            public void remove(final String key, final String changeSet) {
             }
 
             @Override
             public void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
             }
-
-            @Override
-            public List<String> findKeys(String substring, String containerName) {
-                return stringKeyValuesHashMap.keySet()
-                    .stream()
-                    .filter(key -> Pattern.matches(substring, key))
-                    .collect(Collectors.toList());
-            }
-
-            @Override
-            public List<String> getAllKeys() {
-                return new ArrayList<>(stringKeyValuesHashMap.keySet());
-            }
-
-        }, CopyOnWriteArrayList::new, new FactoryProvider() {
-            @Override
-            public KeyValuesFactory getKeyValuesFactory() {
-                return keyValueFactoryMock;
-            }
-
-            @Override
-            public DomainSpecificValueFactory getDomainSpecificValueFactory() {
-                return domainSpecificValueFactoryMock;
-            }
-        });
+        }, CopyOnWriteArrayList::new, domainSpecificValueFactoryMock);
         checkFactoryAccess(r);
     }
 
@@ -114,17 +84,17 @@ public class RopertyFactoriesTest {
             final Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 
             @Override
-            public KeyValues load(final String key, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public KeyValues load(final String key, final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return stringKeyValuesHashMap.get(key);
             }
 
             @Override
-            public Map<String, KeyValues> loadAll(final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public Map<String, KeyValues> loadAll(final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return stringKeyValuesHashMap;
             }
 
             @Override
-            public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return keyValuesMap;
             }
 
@@ -134,51 +104,26 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public void remove(final String key, final KeyValues keyValues, final String changeSet) {
+            public void remove(final String key, final String changeSet) {
             }
 
             @Override
             public void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
             }
-
-            @Override
-            public List<String> findKeys(String substring, String containerName) {
-                return stringKeyValuesHashMap.keySet()
-                    .stream()
-                    .filter(key -> Pattern.matches(substring, key))
-                    .collect(Collectors.toList());
-            }
-
-            @Override
-            public List<String> getAllKeys() {
-                return new ArrayList<>(stringKeyValuesHashMap.keySet());
-            }
-
-        }, new FactoryProvider() {
-            @Override
-            public KeyValuesFactory getKeyValuesFactory() {
-                return keyValueFactoryMock;
-            }
-
-            @Override
-            public DomainSpecificValueFactory getDomainSpecificValueFactory() {
-                return domainSpecificValueFactoryMock;
-            }
-        });
+        }, domainSpecificValueFactoryMock);
         checkFactoryAccess(r);
     }
 
     @Test
     public void factoriesAreUsedToCreateObjectsViaSet() {
         RopertyImpl r = new RopertyImpl();
-        r.setKeyValuesFactory(keyValueFactoryMock);
         r.setDomainSpecificValueFactory(domainSpecificValueFactoryMock);
         checkFactoryAccess(r);
     }
 
     private void checkFactoryAccess(final Roperty r) {
         r.getOrDefine(key, defaultValue, new MapBackedDomainResolver());
-        verify(keyValueFactoryMock).create(domainSpecificValueFactoryMock);
+        new KeyValues(domainSpecificValueFactoryMock);
         verify(domainSpecificValueFactoryMock).create(defaultValue, null, new String[0]);
     }
 }

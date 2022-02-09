@@ -31,298 +31,277 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * The central class to access Roperty.
- * Manages domains and key-to-value mappings.
+ * The central class to access Roperty. Manages domains and key-to-value mappings.
  *
  * @author mfinsterwalder
  * @since 2013-03-25 08:07
  */
 public class RopertyImpl implements Roperty {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyImpl.class);
-	private volatile ValuesStore valuesStore;
-	private List<String> domains;
-	private Persistence persistence;
-	private final Map<String, Collection<String>> changeSets = new HashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(RopertyImpl.class);
+    private volatile ValuesStore valuesStore;
+    private List<String> domains;
+    private Persistence persistence;
+    private final Map<String, Collection<String>> changeSets = new HashMap<>();
 
-	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, final FactoryProvider factoryProvider) {
-		this(persistence, domainInitializer, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory());
-	}
-
-	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory
-		domainSpecificValueFactory) {
+    public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, DomainSpecificValueFactory
+        domainSpecificValueFactory) {
         Objects.requireNonNull(domainInitializer, "\"domainInitializer\" must not be null");
         domains = domainInitializer.getInitialDomains();
-		initFromPersistence(persistence, keyValuesFactory, domainSpecificValueFactory);
-	}
+        initFromPersistence(persistence, domainSpecificValueFactory);
+    }
 
-	public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer) {
-		this(persistence, domainInitializer, new DefaultKeyValuesFactory(), createDomainSpecificValueFactory());
-	}
+    public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer) {
+        this(persistence, domainInitializer, createDomainSpecificValueFactory());
+    }
 
-	public RopertyImpl(final Persistence persistence, final FactoryProvider factoryProvider, final String... domains) {
-		this(persistence, factoryProvider.getKeyValuesFactory(), factoryProvider.getDomainSpecificValueFactory(), domains);
-	}
+    public RopertyImpl(final Persistence persistence, DomainSpecificValueFactory domainSpecificValueFactory, final String... domains) {
+        initDomains(domains);
+        initFromPersistence(persistence, domainSpecificValueFactory);
+    }
 
-	public RopertyImpl(final Persistence persistence, KeyValuesFactory keyValuesFactory, DomainSpecificValueFactory domainSpecificValueFactory, final String... domains) {
-		initDomains(domains);
-		initFromPersistence(persistence, keyValuesFactory, domainSpecificValueFactory);
-	}
+    private void initDomains(final String[] domains) {
+        this.domains = new CopyOnWriteArrayList<>();
+        addDomains(domains);
+    }
 
-	private void initDomains(final String[] domains) {
-		this.domains = new CopyOnWriteArrayList<>();
-		addDomains(domains);
-	}
+    public RopertyImpl(final Persistence persistence, final String... domains) {
+        this(persistence, createDomainSpecificValueFactory(), domains);
+    }
 
-	public RopertyImpl(final Persistence persistence, final String... domains) {
-		this(persistence, new DefaultKeyValuesFactory(), createDomainSpecificValueFactory(), domains);
-	}
-
-	private void initFromPersistence(final Persistence persistence, final KeyValuesFactory keyValuesFactory, final DomainSpecificValueFactory domainSpecificValueFactory) {
-        Objects.requireNonNull(keyValuesFactory, "\"keyValuesFactory\" must not be null");
+    private void initFromPersistence(final Persistence persistence, final DomainSpecificValueFactory domainSpecificValueFactory) {
         Objects.requireNonNull(domainSpecificValueFactory, "\"domainSpecificValueFactory\" must not be null");
         Objects.requireNonNull(persistence, "\"persistence\" must not be null");
-		this.persistence = persistence;
+        this.persistence = persistence;
         valuesStore = new ValuesStore();
-		valuesStore.setKeyValuesFactory(keyValuesFactory);
-		valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
-		valuesStore.setPersistence(persistence);
-		valuesStore.setAllValues(persistence.loadAll(keyValuesFactory, domainSpecificValueFactory));
-		RopertyManager.getInstance().add(this);
-	}
+        valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
+        valuesStore.setPersistence(persistence);
+        valuesStore.setAllValues(persistence.loadAll(domainSpecificValueFactory));
+        RopertyManager.getInstance().add(this);
+    }
 
-	public RopertyImpl(final String... domains) {
-		initDomains(domains);
-		initWithoutPersistence();
-		RopertyManager.getInstance().add(this);
-	}
+    public RopertyImpl(final String... domains) {
+        initDomains(domains);
+        initWithoutPersistence();
+        RopertyManager.getInstance().add(this);
+    }
 
-	public RopertyImpl() {
+    public RopertyImpl() {
         domains = new CopyOnWriteArrayList<>();
-		initWithoutPersistence();
-		RopertyManager.getInstance().add(this);
-	}
+        initWithoutPersistence();
+        RopertyManager.getInstance().add(this);
+    }
 
-	private void initWithoutPersistence() {
+    private void initWithoutPersistence() {
         valuesStore = new ValuesStore();
-		valuesStore.setKeyValuesFactory(new DefaultKeyValuesFactory());
-		valuesStore.setDomainSpecificValueFactory(createDomainSpecificValueFactory());
-	}
+        valuesStore.setDomainSpecificValueFactory(createDomainSpecificValueFactory());
+    }
 
-	private static DomainSpecificValueFactory createDomainSpecificValueFactory() {
-		return new DomainSpecificValueFactoryWithStringInterning();
-	}
+    private static DomainSpecificValueFactory createDomainSpecificValueFactory() {
+        return new DomainSpecificValueFactoryWithStringInterning();
+    }
 
-	/* (non-Javadoc)
-	 * @see com.parship.roperty.Roperty#get(java.lang.String, T, com.parship.roperty.DomainResolver)
-	 */
-	@Override
-	public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
-		final String trimmedKey = trimKey(key);
-		KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(trimmedKey);
-		T result;
-		if (keyValues == null) {
-			result = defaultValue;
-		} else {
-			result = keyValues.get(domains, defaultValue, resolver);
-		}
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", trimmedKey, defaultValue, result);
-			StringBuilder builder = new StringBuilder("DomainValues: ");
-			for (String domain : domains) {
-				builder.append(domain).append(" => ").append(resolver.getDomainValue(domain)).append("; ");
-			}
-			LOGGER.debug(builder.toString());
-		}
-		return result;
-	}
+    /* (non-Javadoc)
+     * @see com.parship.roperty.Roperty#get(java.lang.String, T, com.parship.roperty.DomainResolver)
+     */
+    @Override
+    public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
+        final String trimmedKey = trimKey(key);
+        KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(trimmedKey);
+        T result;
+        if (keyValues == null) {
+            result = defaultValue;
+        } else {
+            result = keyValues.get(domains, defaultValue, resolver);
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Getting value for key: '{}' with given default: '{}'. Returning value: '{}'", trimmedKey, defaultValue, result);
+            StringBuilder builder = new StringBuilder("DomainValues: ");
+            for (String domain : domains) {
+                builder.append(domain).append(" => ").append(resolver.getDomainValue(domain)).append("; ");
+            }
+            LOGGER.debug(builder.toString());
+        }
+        return result;
+    }
 
-	private static String trimKey(final String key) {
-		Ensure.notEmpty(key, "key");
-		return key.trim();
-	}
+    private static String trimKey(final String key) {
+        Ensure.notEmpty(key, "key");
+        return key.trim();
+    }
 
-	/* (non-Javadoc)
-	 * @see com.parship.roperty.Roperty#get(java.lang.String, com.parship.roperty.DomainResolver)
-	 */
-	@Override
-	public <T> T get(final String key, DomainResolver resolver) {
-		return get(key, null, resolver);
-	}
+    /* (non-Javadoc)
+     * @see com.parship.roperty.Roperty#get(java.lang.String, com.parship.roperty.DomainResolver)
+     */
+    @Override
+    public <T> T get(final String key, DomainResolver resolver) {
+        return get(key, null, resolver);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.parship.roperty.Roperty#getOrDefine(java.lang.String, T, com.parship.roperty.DomainResolver)
-	 */
-	@Override
-	public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver) {
-		return getOrDefine(key, defaultValue, resolver, null);
-	}
+    /* (non-Javadoc)
+     * @see com.parship.roperty.Roperty#getOrDefine(java.lang.String, T, com.parship.roperty.DomainResolver)
+     */
+    @Override
+    public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver) {
+        return getOrDefine(key, defaultValue, resolver, null);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.parship.roperty.Roperty#getOrDefine(java.lang.String, T, com.parship.roperty.DomainResolver, java.lang.String)
-	 */
-	@Override
-	public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver, String description) {
-		T value = get(key, resolver);
-		if (value != null) {
-			return value;
-		}
-		set(key, defaultValue, description);
-		return defaultValue;
-	}
+    /* (non-Javadoc)
+     * @see com.parship.roperty.Roperty#getOrDefine(java.lang.String, T, com.parship.roperty.DomainResolver, java.lang.String)
+     */
+    @Override
+    public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver, String description) {
+        T value = get(key, resolver);
+        if (value != null) {
+            return value;
+        }
+        set(key, defaultValue, description);
+        return defaultValue;
+    }
 
-	@Override
-	public Roperty addDomains(final String... domains) {
+    @Override
+    public Roperty addDomains(final String... domains) {
         Objects.requireNonNull(domains, "\"domains\" must not be null");
         for (String domain : domains) {
-			Ensure.notEmpty(domain, "domain");
-			this.domains.add(domain);
-		}
-		return this;
-	}
+            Ensure.notEmpty(domain, "domain");
+            this.domains.add(domain);
+        }
+        return this;
+    }
 
-	@Override
-	public void set(final String key, final Object value, final String description, final String... domains) {
-		final String trimmedKey = trimKey(key);
-		LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, trimmedKey, domains);
-		KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
-		keyValues.put(value, domains);
-		store(trimmedKey, keyValues);
-	}
+    @Override
+    public void set(final String key, final Object value, final String description, final String... domains) {
+        final String trimmedKey = trimKey(key);
+        LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, trimmedKey, domains);
+        KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
+        keyValues.put(value, domains);
+        store(trimmedKey, keyValues);
+    }
 
-	@Override
-	public void setWithChangeSet(final String key, final Object value, final String description, String changeSet, final String... domains) {
-		final String trimmedKey = trimKey(key);
-		LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet, domains);
-		KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
-		keyValues.putWithChangeSet(changeSet, value, domains);
-		getChangeSetKeys(changeSet).add(trimmedKey);
-		store(trimmedKey, keyValues, changeSet);
-	}
+    @Override
+    public void setWithChangeSet(final String key, final Object value, final String description, String changeSet,
+        final String... domains) {
+        final String trimmedKey = trimKey(key);
+        LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet,
+            domains);
+        KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
+        keyValues.putWithChangeSet(changeSet, value, domains);
+        getChangeSetKeys(changeSet).add(trimmedKey);
+        store(trimmedKey, keyValues, changeSet);
+    }
 
-	private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
-		return changeSets.computeIfAbsent(changeSet, k -> new ArrayList<>());
-	}
+    private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
+        return changeSets.computeIfAbsent(changeSet, k -> new ArrayList<>());
+    }
 
-	private void store(final String key, final KeyValues keyValues) {
-		if (persistence != null) {
-			persistence.store(key, keyValues, "");
-		}
-	}
+    private void store(final String key, final KeyValues keyValues) {
+        if (persistence != null) {
+            persistence.store(key, keyValues, "");
+        }
+    }
 
-	private void store(final String key, final KeyValues keyValues, final String changeSet) {
-		if (persistence != null) {
-			persistence.store(key, keyValues, changeSet);
-		}
-	}
+    private void store(final String key, final KeyValues keyValues, final String changeSet) {
+        if (persistence != null) {
+            persistence.store(key, keyValues, changeSet);
+        }
+    }
 
-	private void remove(final String key, final KeyValues keyValues) {
-		if (persistence != null) {
-			persistence.remove(key, keyValues, null);
-		}
-	}
+    private void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
+        if (persistence != null) {
+            persistence.remove(key, domainSpecificValue, changeSet);
+        }
+    }
 
-	private void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
-		if (persistence != null) {
-			persistence.remove(key, domainSpecificValue, changeSet);
-		}
-	}
-
-	@Override
-	public void setKeyValuesMap(final Map<String, KeyValues> keyValuesMap) {
+    @Override
+    public void setKeyValuesMap(final Map<String, KeyValues> keyValuesMap) {
         Objects.requireNonNull(keyValuesMap, "\"keyValuesMap\" must not be null");
-        synchronized (keyValuesMap) {
-			valuesStore.setAllValues(keyValuesMap);
-		}
-	}
+        valuesStore.setAllValues(keyValuesMap);
+    }
 
-	public void setPersistence(final Persistence persistence) {
+    public void setPersistence(final Persistence persistence) {
         Objects.requireNonNull(persistence, "\"persistence\" must not be null");
         this.persistence = persistence;
-		valuesStore.setPersistence(persistence);
-		RopertyManager.getInstance().add(this);
-	}
+        valuesStore.setPersistence(persistence);
+        RopertyManager.getInstance().add(this);
+    }
 
-	@Override
-	public void reload() {
-		valuesStore.reload();
-	}
+    @Override
+    public void reload() {
+        valuesStore.reload();
+    }
 
-	@Override
-	public String toString() {
-		return "Roperty{domains=" + domains + '}';
-	}
+    @Override
+    public String toString() {
+        return "Roperty{domains=" + domains + '}';
+    }
 
-	@Override
-	public StringBuilder dump() {
-		StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
-		builder.append(valuesStore.dump());
-		builder.append("\n}");
-		return builder;
-	}
+    @Override
+    public StringBuilder dump() {
+        StringBuilder builder = new StringBuilder("Roperty{domains=").append(domains);
+        builder.append(valuesStore.dump());
+        builder.append("\n}");
+        return builder;
+    }
 
-	@Override
-	public void dump(final PrintStream out) {
-		out.print("Roperty{domains=");
-		out.print(domains);
-		valuesStore.dump(out);
-		out.println("\n}");
-	}
+    @Override
+    public void dump(final PrintStream out) {
+        out.print("Roperty{domains=");
+        out.print(domains);
+        valuesStore.dump(out);
+        out.println("\n}");
+    }
 
-	@Override
-	public KeyValues getKeyValues(final String key) {
-		Ensure.notEmpty(key, "key");
-		return valuesStore.getValuesFor(key.trim());
-	}
+    @Override
+    public KeyValues getKeyValues(final String key) {
+        Ensure.notEmpty(key, "key");
+        return valuesStore.getValuesFor(key.trim());
+    }
 
-	public void setKeyValuesFactory(final KeyValuesFactory keyValuesFactory) {
-		valuesStore.setKeyValuesFactory(keyValuesFactory);
-	}
+    public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
+        valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
+    }
 
-	public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
-		valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
-	}
+    @Override
+    public Map<String, KeyValues> getKeyValues() {
+        return valuesStore.getAllValues();
+    }
 
-	@Override
-	public Map<String, KeyValues> getKeyValues() {
-		return valuesStore.getAllValues();
-	}
+    @Override
+    public void removeWithChangeSet(final String key, final String changeSet, final String... domainValues) {
+        final String trimmedKey = trimKey(key);
+        KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(trimmedKey);
+        if (keyValues != null) {
+            remove(trimmedKey, keyValues.remove(changeSet, domainValues), changeSet);
+        }
+    }
 
-	@Override
-	public void removeWithChangeSet(final String key, final String changeSet, final String... domainValues) {
-		final String trimmedKey = trimKey(key);
-		KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(trimmedKey);
-		if (keyValues != null) {
-			remove(trimmedKey, keyValues.remove(changeSet, domainValues), changeSet);
-		}
-	}
+    @Override
+    public void remove(final String key, final String... domainValues) {
+        removeWithChangeSet(key, null, domainValues);
+    }
 
-	@Override
-	public void remove(final String key, final String... domainValues) {
-		removeWithChangeSet(key, null, domainValues);
-	}
+    @Override
+    public void removeKey(final String key) {
+        final String trimmedKey = trimKey(key);
+        valuesStore.remove(trimmedKey);
+        persistence.remove(trimmedKey, null);
+    }
 
-	@Override
-	public void removeKey(final String key) {
-		final String trimmedKey = trimKey(key);
-		remove(trimmedKey, valuesStore.remove(trimmedKey));
-	}
-
-	@Override
-	public void removeChangeSet(String changeSet) {
+    @Override
+    public void removeChangeSet(String changeSet) {
         Objects.requireNonNull(changeSet, "\"changeSet\" must not be null");
         Collection<String> changeSetKeyValues = changeSets.get(changeSet);
-        if(changeSetKeyValues==null){
+        if (changeSetKeyValues == null) {
             LOGGER.warn("No key/values found for changeSet: {}", changeSet);
             return;
         }
         for (String key : changeSetKeyValues) {
-			KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(key);
-			if (keyValues != null) {
-				for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
-					remove(key, value, changeSet);
-				}
-			}
-		}
-	}
+            KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(key);
+            if (keyValues != null) {
+                for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
+                    remove(key, value, changeSet);
+                }
+            }
+        }
+    }
 }

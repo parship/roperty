@@ -8,7 +8,6 @@ import java.util.Map;
 public class ValuesStore {
 
     private final Map<String, KeyValues> keyValuesMap = new HashMap<>();
-    private KeyValuesFactory keyValuesFactory;
     private DomainSpecificValueFactory domainSpecificValueFactory;
     private Persistence persistence;
 
@@ -17,22 +16,23 @@ public class ValuesStore {
     }
 
     public void setAllValues(Map<? extends String, ? extends KeyValues> values) {
-        keyValuesMap.clear();
-        keyValuesMap.putAll(values);
+        synchronized (keyValuesMap) {
+            keyValuesMap.clear();
+            keyValuesMap.putAll(values);
+        }
     }
 
     public KeyValues getOrCreateKeyValues(final String key, final String description) {
         KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
         if (keyValues == null) {
             synchronized (keyValuesMap) {
-                keyValues = keyValuesMap.get(key);
-                if (keyValues == null) {
-                    keyValues = keyValuesFactory.create(domainSpecificValueFactory);
+                keyValues = keyValuesMap.computeIfAbsent(key, k -> {
+                    KeyValues kv = new KeyValues(domainSpecificValueFactory);
                     if (description != null && description.trim().length() > 0) {
-                        keyValues.setDescription(description);
+                        kv.setDescription(description);
                     }
-                    keyValuesMap.put(key, keyValues);
-                }
+                    return kv;
+                });
             }
         }
         return keyValues;
@@ -79,18 +79,16 @@ public class ValuesStore {
     }
 
     public KeyValues remove(String key) {
-        return keyValuesMap.remove(key);
+        synchronized (keyValuesMap) {
+            return keyValuesMap.remove(key);
+        }
     }
 
     private KeyValues load(final String key) {
         if (persistence != null) {
-            return persistence.load(key, keyValuesFactory, domainSpecificValueFactory);
+            return persistence.load(key, domainSpecificValueFactory);
         }
         return null;
-    }
-
-    public void setKeyValuesFactory(KeyValuesFactory keyValuesFactory) {
-        this.keyValuesFactory = keyValuesFactory;
     }
 
     public void setDomainSpecificValueFactory(DomainSpecificValueFactory domainSpecificValueFactory) {
@@ -103,7 +101,7 @@ public class ValuesStore {
 
     public void reload() {
         if (persistence != null) {
-            setAllValues(persistence.reload(getAllValues(), keyValuesFactory, domainSpecificValueFactory));
+            setAllValues(persistence.reload(getAllValues(), domainSpecificValueFactory));
         }
     }
 }
