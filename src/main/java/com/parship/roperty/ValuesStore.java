@@ -23,7 +23,6 @@ public class ValuesStore {
         synchronized (keyValuesMap) {
             keyValuesMap.clear();
             values.forEach(kv -> keyValuesMap.put(kv.getKey(), kv));
-//            keyValuesMap.putAll(values);
         }
     }
 

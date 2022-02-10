@@ -151,10 +151,12 @@ public class KeyValues {
         for (String domainValue : domainKeyParts) {
             builder.append(domainValue).append(DOMAIN_SEPARATOR);
         }
+        final String pattern = builder.toString();
+
         Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
         while (iterator.hasNext()) {
             DomainSpecificValue value = iterator.next();
-            if (value.changeSetIs(changeSet) && builder.toString().equals(value.getPatternStr())) {
+            if (value.changeSetIs(changeSet) && pattern.equals(value.getPatternStr())) {
                 iterator.remove();
                 return value;
             }

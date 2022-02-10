@@ -6,6 +6,7 @@ package com.parship.roperty;
  * Time: 11:43
  */
 public abstract class AbstractDomainSpecificValueFactory {
+
 	public static OrderedDomainPattern calculateOrderedDomainPattern(final String[] domainValues) {
 		StringBuilder builder = new StringBuilder(domainValues.length * 8);
 		int order = 1;

@@ -38,20 +38,17 @@ import org.slf4j.LoggerFactory;
 public class RopertyImpl implements Roperty {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RopertyImpl.class);
-    private volatile ValuesStore valuesStore;
-    private List<String> domains;
+    private final ValuesStore valuesStore = new ValuesStore();
+    private final List<String> domains = new CopyOnWriteArrayList<>();
     private Persistence persistence;
     private final Map<String, Collection<String>> changeSets = new HashMap<>();
 
-    public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer, DomainSpecificValueFactory
-        domainSpecificValueFactory) {
-        Objects.requireNonNull(domainInitializer, "\"domainInitializer\" must not be null");
-        domains = domainInitializer.getInitialDomains();
+    public RopertyImpl(final Persistence persistence, DomainSpecificValueFactory domainSpecificValueFactory) {
         initFromPersistence(persistence, domainSpecificValueFactory);
     }
 
-    public RopertyImpl(final Persistence persistence, final DomainInitializer domainInitializer) {
-        this(persistence, domainInitializer, createDomainSpecificValueFactory());
+    public RopertyImpl(final Persistence persistence) {
+        this(persistence, createDomainSpecificValueFactory());
     }
 
     public RopertyImpl(final Persistence persistence, DomainSpecificValueFactory domainSpecificValueFactory, final String... domains) {
@@ -59,8 +56,7 @@ public class RopertyImpl implements Roperty {
         initFromPersistence(persistence, domainSpecificValueFactory);
     }
 
-    private void initDomains(final String[] domains) {
-        this.domains = new CopyOnWriteArrayList<>();
+    private void initDomains(final String... domains) {
         addDomains(domains);
     }
 
@@ -72,7 +68,6 @@ public class RopertyImpl implements Roperty {
         Objects.requireNonNull(domainSpecificValueFactory, "\"domainSpecificValueFactory\" must not be null");
         Objects.requireNonNull(persistence, "\"persistence\" must not be null");
         this.persistence = persistence;
-        valuesStore = new ValuesStore();
         valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
         valuesStore.setPersistence(persistence);
         valuesStore.setAllValues(persistence.loadAll(domainSpecificValueFactory));
@@ -86,13 +81,11 @@ public class RopertyImpl implements Roperty {
     }
 
     public RopertyImpl() {
-        domains = new CopyOnWriteArrayList<>();
         initWithoutPersistence();
         RopertyManager.getInstance().add(this);
     }
 
     private void initWithoutPersistence() {
-        valuesStore = new ValuesStore();
         valuesStore.setDomainSpecificValueFactory(createDomainSpecificValueFactory());
     }
 

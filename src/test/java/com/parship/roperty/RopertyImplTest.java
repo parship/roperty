@@ -331,9 +331,7 @@ public class RopertyImplTest {
 
     @Test
     public void domainInitializerAndPersistenceAreUsedDuringInitialization() {
-        DomainInitializer domainInitializerMock = mock(DomainInitializer.class);
-        new RopertyImpl(persistenceMock, domainInitializerMock);
-        verify(domainInitializerMock).getInitialDomains();
+        new RopertyImpl(persistenceMock);
         verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
     }
 

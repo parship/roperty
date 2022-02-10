@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -75,7 +74,7 @@ public class RopertyFactoriesTest {
             @Override
             public void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
             }
-        }, CopyOnWriteArrayList::new, domainSpecificValueFactoryMock);
+        }, domainSpecificValueFactoryMock);
         checkFactoryAccess(r);
     }
 
