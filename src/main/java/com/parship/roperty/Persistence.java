@@ -17,6 +17,7 @@
 
 package com.parship.roperty;
 
+import java.util.Collection;
 import java.util.Map;
 
 
@@ -35,7 +36,7 @@ public interface Persistence {
      *
      * @return A map that is either empty or prefilled with some data.
      */
-    Map<String, KeyValues> loadAll(DomainSpecificValueFactory domainSpecificValueFactory);
+    Collection<KeyValues> loadAll(DomainSpecificValueFactory domainSpecificValueFactory);
 
     /**
      * Reload the data from persistence to synchronize changes.
@@ -43,7 +44,7 @@ public interface Persistence {
      *
      * @param keyValuesMap current keyValuesMap with keys already known
      */
-    Map<String, KeyValues> reload(Map<String, KeyValues> keyValuesMap, DomainSpecificValueFactory domainSpecificValueFactory);
+    Collection<KeyValues> reload(Map<String, KeyValues> keyValuesMap, DomainSpecificValueFactory domainSpecificValueFactory);
 
     void store(final String key, final KeyValues keyValues, final String changeSet);
 

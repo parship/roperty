@@ -1,6 +1,7 @@
 package com.parship.roperty;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,11 @@ public class ValuesStore {
         return Collections.unmodifiableMap(keyValuesMap);
     }
 
-    public void setAllValues(Map<? extends String, ? extends KeyValues> values) {
+    public void setAllValues(Collection<? extends KeyValues> values) {
         synchronized (keyValuesMap) {
             keyValuesMap.clear();
-            keyValuesMap.putAll(values);
+            values.forEach(kv -> keyValuesMap.put(kv.getKey(), kv));
+//            keyValuesMap.putAll(values);
         }
     }
 
@@ -29,13 +31,7 @@ public class ValuesStore {
         KeyValues keyValues = getKeyValuesFromMapOrPersistence(key);
         if (keyValues == null) {
             synchronized (keyValuesMap) {
-                keyValues = keyValuesMap.computeIfAbsent(key, k -> {
-                    KeyValues kv = new KeyValues(domainSpecificValueFactory);
-                    if (description != null && description.trim().length() > 0) {
-                        kv.setDescription(description);
-                    }
-                    return kv;
-                });
+                keyValues = keyValuesMap.computeIfAbsent(key, k -> new KeyValues(key, domainSpecificValueFactory, description));
             }
         }
         return keyValues;

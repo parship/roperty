@@ -13,8 +13,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,15 +28,16 @@ public class ValuesStoreTest {
 
     @InjectMocks
     private ValuesStore valuesStore = new ValuesStore();
-
-    @Mock
-    private KeyValues keyValues;
-
     @Mock
     private Persistence persistence;
 
-    @Mock
-    private DomainSpecificValueFactory domainSpecificValueFactory;
+    private DomainSpecificValueFactory domainSpecificValueFactory = new DefaultDomainSpecificValueFactory();
+    private KeyValues keyValues = new KeyValues("key", domainSpecificValueFactory);
+
+    @BeforeEach
+    void before() {
+        valuesStore.setDomainSpecificValueFactory(domainSpecificValueFactory);
+    }
 
     @Test
     public void valuesAreEmptyOnInitialization() {
@@ -50,15 +53,14 @@ public class ValuesStoreTest {
 
     @Test
     public void valuesShouldBeAdded() {
-        when(keyValues.toString()).thenReturn("keyValues.toString()");
-        Map<String, KeyValues> values = new HashMap<>();
-        values.put("key", keyValues);
+        Collection<KeyValues> values = new ArrayList<>();
+        values.add(keyValues);
 
         valuesStore.setAllValues(values);
 
         assertThat(valuesStore.getValuesFor("key"), is(keyValues));
         assertThat(valuesStore.getValuesFor("another key"), nullValue());
-        assertThat(valuesStore.dump(), is("\nKeyValues for \"key\": keyValues.toString()"));
+        assertThat(valuesStore.dump(), is("\nKeyValues for \"key\": KeyValues{\n\tdescription=\"\"\n}"));
         assertThat(valuesStore.getAllValues().size(), is(1));
     }
 
@@ -75,8 +77,8 @@ public class ValuesStoreTest {
 
     @Test
     public void loadKnownValuesFromMap() {
-        Map<String, KeyValues> values = new HashMap<>();
-        values.put("key", keyValues);
+        Collection<KeyValues> values = new ArrayList<>();
+        values.add(keyValues);
         valuesStore.setAllValues(values);
 
         KeyValues result = valuesStore.getKeyValuesFromMapOrPersistence("key");
@@ -103,7 +105,8 @@ public class ValuesStoreTest {
 
         valuesStore.dump(out);
 
-        assertThat(new String(byteArrayOutputStream.toByteArray()), is("\nKeyValues for \"key\": KeyValues{\n\tdescription=\"description\"\n}"));
+        assertThat(new String(byteArrayOutputStream.toByteArray()),
+            is("\nKeyValues for \"key\": KeyValues{\n\tdescription=\"description\"\n}"));
         assertThat(valuesStore.getAllValues().size(), is(1));
     }
 
@@ -120,8 +123,8 @@ public class ValuesStoreTest {
 
     @Test
     public void valuesShouldBeReloaded() {
-        Map<String, KeyValues> values = new HashMap<>();
-        values.put("key", keyValues);
+        Collection<KeyValues> values = new ArrayList<>();
+        values.add(keyValues);
         when(persistence.reload(any(Map.class), eq(domainSpecificValueFactory))).thenReturn(values);
 
         valuesStore.getOrCreateKeyValues("another key", null);

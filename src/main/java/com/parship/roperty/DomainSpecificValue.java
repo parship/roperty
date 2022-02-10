@@ -95,7 +95,6 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		if (!patternStr.equals(that.patternStr)) return false;
 		if (!value.equals(that.value)) return false;
 		return Objects.equals(changeSet, that.changeSet);
-
 	}
 
 	@Override

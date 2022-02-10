@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,13 +54,13 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public Map<String, KeyValues> loadAll(final DomainSpecificValueFactory domainSpecificValueFactory) {
-                return stringKeyValuesHashMap;
+            public Collection<KeyValues> loadAll(final DomainSpecificValueFactory domainSpecificValueFactory) {
+                return stringKeyValuesHashMap.values();
             }
 
             @Override
-            public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
-                return keyValuesMap;
+            public Collection<KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
+                return keyValuesMap.values();
             }
 
             @Override
@@ -89,13 +90,13 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public Map<String, KeyValues> loadAll(final DomainSpecificValueFactory domainSpecificValueFactory) {
-                return stringKeyValuesHashMap;
+            public Collection<KeyValues> loadAll(final DomainSpecificValueFactory domainSpecificValueFactory) {
+                return stringKeyValuesHashMap.values();
             }
 
             @Override
-            public Map<String, KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
-                return keyValuesMap;
+            public Collection<KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
+                return keyValuesMap.values();
             }
 
             @Override
@@ -123,7 +124,7 @@ public class RopertyFactoriesTest {
 
     private void checkFactoryAccess(final Roperty r) {
         r.getOrDefine(key, defaultValue, new MapBackedDomainResolver());
-        new KeyValues(domainSpecificValueFactoryMock);
+        new KeyValues(key, domainSpecificValueFactoryMock, null);
         verify(domainSpecificValueFactoryMock).create(defaultValue, null, new String[0]);
     }
 }

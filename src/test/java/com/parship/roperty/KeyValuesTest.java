@@ -41,7 +41,8 @@ import org.junit.jupiter.api.Test;
  */
 public class KeyValuesTest {
 
-	private final KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
+	private final KeyValues keyValues = new KeyValues("key", new DefaultDomainSpecificValueFactory(), null);
+
 	private DomainResolver resolver = new DomainResolver() {
 		@Override
 		public String getDomainValue(final String domain) {
@@ -56,7 +57,7 @@ public class KeyValuesTest {
 
 	@Test
 	public void descriptionIsNeverNullButIsTheEmptyString() {
-		KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
+		KeyValues keyValues = new KeyValues("key", new DefaultDomainSpecificValueFactory(), null);
 		assertThat(keyValues.getDescription(), is(""));
 	}
 

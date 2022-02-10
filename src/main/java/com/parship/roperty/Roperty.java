@@ -19,8 +19,6 @@ public interface Roperty {
 
 	void setWithChangeSet(String key, Object value, String description, String changeSet, String... domains);
 
-	void setKeyValuesMap(Map<String, KeyValues> keyValuesMap);
-
 	void reload();
 
 	StringBuilder dump();

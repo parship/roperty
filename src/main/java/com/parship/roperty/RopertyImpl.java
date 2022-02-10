@@ -211,12 +211,6 @@ public class RopertyImpl implements Roperty {
         }
     }
 
-    @Override
-    public void setKeyValuesMap(final Map<String, KeyValues> keyValuesMap) {
-        Objects.requireNonNull(keyValuesMap, "\"keyValuesMap\" must not be null");
-        valuesStore.setAllValues(keyValuesMap);
-    }
-
     public void setPersistence(final Persistence persistence) {
         Objects.requireNonNull(persistence, "\"persistence\" must not be null");
         this.persistence = persistence;

@@ -40,7 +40,6 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -155,7 +154,7 @@ public class RopertyImplTest {
     public void settingAValueCallsStoreOnPersistence() {
         String key = "key";
         ropertyImpl.setPersistence(persistenceMock);
-        KeyValues keyValue = new KeyValues(new DefaultDomainSpecificValueFactory());
+        KeyValues keyValue = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
         when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
         ropertyWithResolver.set(key, "value", null);
         verify(persistenceMock).store(key, keyValue, "");
@@ -306,16 +305,9 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void settingANewKeyMapReplacesAllMappings() {
-        ropertyWithResolver.set("key", "value", null);
-        ropertyImpl.setKeyValuesMap(new ConcurrentHashMap<>());
-        assertThat(ropertyWithResolver.get("key"), nullValue());
-    }
-
-    @Test
     public void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheValueStore() {
         String key = "key";
-        KeyValues keyValues = new KeyValues(new DefaultDomainSpecificValueFactory());
+        KeyValues keyValues = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
         when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
         ropertyImpl.setPersistence(persistenceMock);
         ropertyWithResolver.get(key);
