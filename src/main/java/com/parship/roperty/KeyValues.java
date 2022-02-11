@@ -20,8 +20,10 @@ package com.parship.roperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -66,10 +68,7 @@ public class KeyValues {
     }
 
     private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String... domainKeyParts) {
-        return addOrChangeDomainSpecificValue(domainSpecificValueFactory.create(value, changeSet, domainKeyParts));
-    }
-
-    private DomainSpecificValue addOrChangeDomainSpecificValue(DomainSpecificValue domainSpecificValue) {
+        DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainKeyParts);
         if (domainSpecificValues.contains(domainSpecificValue)) {
             for (DomainSpecificValue d : domainSpecificValues) {
                 if (d.compareTo(domainSpecificValue) == 0) {
@@ -90,8 +89,8 @@ public class KeyValues {
         }
         String domainStr = buildDomain(domains, resolver);
         for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
-            if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.patternMatches(
-                domainStr)) {
+            if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets()))
+                && domainSpecificValue.patternMatches(domainStr)) {
                 return (T) domainSpecificValue.getValue();
             }
         }
@@ -186,9 +185,23 @@ public class KeyValues {
     public KeyValues copy(List<String> domains, DomainResolver resolver) {
         KeyValues result = new KeyValues(key, domainSpecificValueFactory, description);
         Matcher matcher = buildMatcher(domains, resolver);
+
+        final Map<String, DomainSpecificValue> dvPatternMap = new HashMap<>();
         domainSpecificValues.stream()
-            .filter(val -> val.patternMatches(matcher))
-            .forEach(val -> result.put(val.getValue(), val.getDomains()));
+            .filter(val -> val.patternMatches(matcher, resolver))
+            .forEach(dv -> dvPatternMap.compute(dv.getPatternStr(), (k, v) -> {
+                if (v == null) {
+                    return dv;
+                }
+                if (v.getChangeSet() == null) {
+                    return dv;
+                }
+                if (dv.getChangeSet() == null) {
+                    return v;
+                }
+                return v.getChangeSet().compareTo(dv.getChangeSet()) < 0 ? v : dv;
+            }));
+        dvPatternMap.values().forEach(dv -> result.domainSpecificValues.add(dv));
         return result;
     }
 

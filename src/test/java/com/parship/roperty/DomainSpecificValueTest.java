@@ -47,8 +47,8 @@ public class DomainSpecificValueTest {
 		OrderedDomainPattern pattern = new OrderedDomainPattern("pattern", 45);
 		DomainSpecificValue dsvWithChangeSet_A = DomainSpecificValue.withChangeSet(pattern, "value", "a_changeSet");
 		DomainSpecificValue dsvWithChangeSet_B = DomainSpecificValue.withChangeSet(pattern, "value", "b_changeSet");
-		assertThat(dsvWithChangeSet_A.compareTo(dsvWithChangeSet_B), greaterThan(0));
-		assertThat(dsvWithChangeSet_B.compareTo(dsvWithChangeSet_A), lessThan(0));
+		assertThat(dsvWithChangeSet_A.compareTo(dsvWithChangeSet_B), lessThan(0));
+		assertThat(dsvWithChangeSet_B.compareTo(dsvWithChangeSet_A), greaterThan(0));
 	}
 
 	@Test

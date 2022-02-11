@@ -27,8 +27,15 @@ public interface Roperty {
 
 	KeyValues getKeyValues(String key);
 
+    /**
+     * Get all KeyValues stored in this Roperty instance.
+     */
     Collection<KeyValues> getKeyValues();
 
+    /**
+     * Get those KeyValues stored in this Roperty instance, with only those DomainSpecificValues, where the provided resolver
+     * domains match or are wildcarded. The Default value of the KeyValues object is always returned, when present.
+     */
     Collection<KeyValues> getKeyValues(DomainResolver resolver);
 
     void removeWithChangeSet(String key, String changeSet, String... domainValues);

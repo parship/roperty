@@ -57,9 +57,10 @@ public class RopertyGetAllKeyValuesTest {
         roperty.set("key1", "value_dom_another", "desc", "domval_another");
         roperty.set("key1", "value_dom_other", "desc", "domval_other", "domval2");
         final Object o = roperty.get("key1", new MapBackedDomainResolver().set("dom1", "any").set("dom2", "domval_other_2"));
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues(
-            new MapBackedDomainResolver().set("dom1", "domval1"));
+
+        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
         assertThat(allKeyValues).hasSize(1);
+
         final KeyValues keyValues = allKeyValues.iterator().next();
         assertThat(keyValues.getKey()).isEqualTo("key1");
         final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
@@ -79,8 +80,8 @@ public class RopertyGetAllKeyValuesTest {
 
         roperty.set("key2", "key2_dom1", "desc", "domval1");
         roperty.set("key2", "key2_dom_other", "desc", "domval_other");
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues(
-            new MapBackedDomainResolver().set("dom1", "domval1"));
+
+        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
         assertThat(allKeyValues).hasSize(2);
 
         final KeyValues keyValues = allKeyValues.stream().filter(kv -> kv.getKey().equals("key1")).findFirst().orElseThrow();
@@ -96,6 +97,46 @@ public class RopertyGetAllKeyValuesTest {
         final Set<DomainSpecificValue> domainSpecificValues2 = keyValues2.getDomainSpecificValues();
         assertThat(domainSpecificValues2).containsExactlyInAnyOrder(
             new DefaultDomainSpecificValueFactory().create("key2_dom1", null, "domval1")
+        );
+    }
+
+    @Test
+    void keysInAChangeSetAreNotReturnedWhenTheChangeSetIsNotActive() {
+        roperty.set("key1", "value_dom1", "desc", "domval1");
+        roperty.setWithChangeSet("key1", "CS_value", "desc", "ChangeSet", "domval1");
+
+        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
+        assertThat(allKeyValues).hasSize(1);
+
+        final KeyValues keyValues = allKeyValues.iterator().next();
+        assertThat(keyValues.getKey()).isEqualTo("key1");
+        final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+        assertThat(domainSpecificValues).containsExactlyInAnyOrder(
+            new DefaultDomainSpecificValueFactory().create("value_dom1", null, "domval1")
+        );
+    }
+
+    @Test
+    void theHighestPrecedenceKeysInAChangeSetAreReturnedWhenTheChangeSetIsActive() {
+        roperty.set("key1", "value_dom1", "desc", "domval1");
+        roperty.set("key1", "val", "desc", "domval1", "domval2");
+        roperty.setWithChangeSet("key1", "CS_value", "desc", "ChangeSet", "domval1");
+        roperty.setWithChangeSet("key1", "ACS_value", "desc", "AChangeSet", "domval1");
+
+        final Object o = roperty.get("key1",
+            new MapBackedDomainResolver().set("dom1", "domval1").addActiveChangeSets("ChangeSet", "AChangeSet"));
+
+        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver()
+            .set("dom1", "domval1")
+            .addActiveChangeSets("ChangeSet", "AChangeSet"));
+        assertThat(allKeyValues).hasSize(1);
+
+        final KeyValues keyValues = allKeyValues.iterator().next();
+        assertThat(keyValues.getKey()).isEqualTo("key1");
+        final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+        assertThat(domainSpecificValues).containsExactlyInAnyOrder(
+            new DefaultDomainSpecificValueFactory().create("val", null, "domval1", "domval2"),
+            new DefaultDomainSpecificValueFactory().create("ACS_value", "AChangeSet", "domval1")
         );
     }
 }
