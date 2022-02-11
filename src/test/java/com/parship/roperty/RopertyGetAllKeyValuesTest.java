@@ -83,7 +83,7 @@ public class RopertyGetAllKeyValuesTest {
             new MapBackedDomainResolver().set("dom1", "domval1"));
         assertThat(allKeyValues).hasSize(2);
 
-        final KeyValues keyValues = allKeyValues.stream().filter(kv -> kv.getKey().equals("key1")).findFirst().get();
+        final KeyValues keyValues = allKeyValues.stream().filter(kv -> kv.getKey().equals("key1")).findFirst().orElseThrow();
         assertThat(keyValues.getKey()).isEqualTo("key1");
         final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
         assertThat(domainSpecificValues).containsExactlyInAnyOrder(
@@ -91,7 +91,7 @@ public class RopertyGetAllKeyValuesTest {
             new DefaultDomainSpecificValueFactory().create("value_dom1", null, "domval1")
         );
 
-        final KeyValues keyValues2 = allKeyValues.stream().filter(kv -> kv.getKey().equals("key2")).findFirst().get();
+        final KeyValues keyValues2 = allKeyValues.stream().filter(kv -> kv.getKey().equals("key2")).findFirst().orElseThrow();
         assertThat(keyValues2.getKey()).isEqualTo("key2");
         final Set<DomainSpecificValue> domainSpecificValues2 = keyValues2.getDomainSpecificValues();
         assertThat(domainSpecificValues2).containsExactlyInAnyOrder(

@@ -66,10 +66,10 @@ public class KeyValues {
     }
 
     private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String... domainKeyParts) {
-        return add(domainSpecificValueFactory.create(value, changeSet, domainKeyParts));
+        return addOrChangeDomainSpecificValue(domainSpecificValueFactory.create(value, changeSet, domainKeyParts));
     }
 
-    private DomainSpecificValue add(DomainSpecificValue domainSpecificValue) {
+    private DomainSpecificValue addOrChangeDomainSpecificValue(DomainSpecificValue domainSpecificValue) {
         if (domainSpecificValues.contains(domainSpecificValue)) {
             for (DomainSpecificValue d : domainSpecificValues) {
                 if (d.compareTo(domainSpecificValue) == 0) {
