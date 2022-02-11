@@ -141,8 +141,8 @@ public class KeyValues {
 
     public <T> T getDefaultValue() {
         return (T) domainSpecificValues.stream()
-            .filter(dv -> dv.isDefault())
-            .map(dv -> dv.getValue())
+            .filter(DomainSpecificValue::isDefault)
+            .map(DomainSpecificValue::getValue)
             .findAny()
             .orElse(null);
     }
@@ -201,7 +201,7 @@ public class KeyValues {
                 }
                 return v.getChangeSet().compareTo(dv.getChangeSet()) < 0 ? v : dv;
             }));
-        dvPatternMap.values().forEach(dv -> result.domainSpecificValues.add(dv));
+        result.domainSpecificValues.addAll(dvPatternMap.values());
         return result;
     }
 
