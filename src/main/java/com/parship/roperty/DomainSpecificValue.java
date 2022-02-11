@@ -140,7 +140,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		this.value = value;
 	}
 
-	public boolean matches(final String domainStr) {
+	public boolean patternMatches(final String domainStr) {
 		return matcher.matches(domainStr);
 	}
 
@@ -159,5 +159,17 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 
     public String getChangeSet() {
         return changeSet;
+    }
+
+    public String[] getDomains() {
+        return domains;
+    }
+
+    public boolean patternMatches(Matcher matcher) {
+        return isDefault() || matcher.matches(patternStr);
+    }
+
+    public boolean isDefault() {
+        return patternStr.length() == 0;
     }
 }

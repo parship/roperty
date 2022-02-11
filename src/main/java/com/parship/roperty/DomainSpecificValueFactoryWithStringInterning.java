@@ -1,11 +1,13 @@
 package com.parship.roperty;
 
+import static com.parship.roperty.DomainSpecificValueFactory.calculateOrderedDomainPattern;
+
 /**
  * Created by Benjamin Jochheim on 10.11.15.
  *
  * Uses String.intern() representation on String values, to save memory.
  */
-public class DomainSpecificValueFactoryWithStringInterning extends AbstractDomainSpecificValueFactory implements DomainSpecificValueFactory {
+public class DomainSpecificValueFactoryWithStringInterning implements DomainSpecificValueFactory {
     @Override
     public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {
         Object internValue=internIfInstanceOfString(value);

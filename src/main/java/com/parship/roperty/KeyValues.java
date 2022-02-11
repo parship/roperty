@@ -17,12 +17,11 @@
 
 package com.parship.roperty;
 
-import static java.util.Collections.emptyList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -66,7 +65,7 @@ public class KeyValues {
         return addOrChangeDomainSpecificValue(changeSet, value, domainKeyParts);
     }
 
-    private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String[] domainKeyParts) {
+    private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String... domainKeyParts) {
         return add(domainSpecificValueFactory.create(value, changeSet, domainKeyParts));
     }
 
@@ -89,9 +88,9 @@ public class KeyValues {
         if (domainsIterator.hasNext() && resolver == null) {
             throw new IllegalArgumentException("If a domain is specified, the domain resolver must not be null");
         }
-        String domainStr = buildDomain(domainsIterator, resolver);
+        String domainStr = buildDomain(domains, resolver);
         for (DomainSpecificValue domainSpecificValue : domainSpecificValues) {
-            if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.matches(
+            if ((resolver == null || domainSpecificValue.isInChangeSets(resolver.getActiveChangeSets())) && domainSpecificValue.patternMatches(
                 domainStr)) {
                 return (T) domainSpecificValue.getValue();
             }
@@ -99,10 +98,9 @@ public class KeyValues {
         return defaultValue;
     }
 
-    private static String buildDomain(final Iterator<String> domainsIterator, final DomainResolver resolver) {
+    private static String buildDomain(final Iterable<String> domains, final DomainResolver resolver) {
         StringBuilder builder = new StringBuilder();
-        while (domainsIterator.hasNext()) {
-            String domain = domainsIterator.next();
+        for (String domain : domains) {
             String domainValue = resolver.getDomainValue(domain);
             if (domainValue == null) {
                 domainValue = "";
@@ -143,7 +141,11 @@ public class KeyValues {
     }
 
     public <T> T getDefaultValue() {
-        return get(emptyList(), null, null);
+        return (T) domainSpecificValues.stream()
+            .filter(dv -> dv.isDefault())
+            .map(dv -> dv.getValue())
+            .findAny()
+            .orElse(null);
     }
 
     public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {
@@ -179,5 +181,34 @@ public class KeyValues {
 
     public String getKey() {
         return key;
+    }
+
+    public KeyValues copy(List<String> domains, DomainResolver resolver) {
+        KeyValues result = new KeyValues(key, domainSpecificValueFactory, description);
+        Matcher matcher = buildMatcher(domains, resolver);
+        domainSpecificValues.stream()
+            .filter(val -> val.patternMatches(matcher))
+            .forEach(val -> result.put(val.getValue(), val.getDomains()));
+        return result;
+    }
+
+    private static RegexMatcher buildMatcher(final Iterable<String> domains, final DomainResolver resolver) {
+        StringBuilder builder = new StringBuilder();
+        for (String domain : domains) {
+            String domainValue = resolver.getDomainValue(domain);
+            if (domainValue == null) {
+                domainValue = "[^|]*";
+            } else if (domainValue.contains(DOMAIN_SEPARATOR)) {
+                throw new IllegalArgumentException("domainValues may not contain '" + DOMAIN_SEPARATOR + '\'');
+            } else {
+                domainValue = "(" + domainValue + "|\\*)";
+            }
+            builder.append(domainValue).append("\\|");
+        }
+        while (builder.lastIndexOf("[^|]*\\|") == builder.length() - 7) {
+            builder.delete(builder.length() - 7, builder.length());
+        }
+        builder.append(".*");
+        return new RegexMatcher(builder.toString());
     }
 }

@@ -58,8 +58,8 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public Collection<KeyValues> reload(final Map<String, KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
-                return keyValuesMap.values();
+            public Collection<KeyValues> reload(final Collection<KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
+                return keyValuesMap;
             }
 
             @Override

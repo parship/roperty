@@ -18,7 +18,6 @@
 package com.parship.roperty;
 
 import java.util.Collection;
-import java.util.Map;
 
 
 /**
@@ -44,7 +43,7 @@ public interface Persistence {
      *
      * @param keyValuesMap current keyValuesMap with keys already known
      */
-    Collection<KeyValues> reload(Map<String, KeyValues> keyValuesMap, DomainSpecificValueFactory domainSpecificValueFactory);
+    Collection<KeyValues> reload(Collection<KeyValues> keyValuesMap, DomainSpecificValueFactory domainSpecificValueFactory);
 
     void store(final String key, final KeyValues keyValues, final String changeSet);
 

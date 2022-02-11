@@ -39,7 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -342,7 +342,7 @@ public class RopertyImplTest {
         roperty1.set("key", "value", "descr");
         assertThat(roperty1.get("key", null), is("value"));
         roperty1.reload();
-        verify(persistenceMock).reload(any(Map.class), any(DomainSpecificValueFactory.class));
+        verify(persistenceMock).reload(any(Collection.class), any(DomainSpecificValueFactory.class));
     }
 
     @Test

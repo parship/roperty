@@ -4,7 +4,9 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The internal in memory storage for Ropertys KeyValues
@@ -15,8 +17,14 @@ public class ValuesStore {
     private DomainSpecificValueFactory domainSpecificValueFactory;
     private Persistence persistence;
 
-    public Map<String, KeyValues> getAllValues() {
-        return Collections.unmodifiableMap(keyValuesMap);
+    public Collection<KeyValues> getAllValues() {
+        return Collections.unmodifiableCollection(keyValuesMap.values());
+    }
+
+    public Collection<KeyValues> getAllValues(List<String> domains, DomainResolver resolver) {
+        return keyValuesMap.values().stream()
+            .map(keyValues -> keyValues.copy(domains, resolver))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public void setAllValues(Collection<? extends KeyValues> values) {

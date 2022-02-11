@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +46,7 @@ public class ValuesStoreTest {
 
     @Test
     public void cannotModifyMapFromOuterClass() {
-        assertThrows(UnsupportedOperationException.class, () -> valuesStore.getAllValues().put("key", mock(KeyValues.class)));
+        assertThrows(UnsupportedOperationException.class, () -> valuesStore.getAllValues().add(mock(KeyValues.class)));
         assertThat(valuesStore.getAllValues().size(), is(0));
     }
 
@@ -125,7 +124,7 @@ public class ValuesStoreTest {
     public void valuesShouldBeReloaded() {
         Collection<KeyValues> values = new ArrayList<>();
         values.add(keyValues);
-        when(persistence.reload(any(Map.class), eq(domainSpecificValueFactory))).thenReturn(values);
+        when(persistence.reload(any(Collection.class), eq(domainSpecificValueFactory))).thenReturn(values);
 
         valuesStore.getOrCreateKeyValues("another key", null);
         valuesStore.reload();

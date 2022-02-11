@@ -17,11 +17,13 @@
 
 package com.parship.roperty;
 
+import static com.parship.roperty.DomainSpecificValueFactory.calculateOrderedDomainPattern;
+
 /**
  * @author mfinsterwalder
  * @since 2013-06-03 14:34
  */
-public class DefaultDomainSpecificValueFactory extends AbstractDomainSpecificValueFactory implements DomainSpecificValueFactory {
+public class DefaultDomainSpecificValueFactory implements DomainSpecificValueFactory {
 
 	@Override
 	public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {

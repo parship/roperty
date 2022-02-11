@@ -249,12 +249,12 @@ public class RopertyImpl implements Roperty {
 
     @Override
     public Collection<KeyValues> getKeyValues() {
-        return valuesStore.getAllValues().values();
+        return valuesStore.getAllValues();
     }
 
     @Override
     public Collection<KeyValues> getKeyValues(DomainResolver resolver) {
-        return new ArrayList<>();
+        return valuesStore.getAllValues(domains, resolver);
     }
 
     @Override

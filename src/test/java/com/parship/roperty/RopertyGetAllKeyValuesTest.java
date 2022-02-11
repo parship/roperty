@@ -1,11 +1,9 @@
 package com.parship.roperty;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.is;
 
 import java.util.Collection;
-import java.util.List;
-import org.hamcrest.MatcherAssert;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,23 +34,68 @@ public class RopertyGetAllKeyValuesTest {
     void getAllKeyValuesGivesEverythingUnfiltered() {
         roperty.set("key1", "value_1", "desc");
         roperty.set("key1", "value_dom1", "desc", "domval1");
+        roperty.set("key1", "value_dom2", "desc", "domval2");
         Collection<KeyValues> allKeyValues = roperty.getKeyValues();
-        MatcherAssert.assertThat(allKeyValues.size(), is(1));
+        assertThat(allKeyValues).hasSize(1);
         final KeyValues keyValues = allKeyValues.iterator().next();
-        MatcherAssert.assertThat(keyValues.getKey(), is("key1"));
-        MatcherAssert.assertThat(keyValues.getDefaultValue(), is("value_1"));
-        MatcherAssert.assertThat(keyValues.get(List.of("dom1"), "def", new MapBackedDomainResolver().set("dom1", "domval1")), is("value_dom1"));
+        assertThat(keyValues.getKey()).isEqualTo("key1");
+        assertThat((String) keyValues.getDefaultValue()).isEqualTo("value_1");
+        final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+        assertThat(domainSpecificValues).containsExactlyInAnyOrder(
+            new DefaultDomainSpecificValueFactory().create("value_1", null),
+            new DefaultDomainSpecificValueFactory().create("value_dom1", null, "domval1"),
+            new DefaultDomainSpecificValueFactory().create("value_dom2", null, "domval2")
+        );
     }
 
     @Test
     void getAllKeyValuesWithResolverGivesFilteredResult() {
         roperty.set("key1", "value_1", "desc");
         roperty.set("key1", "value_dom1", "desc", "domval1");
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues();
-        MatcherAssert.assertThat(allKeyValues.size(), is(1));
+        roperty.set("key1", "value_dom_2", "desc", "domval1", "domval2");
+        roperty.set("key1", "value_dom_*", "desc", "*", "domval_other_2");
+        roperty.set("key1", "value_dom_another", "desc", "domval_another");
+        roperty.set("key1", "value_dom_other", "desc", "domval_other", "domval2");
+        final Object o = roperty.get("key1", new MapBackedDomainResolver().set("dom1", "any").set("dom2", "domval_other_2"));
+        Collection<KeyValues> allKeyValues = roperty.getKeyValues(
+            new MapBackedDomainResolver().set("dom1", "domval1"));
+        assertThat(allKeyValues).hasSize(1);
         final KeyValues keyValues = allKeyValues.iterator().next();
-        MatcherAssert.assertThat(keyValues.getKey(), is("key1"));
-        MatcherAssert.assertThat(keyValues.getDefaultValue(), is("value_1"));
-        MatcherAssert.assertThat(keyValues.get(List.of("dom1"), "def", new MapBackedDomainResolver().set("dom1", "domval1")), is("value_dom1"));
+        assertThat(keyValues.getKey()).isEqualTo("key1");
+        final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+        assertThat(domainSpecificValues).containsExactlyInAnyOrder(
+            new DefaultDomainSpecificValueFactory().create("value_1", null),
+            new DefaultDomainSpecificValueFactory().create("value_dom1", null, "domval1"),
+            new DefaultDomainSpecificValueFactory().create("value_dom_2", null, "domval1", "domval2"),
+            new DefaultDomainSpecificValueFactory().create("value_dom_*", null, "*", "domval_other_2")
+        );
+    }
+
+    @Test
+    void getAllKeyValuesWithResolverWithMultipleKeysGivesFilteredResult() {
+        roperty.set("key1", "value_1", "desc");
+        roperty.set("key1", "value_dom1", "desc", "domval1");
+        roperty.set("key1", "value_dom_other", "desc", "domval_other");
+
+        roperty.set("key2", "key2_dom1", "desc", "domval1");
+        roperty.set("key2", "key2_dom_other", "desc", "domval_other");
+        Collection<KeyValues> allKeyValues = roperty.getKeyValues(
+            new MapBackedDomainResolver().set("dom1", "domval1"));
+        assertThat(allKeyValues).hasSize(2);
+
+        final KeyValues keyValues = allKeyValues.stream().filter(kv -> kv.getKey().equals("key1")).findFirst().get();
+        assertThat(keyValues.getKey()).isEqualTo("key1");
+        final Set<DomainSpecificValue> domainSpecificValues = keyValues.getDomainSpecificValues();
+        assertThat(domainSpecificValues).containsExactlyInAnyOrder(
+            new DefaultDomainSpecificValueFactory().create("value_1", null),
+            new DefaultDomainSpecificValueFactory().create("value_dom1", null, "domval1")
+        );
+
+        final KeyValues keyValues2 = allKeyValues.stream().filter(kv -> kv.getKey().equals("key2")).findFirst().get();
+        assertThat(keyValues2.getKey()).isEqualTo("key2");
+        final Set<DomainSpecificValue> domainSpecificValues2 = keyValues2.getDomainSpecificValues();
+        assertThat(domainSpecificValues2).containsExactlyInAnyOrder(
+            new DefaultDomainSpecificValueFactory().create("key2_dom1", null, "domval1")
+        );
     }
 }
