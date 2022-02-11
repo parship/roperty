@@ -13,10 +13,10 @@ public class DomainSpecificValueFactoryWithStringInterning extends AbstractDomai
         String[] internDomainKeyParts=internDomainKeyParts(domainKeyParts);
 
         if (internDomainKeyParts.length == 0) {
-            return new DomainSpecificValue(new OrderedDomainPattern("", 1), internValue, internChangeSet);
+            return DomainSpecificValue.withChangeSet(new OrderedDomainPattern("", 1), internValue, internChangeSet, domainKeyParts);
         }
 
-        return new DomainSpecificValue(calculateOrderedDomainPattern(internDomainKeyParts), internValue, internChangeSet);
+        return DomainSpecificValue.withChangeSet(calculateOrderedDomainPattern(internDomainKeyParts), internValue, internChangeSet, domainKeyParts);
     }
 
     private static String[] internDomainKeyParts(String[] domainKeyParts) {

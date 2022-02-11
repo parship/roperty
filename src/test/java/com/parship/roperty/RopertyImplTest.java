@@ -63,7 +63,7 @@ public class RopertyImplTest {
     private RopertyWithResolver ropertyWithResolver;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         when(resolverMock.getActiveChangeSets()).thenReturn(new ArrayList<>());
         when(resolverMock.getDomainValue(anyString())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
 
@@ -72,57 +72,57 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void keyMayNotBeNull() {
+    void keyMayNotBeNull() {
         assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.get(null));
     }
 
     @Test
-    public void keyMayNotBeNullWithDefault() {
+    void keyMayNotBeNullWithDefault() {
         assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.getOrDefine(null, "default"));
     }
 
     @Test
-    public void keyMayNotBeEmpty() {
+    void keyMayNotBeEmpty() {
         assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.get(""));
     }
 
     @Test
-    public void keyMayNotBeEmptyWithDefault() {
+    void keyMayNotBeEmptyWithDefault() {
         assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.getOrDefine("", "default"));
     }
 
     @Test
-    public void canNotSetValueForNullKey() {
+    void canNotSetValueForNullKey() {
         assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.set(null, "value", "descr"));
     }
 
     @Test
-    public void canNotSetValueForEmptyKey() {
+    void canNotSetValueForEmptyKey() {
         assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.set("", "value", "descr"));
     }
 
     @Test
-    public void gettingAPropertyThatDoesNotExistGivesNull() {
+    void gettingAPropertyThatDoesNotExistGivesNull() {
         String value = ropertyWithResolver.get("key");
         assertThat(value, nullValue());
     }
 
     @Test
-    public void gettingAPropertyThatDoesNotExistQueriesPersistence() {
+    void gettingAPropertyThatDoesNotExistQueriesPersistence() {
         ropertyImpl.setPersistence(persistenceMock);
         ropertyWithResolver.get("key");
         verify(persistenceMock).load(eq("key"), any(DomainSpecificValueFactory.class));
     }
 
     @Test
-    public void gettingAPropertyThatDoesNotExistGivesDefaultValue() {
+    void gettingAPropertyThatDoesNotExistGivesDefaultValue() {
         String text = "default";
         String value = ropertyWithResolver.get("key", text);
         assertThat(value, is(text));
     }
 
     @Test
-    public void settingNullAsValue() {
+    void settingNullAsValue() {
         ropertyWithResolver.set("key", "value", null);
         assertThat(ropertyWithResolver.get("key"), is("value"));
         ropertyWithResolver.set("key", null, null);
@@ -130,19 +130,19 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void settingAnEmptyString() {
+    void settingAnEmptyString() {
         ropertyWithResolver.set("key", "", null);
         assertThat(ropertyWithResolver.get("key"), is(""));
     }
 
     @Test
-    public void keysAreAlwaysTrimmed() {
+    void keysAreAlwaysTrimmed() {
         ropertyWithResolver.set("  key   ", "val", "descr");
         assertThat(ropertyWithResolver.get(" key"), is("val"));
     }
 
     @Test
-    public void definingAndGettingAStringValue() {
+    void definingAndGettingAStringValue() {
         String key = "key";
         String text = "some Value";
         ropertyWithResolver.set(key, text, null);
@@ -151,7 +151,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void settingAValueCallsStoreOnPersistence() {
+    void settingAValueCallsStoreOnPersistence() {
         String key = "key";
         ropertyImpl.setPersistence(persistenceMock);
         KeyValues keyValue = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
@@ -161,7 +161,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void gettingAValueWithoutAGivenDefaultGivesValue() {
+    void gettingAValueWithoutAGivenDefaultGivesValue() {
         String text = "value";
         ropertyWithResolver.set("key", text, null);
         String value = ropertyWithResolver.get("key");
@@ -169,7 +169,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void changingAStringValue() {
+    void changingAStringValue() {
         ropertyWithResolver.set("key", "first", null);
         ropertyWithResolver.set("key", "other", null);
         String value = ropertyWithResolver.get("key", "default");
@@ -177,27 +177,27 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void gettingAnIntValueThatDoesNotExistGivesDefault() {
+    void gettingAnIntValueThatDoesNotExistGivesDefault() {
         int value = ropertyWithResolver.get("key", 3);
         assertThat(value, is(3));
     }
 
     @Test
-    public void settingAndGettingAnIntValueWithDefaultGivesStoredValue() {
+    void settingAndGettingAnIntValueWithDefaultGivesStoredValue() {
         ropertyWithResolver.set("key", 7, null);
         int value = ropertyWithResolver.get("key", 3);
         assertThat(value, is(7));
     }
 
     @Test
-    public void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
+    void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
         String text = "value";
         ropertyWithResolver.set("key", text, null);
         assertThrows(ClassCastException.class, () -> {Integer value = ropertyWithResolver.get("key");});
     }
 
     @Test
-    public void getOrDefineSetsAValueWithTheGivenDefault() {
+    void getOrDefineSetsAValueWithTheGivenDefault() {
         String text = "text";
         String value = ropertyWithResolver.getOrDefine("key", text, "descr");
         assertThat(value, is(text));
@@ -206,17 +206,17 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void nullDomainsAreNotAllowed() {
+    void nullDomainsAreNotAllowed() {
         assertThrows(NullPointerException.class, () -> ropertyImpl.addDomains((String[]) null));
     }
 
     @Test
-    public void emptyDomainsAreNotAllowed() {
+    void emptyDomainsAreNotAllowed() {
         assertThrows(IllegalArgumentException.class, () -> ropertyImpl.addDomains(""));
     }
 
     @Test
-    public void getOverriddenValue() {
+    void getOverriddenValue() {
         ropertyImpl.addDomains("domain1");
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String defaultValue = "default value";
@@ -228,13 +228,13 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void whenAKeyForASubdomainIsSetTheRootKeyGetsANullValue() {
+    void whenAKeyForASubdomainIsSetTheRootKeyGetsANullValue() {
         ropertyWithResolver.set("key", "value", "descr", "subdomain");
         assertThat(ropertyWithResolver.get("key"), nullValue());
     }
 
     @Test
-    public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist() {
+    void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist() {
         ropertyImpl.addDomains("domain1");
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String overriddenValue = "overridden value";
@@ -246,7 +246,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
+    void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExistWithTwoDomains() {
         ropertyImpl.addDomains("domain1", "domain2");
         DomainResolver mockResolver = mock(DomainResolver.class);
         when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
@@ -262,7 +262,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void getOverriddenValueTwoDomainsOnlyFirstDomainIsOverridden() {
+    void getOverriddenValueTwoDomainsOnlyFirstDomainIsOverridden() {
         ropertyImpl.addDomains("domain1", "domain2");
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String defaultValue = "default value";
@@ -274,7 +274,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void domainValuesAreRequestedFromAResolver() {
+    void domainValuesAreRequestedFromAResolver() {
         ropertyWithResolver.getRoperty().addDomains("domain1", "domain2");
         DomainResolver mockResolver = mock(DomainResolver.class);
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
@@ -287,7 +287,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
+    void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
         ropertyImpl.addDomains("domain1", "domain2");
         DomainResolver mockResolver = mock(DomainResolver.class);
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
@@ -296,7 +296,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void wildcardIsResolvedWhenOtherDomainsMatch() {
+    void wildcardIsResolvedWhenOtherDomainsMatch() {
         ropertyImpl.addDomains("domain1", "domain2");
         ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String value = "overridden value";
@@ -305,7 +305,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheValueStore() {
+    void aKeyThatIsNotPresentIsLoadedFromPersistenceAndThenInsertedIntoTheValueStore() {
         String key = "key";
         KeyValues keyValues = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
         when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
@@ -315,14 +315,14 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void domainsThatAreInitializedAreUsed() {
+    void domainsThatAreInitializedAreUsed() {
         Roperty roperty1 = new RopertyImpl(persistenceMock, "dom1", "dom2");
         roperty1.set("key", "value", "dom1");
         assertThat(roperty1.get("key", resolverMock), is("value"));
     }
 
     @Test
-    public void persistenceThatIsInitializedIsUsed() {
+    void persistenceThatIsInitializedIsUsed() {
         Roperty roperty1 = new RopertyImpl(persistenceMock, "dom1", "dom2");
         verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
         roperty1.get("key", resolverMock);
@@ -330,13 +330,13 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void domainInitializerAndPersistenceAreUsedDuringInitialization() {
+    void domainInitializerAndPersistenceAreUsedDuringInitialization() {
         new RopertyImpl(persistenceMock);
         verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
     }
 
     @Test
-    public void reloadReplacesKeyValuesMap() {
+    void reloadReplacesKeyValuesMap() {
         RopertyImpl roperty1 = new RopertyImpl(persistenceMock);
         verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
         roperty1.set("key", "value", "descr");
@@ -346,20 +346,20 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void reloadWithoutPersistenceDoesNothing() {
+    void reloadWithoutPersistenceDoesNothing() {
         ropertyImpl.set("key", "value", "descr");
         ropertyImpl.reload();
         assertThat(ropertyImpl.get("key", null), is("value"));
     }
 
     @Test
-    public void domainsThatAreInitializedArePresent() {
+    void domainsThatAreInitializedArePresent() {
         RopertyImpl roperty = new RopertyImpl("domain1", "domain2");
         assertThat(roperty.dump().toString(), is("Roperty{domains=[domain1, domain2]\n}"));
     }
 
     @Test
-    public void getKeyValues() {
+    void getKeyValues() {
         String key = "key";
         ropertyImpl.set(key, "value", null);
         KeyValues keyValues = ropertyImpl.getKeyValues(key);
@@ -369,25 +369,25 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void getKeyValuesTrimsTheKey() {
+    void getKeyValuesTrimsTheKey() {
         ropertyImpl.set("key", "value", null);
         assertThat(ropertyImpl.getKeyValues("  key"), notNullValue());
     }
 
     @Test
-    public void ropertyWithResolverToString() {
+    void ropertyWithResolverToString() {
         assertThat(ropertyWithResolver.toString(), is("RopertyWithResolver{roperty=Roperty{domains=[]}}"));
     }
 
     @Test
-    public void toStringEmptyRoperty() {
+    void toStringEmptyRoperty() {
         assertThat(ropertyImpl.dump().toString(), is("Roperty{domains=[]\n}"));
         ropertyImpl.addDomains("domain");
         assertThat(ropertyImpl.dump().toString(), is("Roperty{domains=[domain]\n}"));
     }
 
     @Test
-    public void toStringFilledRoperty() {
+    void toStringFilledRoperty() {
         ropertyImpl.addDomains("domain1", "domain2");
         ropertyImpl.set("key", "value", null);
         ropertyImpl.set("key", "value2", null, "domain1");
@@ -397,36 +397,27 @@ public class RopertyImplTest {
         assertThat(ropertyImpl.dump().toString(), containsString("Roperty{domains=[domain1, domain2]\n"));
         assertThat(ropertyImpl.dump().toString(), containsString("KeyValues for \"otherKey\": KeyValues{\n"));
         assertThat(ropertyImpl.dump().toString(), containsString("\tdescription=\"\"\n"));
-        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\"}\n"));
+        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"otherValue\", domains=[]"));
 
         assertThat(ropertyImpl.dump().toString(), containsString("KeyValues for \"key\": KeyValues{\n"));
         assertThat(ropertyImpl.dump().toString(), containsString("\tdescription=\"\"\n"));
-        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\"}\n"));
-        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n"));
+        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\", domains=[domain1]"));
+        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\", domains=[]"));
 
     }
 
     @Test
-    public void dumpToStdout() throws UnsupportedEncodingException {
+    void dumpToStdout() throws UnsupportedEncodingException {
         ropertyImpl.addDomains("dom1");
         ropertyImpl.set("key", "value", "descr");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ropertyImpl.dump(new PrintStream(os));
         String output = os.toString("UTF8");
-        assertThat(output, is("Roperty{domains=[dom1]\nKeyValues for \"key\": KeyValues{\n\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n}\n}\n"));
+        assertThat(output, is("Roperty{domains=[dom1]\nKeyValues for \"key\": KeyValues{\n\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\", domains=[]}\n}\n}\n"));
     }
 
     @Test
-    public void iterate() {
-        ropertyImpl.set("key1", "value_1", "desc");
-        Map<String, KeyValues> keyValues = ropertyImpl.getKeyValues();
-        assertThat(keyValues.size(), is(1));
-        assertThat(keyValues.containsKey("key1"), is(true));
-        assertThat(keyValues.get("key1").getDefaultValue(), is("value_1"));
-    }
-
-    @Test
-    public void domainResolverToNullIsIgnored() {
+    void domainResolverToNullIsIgnored() {
         DomainResolver domainResolver = new MapBackedDomainResolver().set("dom", "domVal");
         ropertyImpl.addDomains("dom", "dom2", "dom3");
         ropertyImpl.get("key", domainResolver);
@@ -438,7 +429,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void removeDefaultValue() {
+    void removeDefaultValue() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.addDomains("dom1");
         ropertyWithPersistence.set("key", "value", "desc");
@@ -452,7 +443,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void removeDomainSpecificValue() {
+    void removeDomainSpecificValue() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.addDomains("dom1", "dom2");
         ropertyWithPersistence.set("key", "value", "desc");
@@ -467,14 +458,14 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void removeDoesNotCallPersistenceWhenNoDomainSpecificValueExists() {
+    void removeDoesNotCallPersistenceWhenNoDomainSpecificValueExists() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.remove("key", "dom1");
         verify(persistenceMock, never()).remove(anyString(), any(DomainSpecificValue.class), anyString());
     }
 
     @Test
-    public void removeACompleteKey() {
+    void removeACompleteKey() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.set("key", "value", "desc");
         ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
@@ -484,14 +475,14 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void removeCallsPersistenceEvenWhenNoKeyExists() {
+    void removeCallsPersistenceEvenWhenNoKeyExists() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.removeKey("key");
         verify(persistenceMock).remove("key", null);
     }
 
     @Test
-    public void removeKeyFromChangeSet() {
+    void removeKeyFromChangeSet() {
         ropertyImpl.set("key", "value", "descr");
         ropertyImpl.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
         DomainResolver resolver = new MapBackedDomainResolver().addActiveChangeSets("changeSet");
@@ -501,7 +492,7 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void removeAChangeSet() {
+    void removeAChangeSet() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.set("key", "value", "descr");
         ropertyWithPersistence.setWithChangeSet("key", "valueChangeSet", "descr", "changeSet");
@@ -517,14 +508,14 @@ public class RopertyImplTest {
     }
 
     @Test
-    public void removeChangeSetThrowsIllegalArgumentException() {
+    void removeChangeSetThrowsIllegalArgumentException() {
         RopertyImpl ropertyImpl = new RopertyImpl(persistenceMock);
 
         assertThrows(NullPointerException.class, () -> ropertyImpl.removeChangeSet(null));
     }
 
     @Test
-    public void removeUnexistingChangeSet() {
+    void removeUnexistingChangeSet() {
         ropertyImpl.removeChangeSet("notExistingChangeSet");
 
         verifyNoInteractions(persistenceMock);

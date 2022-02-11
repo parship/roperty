@@ -69,9 +69,9 @@ public class RopertyManagerTest {
 		roperty2.set(key, "value2", "descr");
 		String dump = manager.dump("key");
 		assertThat(dump, containsString("KeyValues{\n" +
-			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\"}\n}"));
+			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\", domains=[]}\n}"));
 		assertThat(dump, containsString("KeyValues{\n" +
-			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\"}\n}"));
+			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\", domains=[]}\n}"));
 	}
 
 	@Test

@@ -1,7 +1,7 @@
 package com.parship.roperty;
 
 import java.io.PrintStream;
-import java.util.Map;
+import java.util.Collection;
 
 public interface Roperty {
 
@@ -27,9 +27,11 @@ public interface Roperty {
 
 	KeyValues getKeyValues(String key);
 
-	Map<String, KeyValues> getKeyValues();
+    Collection<KeyValues> getKeyValues();
 
-	void removeWithChangeSet(String key, String changeSet, String... domainValues);
+    Collection<KeyValues> getKeyValues(DomainResolver resolver);
+
+    void removeWithChangeSet(String key, String changeSet, String... domainValues);
 
 	void remove(String key, String... domainValues);
 

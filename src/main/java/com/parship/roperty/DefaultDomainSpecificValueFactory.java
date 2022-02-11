@@ -26,10 +26,10 @@ public class DefaultDomainSpecificValueFactory extends AbstractDomainSpecificVal
 	@Override
 	public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {
 		if (domainKeyParts.length == 0) {
-			return new DomainSpecificValue(new OrderedDomainPattern("", 1), value, changeSet);
+			return DomainSpecificValue.withChangeSet(new OrderedDomainPattern("", 1), value, changeSet, domainKeyParts);
 		}
 
-		return new DomainSpecificValue(calculateOrderedDomainPattern(domainKeyParts), value, changeSet);
+		return DomainSpecificValue.withChangeSet(calculateOrderedDomainPattern(domainKeyParts), value, changeSet, domainKeyParts);
 	}
 
 }

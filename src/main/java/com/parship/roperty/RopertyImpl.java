@@ -248,8 +248,13 @@ public class RopertyImpl implements Roperty {
     }
 
     @Override
-    public Map<String, KeyValues> getKeyValues() {
-        return valuesStore.getAllValues();
+    public Collection<KeyValues> getKeyValues() {
+        return valuesStore.getAllValues().values();
+    }
+
+    @Override
+    public Collection<KeyValues> getKeyValues(DomainResolver resolver) {
+        return new ArrayList<>();
     }
 
     @Override

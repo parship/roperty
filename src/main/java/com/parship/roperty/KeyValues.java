@@ -17,11 +17,12 @@
 
 package com.parship.roperty;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -142,8 +143,7 @@ public class KeyValues {
     }
 
     public <T> T getDefaultValue() {
-        List<String> emptyList = Collections.emptyList();
-        return get(emptyList, null, null);
+        return get(emptyList(), null, null);
     }
 
     public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {

@@ -17,6 +17,7 @@
 
 package com.parship.roperty;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -34,16 +35,25 @@ import java.util.Objects;
 public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 	private final String patternStr;
 	private final int ordering;
-	private Object value;
+    private final String[] domains;
+    private Object value;
 	private final Matcher matcher;
     private String changeSet;
 
-	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet) {
-		this(orderedDomainPattern, value);
+    public static DomainSpecificValue withChangeSet(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet, String... domainKeys) {
+        return new DomainSpecificValue(orderedDomainPattern, value, changeSet, domainKeys);
+    }
+
+    public static DomainSpecificValue withoutChangeSet(final OrderedDomainPattern orderedDomainPattern, Object value, String... domainKeys) {
+        return new DomainSpecificValue(orderedDomainPattern, value, domainKeys);
+    }
+
+    private DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet, String... domainKeys) {
+		this(orderedDomainPattern, value, domainKeys);
 		this.changeSet = changeSet;
 	}
 
-	public DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value) {
+	private DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String... domainKeys) {
         Objects.requireNonNull(orderedDomainPattern.getDomainPattern(), "\"domainPattern\" must not be null");
         this.patternStr = orderedDomainPattern.getDomainPattern();
 		if (patternStr.contains("*")) {
@@ -52,6 +62,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 			matcher = new StringPrefixMatcher(orderedDomainPattern.getDomainPattern());
 		}
 		this.ordering = orderedDomainPattern.getOrder();
+        this.domains = domainKeys;
 		this.value = value;
 	}
 
@@ -106,17 +117,18 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		return result;
 	}
 
-	@Override
-	public String toString() {
-		return "DomainSpecificValue{" +
-			"pattern=\"" + patternStr +
-			"\", ordering=" + ordering +
-			(changeSet != null ? ", changeSet=\"" + changeSet + '"' : "") +
-			", value=\"" + value +
-			"\"}";
-	}
+    @Override
+    public String toString() {
+        return "DomainSpecificValue{" +
+            "pattern=\"" + patternStr +
+            "\", ordering=" + ordering +
+            (changeSet != null ? ", changeSet=\"" + changeSet + '"' : "") +
+            ", value=\"" + value +
+            "\", domains=" + Arrays.toString(domains) +
+            "}";
+    }
 
-	public String getPatternStr() {
+    public String getPatternStr() {
 		return patternStr;
 	}
 
