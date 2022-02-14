@@ -24,6 +24,7 @@ public class ValuesStore {
     public Collection<KeyValues> getAllValues(List<String> domains, DomainResolver resolver) {
         return keyValuesMap.values().stream()
             .map(keyValues -> keyValues.copy(domains, resolver))
+            .filter(keyValues -> !keyValues.getDomainSpecificValues().isEmpty())
             .collect(Collectors.toUnmodifiableList());
     }
 

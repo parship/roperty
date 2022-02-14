@@ -56,7 +56,7 @@ public class RopertyGetAllKeyValuesTest {
         roperty.set("key1", "value_dom_*", "desc", "*", "domval_other_2");
         roperty.set("key1", "value_dom_another", "desc", "domval_another");
         roperty.set("key1", "value_dom_other", "desc", "domval_other", "domval2");
-        final Object o = roperty.get("key1", new MapBackedDomainResolver().set("dom1", "any").set("dom2", "domval_other_2"));
+        roperty.set("key2", "val2", "desc", "other");
 
         Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
         assertThat(allKeyValues).hasSize(1);
