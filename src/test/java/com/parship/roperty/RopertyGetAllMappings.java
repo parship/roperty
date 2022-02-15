@@ -10,7 +10,6 @@ public class RopertyGetAllMappings {
     private final RopertyImpl roperty = new RopertyImpl();
     private final MapBackedDomainResolver resolver = new MapBackedDomainResolver();
 
-
     @Test
     void getAnEmptyMapFromAnEmptyRoperty() {
         assertThat(roperty.getAllMappings(resolver)).isEmpty();
@@ -41,9 +40,8 @@ public class RopertyGetAllMappings {
         roperty.set("key", "value2", "desc", "dom1", "dom2");
         roperty.set("key", "value3", "desc", "dom1", "*");
         roperty.set("key2", "otherValue", "desc");
-        resolver.set("domain1", "dom1");
-        assertThat(roperty.getAllMappings(resolver)).hasSize(2);
-        assertThat(roperty.getAllMappings(resolver)).containsAllEntriesOf(Map.of("key", "value3", "key2", "otherValue"));
+        assertThat(roperty.getAllMappings("dom1")).hasSize(2);
+        assertThat(roperty.getAllMappings("dom1")).containsAllEntriesOf(Map.of("key", "value3", "key2", "otherValue"));
     }
 
     @Test

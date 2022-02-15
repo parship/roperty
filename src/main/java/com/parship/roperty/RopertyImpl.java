@@ -179,12 +179,12 @@ public class RopertyImpl implements Roperty {
 
     @Override
     public void setWithChangeSet(final String key, final Object value, final String description, String changeSet,
-        final String... domains) {
+        final String... domainValues) {
         final String trimmedKey = trimKey(key);
         LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet,
-            domains);
+            domainValues);
         KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
-        keyValues.putWithChangeSet(changeSet, value, domains);
+        keyValues.putWithChangeSet(changeSet, value, domainValues);
         getChangeSetKeys(changeSet).add(trimmedKey);
         store(trimmedKey, keyValues, changeSet);
     }

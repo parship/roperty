@@ -55,20 +55,20 @@ public class KeyValues {
         this.description = description;
     }
 
-    public DomainSpecificValue put(Object value, String... domainKeyParts) {
-        return putWithChangeSet(null, value, domainKeyParts);
+    public DomainSpecificValue put(Object value, String... domainValues) {
+        return putWithChangeSet(null, value, domainValues);
     }
 
-    public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainKeyParts) {
-        Objects.requireNonNull(domainKeyParts, "Domain key parts may no be null");
-        for (String domain : domainKeyParts) {
+    public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainValues) {
+        Objects.requireNonNull(domainValues, "Domain key parts may no be null");
+        for (String domain : domainValues) {
             Ensure.notEmpty(domain, "domain");
         }
-        return addOrChangeDomainSpecificValue(changeSet, value, domainKeyParts);
+        return addOrChangeDomainSpecificValue(changeSet, value, domainValues);
     }
 
-    private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String... domainKeyParts) {
-        DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainKeyParts);
+    private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String... domainValues) {
+        DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainValues);
         if (domainSpecificValues.contains(domainSpecificValue)) {
             for (DomainSpecificValue d : domainSpecificValues) {
                 if (d.compareTo(domainSpecificValue) == 0) {
@@ -147,9 +147,9 @@ public class KeyValues {
             .orElse(null);
     }
 
-    public DomainSpecificValue remove(final String changeSet, final String[] domainKeyParts) {
-        StringBuilder builder = new StringBuilder(domainKeyParts.length * 8);
-        for (String domainValue : domainKeyParts) {
+    public DomainSpecificValue remove(final String changeSet, final String[] domainValues) {
+        StringBuilder builder = new StringBuilder(domainValues.length * 8);
+        for (String domainValue : domainValues) {
             builder.append(domainValue).append(DOMAIN_SEPARATOR);
         }
         final String pattern = builder.toString();

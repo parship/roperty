@@ -57,7 +57,7 @@ public interface Roperty {
 
 	void set(String key, Object value, String description, String... domains);
 
-	void setWithChangeSet(String key, Object value, String description, String changeSet, String... domains);
+	void setWithChangeSet(String key, Object value, String description, String changeSet, String... domainValues);
 
 	void reload();
 
