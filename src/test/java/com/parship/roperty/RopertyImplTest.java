@@ -60,7 +60,6 @@ public class RopertyImplTest {
     private Persistence persistenceMock;
 
     private RopertyImpl ropertyImpl;
-    private RopertyWithResolver ropertyWithResolver;
 
     @BeforeEach
     void setUp() {
@@ -68,85 +67,84 @@ public class RopertyImplTest {
         when(resolverMock.getDomainValue(anyString())).thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
 
         ropertyImpl = new RopertyImpl();
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
     }
 
     @Test
     void keyMayNotBeNull() {
-        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.get(null));
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.get(null));
     }
 
     @Test
     void keyMayNotBeNullWithDefault() {
-        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.getOrDefine(null, "default"));
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.getOrDefine(null, "default", resolverMock));
     }
 
     @Test
     void keyMayNotBeEmpty() {
-        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.get(""));
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.get(""));
     }
 
     @Test
     void keyMayNotBeEmptyWithDefault() {
-        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.getOrDefine("", "default"));
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.getOrDefine("", "default", resolverMock));
     }
 
     @Test
     void canNotSetValueForNullKey() {
-        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.set(null, "value", "descr"));
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.set(null, "value", "descr"));
     }
 
     @Test
     void canNotSetValueForEmptyKey() {
-        assertThrows(IllegalArgumentException.class, () -> ropertyWithResolver.set("", "value", "descr"));
+        assertThrows(IllegalArgumentException.class, () -> ropertyImpl.set("", "value", "descr"));
     }
 
     @Test
     void gettingAPropertyThatDoesNotExistGivesNull() {
-        String value = ropertyWithResolver.get("key");
+        String value = ropertyImpl.get("key", resolverMock);
         assertThat(value, nullValue());
     }
 
     @Test
     void gettingAPropertyThatDoesNotExistQueriesPersistence() {
         ropertyImpl.setPersistence(persistenceMock);
-        ropertyWithResolver.get("key");
+        ropertyImpl.get("key", resolverMock);
         verify(persistenceMock).load(eq("key"), any(DomainSpecificValueFactory.class));
     }
 
     @Test
     void gettingAPropertyThatDoesNotExistGivesDefaultValue() {
         String text = "default";
-        String value = ropertyWithResolver.get("key", text);
+        String value = ropertyImpl.getOrDefault("key", text, resolverMock);
         assertThat(value, is(text));
     }
 
     @Test
     void settingNullAsValue() {
-        ropertyWithResolver.set("key", "value", null);
-        assertThat(ropertyWithResolver.get("key"), is("value"));
-        ropertyWithResolver.set("key", null, null);
-        assertThat(ropertyWithResolver.get("key"), nullValue());
+        ropertyImpl.set("key", "value", null);
+        assertThat(ropertyImpl.get("key", resolverMock), is("value"));
+        ropertyImpl.set("key", null, null);
+        assertThat(ropertyImpl.get("key", resolverMock), nullValue());
     }
 
     @Test
     void settingAnEmptyString() {
-        ropertyWithResolver.set("key", "", null);
-        assertThat(ropertyWithResolver.get("key"), is(""));
+        ropertyImpl.set("key", "", null);
+        assertThat(ropertyImpl.get("key", resolverMock), is(""));
     }
 
     @Test
     void keysAreAlwaysTrimmed() {
-        ropertyWithResolver.set("  key   ", "val", "descr");
-        assertThat(ropertyWithResolver.get(" key"), is("val"));
+        ropertyImpl.set("  key   ", "val", "descr");
+        assertThat(ropertyImpl.get(" key", resolverMock), is("val"));
     }
 
     @Test
     void definingAndGettingAStringValue() {
         String key = "key";
         String text = "some Value";
-        ropertyWithResolver.set(key, text, null);
-        String value = ropertyWithResolver.get(key, "default");
+        ropertyImpl.set(key, text, null);
+        String value = ropertyImpl.getOrDefault(key, "default", resolverMock);
         assertThat(value, is(text));
     }
 
@@ -156,52 +154,52 @@ public class RopertyImplTest {
         ropertyImpl.setPersistence(persistenceMock);
         KeyValues keyValue = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
         when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
-        ropertyWithResolver.set(key, "value", null);
+        ropertyImpl.set(key, "value", null);
         verify(persistenceMock).store(key, keyValue, "");
     }
 
     @Test
     void gettingAValueWithoutAGivenDefaultGivesValue() {
         String text = "value";
-        ropertyWithResolver.set("key", text, null);
-        String value = ropertyWithResolver.get("key");
+        ropertyImpl.set("key", text, null);
+        String value = ropertyImpl.get("key", resolverMock);
         assertThat(value, is(text));
     }
 
     @Test
     void changingAStringValue() {
-        ropertyWithResolver.set("key", "first", null);
-        ropertyWithResolver.set("key", "other", null);
-        String value = ropertyWithResolver.get("key", "default");
+        ropertyImpl.set("key", "first", null);
+        ropertyImpl.set("key", "other", null);
+        String value = ropertyImpl.getOrDefault("key", "default", resolverMock);
         assertThat(value, is("other"));
     }
 
     @Test
     void gettingAnIntValueThatDoesNotExistGivesDefault() {
-        int value = ropertyWithResolver.get("key", 3);
+        int value = ropertyImpl.getOrDefault("key", 3, resolverMock);
         assertThat(value, is(3));
     }
 
     @Test
     void settingAndGettingAnIntValueWithDefaultGivesStoredValue() {
-        ropertyWithResolver.set("key", 7, null);
-        int value = ropertyWithResolver.get("key", 3);
+        ropertyImpl.set("key", 7, null);
+        int value = ropertyImpl.getOrDefault("key", 3, resolverMock);
         assertThat(value, is(7));
     }
 
     @Test
     void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
         String text = "value";
-        ropertyWithResolver.set("key", text, null);
-        assertThrows(ClassCastException.class, () -> {Integer value = ropertyWithResolver.get("key");});
+        ropertyImpl.set("key", text, null);
+        assertThrows(ClassCastException.class, () -> {Integer value = ropertyImpl.get("key", resolverMock);});
     }
 
     @Test
     void getOrDefineSetsAValueWithTheGivenDefault() {
         String text = "text";
-        String value = ropertyWithResolver.getOrDefine("key", text, "descr");
+        String value = ropertyImpl.getOrDefine("key", text, "descr", resolverMock);
         assertThat(value, is(text));
-        value = ropertyWithResolver.getOrDefine("key", "other default");
+        value = ropertyImpl.getOrDefine("key", "other default", resolverMock);
         assertThat(value, is(text));
     }
 
@@ -218,30 +216,28 @@ public class RopertyImplTest {
     @Test
     void getOverriddenValue() {
         ropertyImpl.addDomains("domain1");
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String defaultValue = "default value";
         String overriddenValue = "overridden value";
-        ropertyWithResolver.set("key", defaultValue, null);
-        ropertyWithResolver.set("key", overriddenValue, null, "domain1");
-        String value = ropertyWithResolver.get("key");
+        ropertyImpl.set("key", defaultValue, null);
+        ropertyImpl.set("key", overriddenValue, null, "domain1");
+        String value = ropertyImpl.get("key", resolverMock);
         assertThat(value, is(overriddenValue));
     }
 
     @Test
     void whenAKeyForASubdomainIsSetTheRootKeyGetsANullValue() {
-        ropertyWithResolver.set("key", "value", "descr", "subdomain");
-        assertThat(ropertyWithResolver.get("key"), nullValue());
+        ropertyImpl.set("key", "value", "descr", "subdomain");
+        assertThat(ropertyImpl.get("key", resolverMock), nullValue());
     }
 
     @Test
     void theCorrectValueIsSelectedWhenAlternativeOverriddenValuesExist() {
         ropertyImpl.addDomains("domain1");
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String overriddenValue = "overridden value";
-        ropertyWithResolver.set("key", "other value", null, "other");
-        ropertyWithResolver.set("key", overriddenValue, null, "domain1");
-        ropertyWithResolver.set("key", "yet another value", null, "yet another");
-        String value = ropertyWithResolver.get("key");
+        ropertyImpl.set("key", "other value", null, "other");
+        ropertyImpl.set("key", overriddenValue, null, "domain1");
+        ropertyImpl.set("key", "yet another value", null, "yet another");
+        String value = ropertyImpl.get("key", resolverMock);
         assertThat(value, is(overriddenValue));
     }
 
@@ -251,35 +247,32 @@ public class RopertyImplTest {
         DomainResolver mockResolver = mock(DomainResolver.class);
         when(mockResolver.getDomainValue("domain1")).thenReturn("domVal1");
         when(mockResolver.getDomainValue("domain2")).thenReturn("domVal2");
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
         String overriddenValue = "overridden value";
-        ropertyWithResolver.set("key", "other value", null, "other");
-        ropertyWithResolver.set("key", "domVal1", null, "domVal1");
-        ropertyWithResolver.set("key", overriddenValue, null, "domVal1", "domVal2");
-        ropertyWithResolver.set("key", "yet another value", null, "domVal1", "other");
-        String value = ropertyWithResolver.get("key");
+        ropertyImpl.set("key", "other value", null, "other");
+        ropertyImpl.set("key", "domVal1", null, "domVal1");
+        ropertyImpl.set("key", overriddenValue, null, "domVal1", "domVal2");
+        ropertyImpl.set("key", "yet another value", null, "domVal1", "other");
+        String value = ropertyImpl.get("key", mockResolver);
         assertThat(value, is(overriddenValue));
     }
 
     @Test
     void getOverriddenValueTwoDomainsOnlyFirstDomainIsOverridden() {
         ropertyImpl.addDomains("domain1", "domain2");
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String defaultValue = "default value";
         String overriddenValue1 = "overridden value domain1";
-        ropertyWithResolver.set("key", defaultValue, null);
-        ropertyWithResolver.set("key", overriddenValue1, null, "domain1");
-        String value = ropertyWithResolver.get("key");
+        ropertyImpl.set("key", defaultValue, null);
+        ropertyImpl.set("key", overriddenValue1, null, "domain1");
+        String value = ropertyImpl.get("key", resolverMock);
         assertThat(value, is(overriddenValue1));
     }
 
     @Test
     void domainValuesAreRequestedFromAResolver() {
-        ropertyWithResolver.getRoperty().addDomains("domain1", "domain2");
+        ropertyImpl.addDomains("domain1", "domain2");
         DomainResolver mockResolver = mock(DomainResolver.class);
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
-        ropertyWithResolver.set("key", "value", null);
-        ropertyWithResolver.get("key");
+        ropertyImpl.set("key", "value", null);
+        ropertyImpl.get("key", mockResolver);
         verify(mockResolver).getDomainValue("domain1");
         verify(mockResolver).getDomainValue("domain2");
         verify(mockResolver).getActiveChangeSets();
@@ -290,18 +283,16 @@ public class RopertyImplTest {
     void noDomainValuesAreRequestedWhenAKeyDoesNotExist() {
         ropertyImpl.addDomains("domain1", "domain2");
         DomainResolver mockResolver = mock(DomainResolver.class);
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, mockResolver);
-        ropertyWithResolver.get("key");
+        ropertyImpl.get("key", mockResolver);
         verifyNoMoreInteractions(mockResolver);
     }
 
     @Test
     void wildcardIsResolvedWhenOtherDomainsMatch() {
         ropertyImpl.addDomains("domain1", "domain2");
-        ropertyWithResolver = new RopertyWithResolver(ropertyImpl, resolverMock);
         String value = "overridden value";
-        ropertyWithResolver.set("key", value, null, "*", "domain2");
-        assertThat(ropertyWithResolver.get("key"), is(value));
+        ropertyImpl.set("key", value, null, "*", "domain2");
+        assertThat(ropertyImpl.get("key", resolverMock), is(value));
     }
 
     @Test
@@ -310,7 +301,7 @@ public class RopertyImplTest {
         KeyValues keyValues = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
         when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValues);
         ropertyImpl.setPersistence(persistenceMock);
-        ropertyWithResolver.get(key);
+        ropertyImpl.get(key);
         assertThat(ropertyImpl.getKeyValues(key), notNullValue());
     }
 
@@ -340,7 +331,7 @@ public class RopertyImplTest {
         RopertyImpl roperty1 = new RopertyImpl(persistenceMock);
         verify(persistenceMock).loadAll(any(DomainSpecificValueFactory.class));
         roperty1.set("key", "value", "descr");
-        assertThat(roperty1.get("key", null), is("value"));
+        assertThat(roperty1.get("key"), is("value"));
         roperty1.reload();
         verify(persistenceMock).reload(any(Collection.class), any(DomainSpecificValueFactory.class));
     }
@@ -349,7 +340,7 @@ public class RopertyImplTest {
     void reloadWithoutPersistenceDoesNothing() {
         ropertyImpl.set("key", "value", "descr");
         ropertyImpl.reload();
-        assertThat(ropertyImpl.get("key", null), is("value"));
+        assertThat(ropertyImpl.get("key"), is("value"));
     }
 
     @Test
@@ -375,8 +366,8 @@ public class RopertyImplTest {
     }
 
     @Test
-    void ropertyWithResolverToString() {
-        assertThat(ropertyWithResolver.toString(), is("RopertyWithResolver{roperty=Roperty{domains=[]}}"));
+    void ropertyToString() {
+        assertThat(ropertyImpl.toString(), is("Roperty{domains=[]}"));
     }
 
     @Test

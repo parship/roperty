@@ -11,7 +11,6 @@ public class RopertyGetAllKeyValuesTest {
 
     private DomainResolver resolver;
     private Roperty roperty;
-    private RopertyWithResolver ropertyWithResolver;
 
     @BeforeEach
     void before() {
@@ -21,13 +20,12 @@ public class RopertyGetAllKeyValuesTest {
             .set("dom3", "val3")
             .set("dom4", "val4");
         roperty = new RopertyImpl("dom1", "dom2", "dom3", "dom4");
-        ropertyWithResolver = new RopertyWithResolver(roperty, resolver);
     }
 
     @Test
-    void emptyRopertyGivesEmptyValues() {
-        assertThat(roperty.getKeyValues()).isEmpty();
-        assertThat(roperty.getKeyValues(resolver)).isEmpty();
+    void emptyRopertyGivesEmptyKeyValues() {
+        assertThat(roperty.getAllKeyValues()).isEmpty();
+        assertThat(roperty.getAllKeyValues(resolver)).isEmpty();
     }
 
     @Test
@@ -35,7 +33,7 @@ public class RopertyGetAllKeyValuesTest {
         roperty.set("key1", "value_1", "desc");
         roperty.set("key1", "value_dom1", "desc", "domval1");
         roperty.set("key1", "value_dom2", "desc", "domval2");
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues();
+        Collection<KeyValues> allKeyValues = roperty.getAllKeyValues();
         assertThat(allKeyValues).hasSize(1);
         final KeyValues keyValues = allKeyValues.iterator().next();
         assertThat(keyValues.getKey()).isEqualTo("key1");
@@ -58,7 +56,7 @@ public class RopertyGetAllKeyValuesTest {
         roperty.set("key1", "value_dom_other", "desc", "domval_other", "domval2");
         roperty.set("key2", "val2", "desc", "other");
 
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
+        Collection<KeyValues> allKeyValues = roperty.getAllKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
         assertThat(allKeyValues).hasSize(1);
 
         final KeyValues keyValues = allKeyValues.iterator().next();
@@ -81,7 +79,7 @@ public class RopertyGetAllKeyValuesTest {
         roperty.set("key2", "key2_dom1", "desc", "domval1");
         roperty.set("key2", "key2_dom_other", "desc", "domval_other");
 
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
+        Collection<KeyValues> allKeyValues = roperty.getAllKeyValues("domval1");
         assertThat(allKeyValues).hasSize(2);
 
         final KeyValues keyValues = allKeyValues.stream().filter(kv -> kv.getKey().equals("key1")).findFirst().orElseThrow();
@@ -105,7 +103,7 @@ public class RopertyGetAllKeyValuesTest {
         roperty.set("key1", "value_dom1", "desc", "domval1");
         roperty.setWithChangeSet("key1", "CS_value", "desc", "ChangeSet", "domval1");
 
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
+        Collection<KeyValues> allKeyValues = roperty.getAllKeyValues(new MapBackedDomainResolver().set("dom1", "domval1"));
         assertThat(allKeyValues).hasSize(1);
 
         final KeyValues keyValues = allKeyValues.iterator().next();
@@ -123,10 +121,7 @@ public class RopertyGetAllKeyValuesTest {
         roperty.setWithChangeSet("key1", "CS_value", "desc", "ChangeSet", "domval1");
         roperty.setWithChangeSet("key1", "ACS_value", "desc", "AChangeSet", "domval1");
 
-        final Object o = roperty.get("key1",
-            new MapBackedDomainResolver().set("dom1", "domval1").addActiveChangeSets("ChangeSet", "AChangeSet"));
-
-        Collection<KeyValues> allKeyValues = roperty.getKeyValues(new MapBackedDomainResolver()
+        Collection<KeyValues> allKeyValues = roperty.getAllKeyValues(new MapBackedDomainResolver()
             .set("dom1", "domval1")
             .addActiveChangeSets("ChangeSet", "AChangeSet"));
         assertThat(allKeyValues).hasSize(1);

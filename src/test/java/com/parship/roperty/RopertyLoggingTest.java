@@ -34,14 +34,14 @@ public class RopertyLoggingTest {
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelDefaultValue() {
-		r.get("key", "default", null);
+		r.getOrDefault("key", "default");
 		logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'default'");
 	}
 
 	@Test
 	public void everyGetIsLoggedOnDebugLevelSetValue() {
 		r.set("key", "otherValue", null);
-		r.get("key", "default", null);
+		r.getOrDefault("key", "default");
 		logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'otherValue'");
 	}
 }

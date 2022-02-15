@@ -2,6 +2,7 @@ package com.parship.roperty;
 
 import java.io.PrintStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 public interface Roperty {
@@ -14,7 +15,8 @@ public interface Roperty {
      * @param <T> type of the objects stored under the provided key
      * @return object retrieved from Roperty or defaultValue
      */
-	<T> T get(String key, T defaultValue, DomainResolver resolver);
+    <T> T getOrDefault(String key, T defaultValue, DomainResolver resolver);
+    <T> T getOrDefault(String key, T defaultValue, String... domainValues);
 
     /**
      * Get a value for a given key from Roperty.
@@ -25,6 +27,7 @@ public interface Roperty {
      * @return object retrieved from Roperty or defaultValue
      */
 	<T> T get(String key, DomainResolver resolver);
+    <T> T get(String key, String... domainValues);
 
     /**
      * Get a value for a given key from Roperty. When no value is found in Roperty, the provided default is stored in Roperty.
@@ -41,13 +44,14 @@ public interface Roperty {
      * Get a value for a given key from Roperty. When no value is found in Roperty, the provided default is stored in Roperty
      * along with the provided description.
      * Same as calling get(key, null, resolver);
+     * @param <T> type of the objects stored under the provided key
      * @param key key to query
      * @param defaultValue defaultValue is returned, when no value for the key is found
      * @param resolver resolver to determine domain values to use during resolution
-     * @param <T> type of the objects stored under the provided key
      * @return object retrieved from Roperty or defaultValue
      */
-	<T> T getOrDefine(String key, T defaultValue, DomainResolver resolver, String description);
+    <T> T getOrDefine(String key, T defaultValue, String description, DomainResolver resolver);
+    <T> T getOrDefine(String key, T defaultValue, String description, String... domainValues);
 
 	Roperty addDomains(String... domains);
 
@@ -66,15 +70,17 @@ public interface Roperty {
     /**
      * Get all KeyValues stored in this Roperty instance.
      */
-    Collection<KeyValues> getKeyValues();
+    Collection<KeyValues> getAllKeyValues();
 
     /**
      * Get those KeyValues stored in this Roperty instance, with only those DomainSpecificValues, where the provided resolver
      * domains match or are wildcarded. The Default value of the KeyValues object is always returned, when present.
      */
-    Collection<KeyValues> getKeyValues(DomainResolver resolver);
+    Collection<KeyValues> getAllKeyValues(DomainResolver resolver);
+    Collection<KeyValues> getAllKeyValues(String... domainValues);
 
     <T> Map<String, T> getAllMappings(DomainResolver resolver);
+    <T> Map<String, T> getAllMappings(String... domainValues);
 
     void removeWithChangeSet(String key, String changeSet, String... domainValues);
 
@@ -83,4 +89,8 @@ public interface Roperty {
 	void removeKey(String key);
 
 	void removeChangeSet(String changeSet);
+
+    DomainResolver resolverFor(String... domainValues);
+
+    List<String> getDomains();
 }

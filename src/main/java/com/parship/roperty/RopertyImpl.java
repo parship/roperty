@@ -17,10 +17,13 @@
 
 package com.parship.roperty;
 
+import static java.lang.Math.min;
+
 import com.parship.roperty.jmx.RopertyManager;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +98,12 @@ public class RopertyImpl implements Roperty {
     }
 
     @Override
-    public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
+    public <T> T getOrDefault(String key, T defaultValue, String... domainValues) {
+        return getOrDefault(key, defaultValue, resolverFor(domainValues));
+    }
+
+    @Override
+    public <T> T getOrDefault(final String key, final T defaultValue, DomainResolver resolver) {
         final String trimmedKey = trimKey(key);
         KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(trimmedKey);
         T result;
@@ -120,27 +128,28 @@ public class RopertyImpl implements Roperty {
         return key.trim();
     }
 
-    /* (non-Javadoc)
-     * @see com.parship.roperty.Roperty#get(java.lang.String, com.parship.roperty.DomainResolver)
-     */
+    @Override
+    public <T> T get(String key, String... domainValues) {
+        return getOrDefault(key, null, resolverFor(domainValues));
+    }
+
     @Override
     public <T> T get(final String key, DomainResolver resolver) {
-        return get(key, null, resolver);
+        return getOrDefault(key, null, resolver);
     }
 
-    /* (non-Javadoc)
-     * @see com.parship.roperty.Roperty#getOrDefine(java.lang.String, T, com.parship.roperty.DomainResolver)
-     */
     @Override
     public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver) {
-        return getOrDefine(key, defaultValue, resolver, null);
+        return getOrDefine(key, defaultValue, null, resolver);
     }
 
-    /* (non-Javadoc)
-     * @see com.parship.roperty.Roperty#getOrDefine(java.lang.String, T, com.parship.roperty.DomainResolver, java.lang.String)
-     */
     @Override
-    public <T> T getOrDefine(final String key, final T defaultValue, DomainResolver resolver, String description) {
+    public <T> T getOrDefine(String key, T defaultValue, String description, String... domainValues) {
+        return getOrDefine(key, defaultValue, description, resolverFor(domainValues));
+    }
+
+    @Override
+    public <T> T getOrDefine(final String key, final T defaultValue, String description, DomainResolver resolver) {
         T value = get(key, resolver);
         if (value != null) {
             return value;
@@ -246,18 +255,28 @@ public class RopertyImpl implements Roperty {
     }
 
     @Override
-    public Collection<KeyValues> getKeyValues() {
+    public Collection<KeyValues> getAllKeyValues() {
         return valuesStore.getAllValues();
     }
 
     @Override
-    public Collection<KeyValues> getKeyValues(DomainResolver resolver) {
+    public Collection<KeyValues> getAllKeyValues(DomainResolver resolver) {
         return valuesStore.getAllValues(domains, resolver);
     }
 
     @Override
+    public Collection<KeyValues> getAllKeyValues(String... domainValues) {
+        return valuesStore.getAllValues(domains, resolverFor(domainValues));
+    }
+
+    @Override
+    public <T> Map<String, T> getAllMappings(String... domainValues) {
+        return getAllMappings(resolverFor(domainValues));
+    }
+
+    @Override
     public <T> Map<String, T> getAllMappings(DomainResolver resolver) {
-        return getKeyValues().stream()
+        return getAllKeyValues().stream()
             .collect(Collector.of(HashMap::new,
                 (result, kv) -> {
                     final T s = kv.get(domains, null, resolver);
@@ -309,5 +328,18 @@ public class RopertyImpl implements Roperty {
                 }
             }
         }
+    }
+
+    public DomainResolver resolverFor(String... domainValues) {
+        MapBackedDomainResolver resolver = new MapBackedDomainResolver();
+        for (int i = 0; i < min(domains.size(), domainValues.length); i++) {
+            resolver.set(domains.get(i), domainValues[i]);
+        }
+        return resolver;
+    }
+
+    @Override
+    public List<String> getDomains() {
+        return Collections.unmodifiableList(domains);
     }
 }
