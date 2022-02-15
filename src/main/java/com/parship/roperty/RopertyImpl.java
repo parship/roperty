@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,9 +94,6 @@ public class RopertyImpl implements Roperty {
         return new DomainSpecificValueFactoryWithStringInterning();
     }
 
-    /* (non-Javadoc)
-     * @see com.parship.roperty.Roperty#get(java.lang.String, T, com.parship.roperty.DomainResolver)
-     */
     @Override
     public <T> T get(final String key, final T defaultValue, DomainResolver resolver) {
         final String trimmedKey = trimKey(key);
@@ -255,6 +253,23 @@ public class RopertyImpl implements Roperty {
     @Override
     public Collection<KeyValues> getKeyValues(DomainResolver resolver) {
         return valuesStore.getAllValues(domains, resolver);
+    }
+
+    @Override
+    public <T> Map<String, T> getAllMappings(DomainResolver resolver) {
+        return getKeyValues().stream()
+            .collect(Collector.of(HashMap::new,
+                (result, kv) -> {
+                    final T s = kv.get(domains, null, resolver);
+                    if (s != null) {
+                        result.put(kv.getKey(), s);
+                    }
+                }, (result1, result2) -> {
+                    result1.putAll(result2);
+                    return result1;
+                },
+                Collector.Characteristics.CONCURRENT,
+                Collector.Characteristics.UNORDERED));
     }
 
     @Override
