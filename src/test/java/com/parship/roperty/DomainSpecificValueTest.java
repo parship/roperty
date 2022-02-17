@@ -23,7 +23,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -85,21 +84,6 @@ public class DomainSpecificValueTest {
 		DomainSpecificValue dsv = DomainSpecificValue.withoutChangeSet(pattern, "val");
 		assertThat(dsv.changeSetIs(null), is(true));
 		assertThat(dsv.changeSetIs("other"), is(false));
-	}
-
-	@Test
-	public void changeSetIsSet() {
-		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
-		DomainSpecificValue dsv = DomainSpecificValue.withoutChangeSet(pattern, "val");
-		dsv.setChangeSet("Some changeset");
-		assertThat(dsv.changeSetIs("Some changeset"), is(true));
-	}
-
-	@Test
-	public void nullChangeSetFails() {
-		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
-		DomainSpecificValue dsv = DomainSpecificValue.withoutChangeSet(pattern, "val");
-		assertThrows(NullPointerException.class, () -> dsv.setChangeSet(null));
 	}
 
 	@Test

@@ -145,11 +145,6 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		return matcher.matches(domainStr);
 	}
 
-	public void setChangeSet(final String changeSet) {
-        Objects.requireNonNull(changeSet, "\"changeSet\" must not be null");
-        this.changeSet = changeSet;
-	}
-
 	public boolean isInChangeSets(final Collection<String> activeChangeSets) {
         return changeSet == null || activeChangeSets.contains(changeSet);
     }
