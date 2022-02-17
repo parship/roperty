@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
@@ -155,7 +154,7 @@ public class RopertyImplTest {
         KeyValues keyValue = new KeyValues(key, new DefaultDomainSpecificValueFactory(), null);
         when(persistenceMock.load(eq(key), any(DomainSpecificValueFactory.class))).thenReturn(keyValue);
         ropertyImpl.set(key, "value", null);
-        verify(persistenceMock).store(key, keyValue, "");
+        verify(persistenceMock).store(key, keyValue);
     }
 
     @Test
@@ -428,7 +427,7 @@ public class RopertyImplTest {
 
         ropertyWithPersistence.remove("key");
 
-        verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), isNull());
+        verify(persistenceMock).remove("key", new DefaultDomainSpecificValueFactory().create("value", null));
         assertThat(ropertyWithPersistence.get("key", mock(DomainResolver.class)), nullValue());
         assertThat(ropertyWithPersistence.get("key", resolverMock), is("domValue"));
     }
@@ -443,7 +442,7 @@ public class RopertyImplTest {
 
         ropertyWithPersistence.remove("key", "dom1");
 
-        verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), isNull());
+        verify(persistenceMock).remove("key", new DefaultDomainSpecificValueFactory().create("domValue1", null, "dom1"));
         assertThat(ropertyWithPersistence.get("key", mock(DomainResolver.class)), is("value"));
         assertThat(ropertyWithPersistence.get("key", resolverMock), is("domValue2"));
     }
@@ -452,7 +451,7 @@ public class RopertyImplTest {
     void removeDoesNotCallPersistenceWhenNoDomainSpecificValueExists() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.remove("key", "dom1");
-        verify(persistenceMock, never()).remove(anyString(), any(DomainSpecificValue.class), anyString());
+        verify(persistenceMock, never()).remove(any(), any());
     }
 
     @Test
@@ -461,7 +460,7 @@ public class RopertyImplTest {
         ropertyWithPersistence.set("key", "value", "desc");
         ropertyWithPersistence.set("key", "domValue1", "desc", "dom1");
         ropertyWithPersistence.removeKey("key");
-        verify(persistenceMock).remove(eq("key"), isNull());
+        verify(persistenceMock).remove("key");
         assertThat(ropertyWithPersistence.get("key", resolverMock), nullValue());
     }
 
@@ -469,7 +468,7 @@ public class RopertyImplTest {
     void removeCallsPersistenceEvenWhenNoKeyExists() {
         RopertyImpl ropertyWithPersistence = new RopertyImpl(persistenceMock);
         ropertyWithPersistence.removeKey("key");
-        verify(persistenceMock).remove("key", null);
+        verify(persistenceMock).remove("key");
     }
 
     @Test
@@ -492,8 +491,8 @@ public class RopertyImplTest {
         assertThat(ropertyWithPersistence.get("key", resolver), is("valueChangeSet"));
         assertThat(ropertyWithPersistence.get("otherKey", resolver), is("otherValueChangeSet"));
         ropertyWithPersistence.removeChangeSet("changeSet");
-        verify(persistenceMock).remove(eq("key"), any(DomainSpecificValue.class), eq("changeSet"));
-        verify(persistenceMock).remove(eq("otherKey"), any(DomainSpecificValue.class), eq("changeSet"));
+        verify(persistenceMock).remove("key", new DefaultDomainSpecificValueFactory().create("valueChangeSet", "changeSet"));
+        verify(persistenceMock).remove("otherKey", new DefaultDomainSpecificValueFactory().create("otherValueChangeSet", "changeSet"));
         assertThat(ropertyWithPersistence.get("key", resolver), is("value"));
         assertThat(ropertyWithPersistence.<String>get("otherKey", resolver), nullValue());
     }

@@ -27,6 +27,7 @@ import java.util.Collection;
 public interface Persistence {
     /**
      * Load all overridden values for a single key. Is called by Roperty when an unknown key is queried.
+     * Returns null, when no value is found.
      */
     KeyValues load(final String key, DomainSpecificValueFactory domainSpecificValueFactory);
 
@@ -43,23 +44,21 @@ public interface Persistence {
      *
      * @param keyValuesMap current keyValuesMap with keys already known
      */
-    Collection<KeyValues> reload(Collection<KeyValues> keyValuesMap, DomainSpecificValueFactory domainSpecificValueFactory);
+    Collection<KeyValues> reload(Collection<KeyValues> keyValues, DomainSpecificValueFactory domainSpecificValueFactory);
 
-    void store(final String key, final KeyValues keyValues, final String changeSet);
+    void store(final String key, final KeyValues keyValues);
 
     /**
      * Remove a complete key from persistence.
-     *  @param key       the key to remove
-     * @param changeSet the changeSet to remove
+     * @param key       the key to remove
      */
-    void remove(String key, final String changeSet);
+    void remove(String key);
 
     /**
      * Remove a DomainSpecificValue from persistence.
      *
      * @param key                 the key for which to remove the overwritten value
      * @param domainSpecificValue the DomainSpecificValue to remove
-     * @param changeSet           the changeSet for which to remove the overwritten value
      */
-    void remove(String key, DomainSpecificValue domainSpecificValue, final String changeSet);
+    void remove(String key, DomainSpecificValue domainSpecificValue);
 }

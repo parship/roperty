@@ -21,7 +21,6 @@ import static java.lang.Math.min;
 
 import com.parship.roperty.jmx.RopertyManager;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,7 +44,6 @@ public class RopertyImpl implements Roperty {
     private final ValuesStore valuesStore = new ValuesStore();
     private final List<String> domains = new CopyOnWriteArrayList<>();
     private Persistence persistence;
-    private final Map<String, Collection<String>> changeSets = new HashMap<>();
 
     public RopertyImpl(final Persistence persistence, DomainSpecificValueFactory domainSpecificValueFactory) {
         initFromPersistence(persistence, domainSpecificValueFactory);
@@ -185,29 +183,18 @@ public class RopertyImpl implements Roperty {
             domainValues);
         KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
         keyValues.putWithChangeSet(changeSet, value, domainValues);
-        getChangeSetKeys(changeSet).add(trimmedKey);
-        store(trimmedKey, keyValues, changeSet);
-    }
-
-    private synchronized Collection<String> getChangeSetKeys(final String changeSet) {
-        return changeSets.computeIfAbsent(changeSet, k -> new ArrayList<>());
+        store(trimmedKey, keyValues);
     }
 
     private void store(final String key, final KeyValues keyValues) {
         if (persistence != null) {
-            persistence.store(key, keyValues, "");
+            persistence.store(key, keyValues);
         }
     }
 
-    private void store(final String key, final KeyValues keyValues, final String changeSet) {
+    private void remove(final String key, final DomainSpecificValue domainSpecificValue) {
         if (persistence != null) {
-            persistence.store(key, keyValues, changeSet);
-        }
-    }
-
-    private void remove(final String key, final DomainSpecificValue domainSpecificValue, final String changeSet) {
-        if (persistence != null) {
-            persistence.remove(key, domainSpecificValue, changeSet);
+            persistence.remove(key, domainSpecificValue);
         }
     }
 
@@ -296,7 +283,7 @@ public class RopertyImpl implements Roperty {
         final String trimmedKey = trimKey(key);
         KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(trimmedKey);
         if (keyValues != null) {
-            remove(trimmedKey, keyValues.remove(changeSet, domainValues), changeSet);
+            remove(trimmedKey, keyValues.remove(changeSet, domainValues));
         }
     }
 
@@ -309,25 +296,13 @@ public class RopertyImpl implements Roperty {
     public void removeKey(final String key) {
         final String trimmedKey = trimKey(key);
         valuesStore.remove(trimmedKey);
-        persistence.remove(trimmedKey, null);
+        persistence.remove(trimmedKey);
     }
 
     @Override
     public void removeChangeSet(String changeSet) {
         Objects.requireNonNull(changeSet, "\"changeSet\" must not be null");
-        Collection<String> changeSetKeyValues = changeSets.get(changeSet);
-        if (changeSetKeyValues == null) {
-            LOGGER.warn("No key/values found for changeSet: {}", changeSet);
-            return;
-        }
-        for (String key : changeSetKeyValues) {
-            KeyValues keyValues = valuesStore.getKeyValuesFromMapOrPersistence(key);
-            if (keyValues != null) {
-                for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
-                    remove(key, value, changeSet);
-                }
-            }
-        }
+        valuesStore.removeChangeSet(changeSet);
     }
 
     public DomainResolver resolverFor(String... domainValues) {

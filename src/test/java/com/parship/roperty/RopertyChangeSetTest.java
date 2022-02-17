@@ -57,6 +57,6 @@ public class RopertyChangeSetTest {
 
 		ropertyWithPersistence.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
 
-		verify(persistenceMock).store(eq("key"), ArgumentMatchers.any(KeyValues.class), eq("changeSet"));
+		verify(persistenceMock).store(eq("key"), ArgumentMatchers.any(KeyValues.class));
 	}
 }

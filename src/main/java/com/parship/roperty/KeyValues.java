@@ -55,8 +55,16 @@ public class KeyValues {
         this.description = description;
     }
 
+    public DomainSpecificValue put(Object value, List<String> domainValues) {
+        return putWithChangeSet(null, value, domainValues);
+    }
+
     public DomainSpecificValue put(Object value, String... domainValues) {
         return putWithChangeSet(null, value, domainValues);
+    }
+
+    public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final List<String> domainValues) {
+        return putWithChangeSet(changeSet, value, domainValues.toArray(new String[domainValues.size()]));
     }
 
     public DomainSpecificValue putWithChangeSet(final String changeSet, final Object value, final String... domainValues) {

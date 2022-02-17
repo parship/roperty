@@ -111,4 +111,12 @@ public class ValuesStore {
             setAllValues(persistence.reload(getAllValues(), domainSpecificValueFactory));
         }
     }
+
+    public void removeChangeSet(String changeSet) {
+        for (KeyValues keyValues : keyValuesMap.values()) {
+            for (DomainSpecificValue value : keyValues.removeChangeSet(changeSet)) {
+                persistence.remove(keyValues.getKey(), value);
+            }
+        }
+    }
 }
