@@ -141,26 +141,36 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		this.value = value;
 	}
 
+    /**
+     * This method is used to determine, whether this DomainSpecificValue matches the provided domain string
+     */
 	public boolean patternMatches(final String domainStr) {
 		return matcher.matches(domainStr);
 	}
 
 	public boolean isInChangeSets(final Collection<String> activeChangeSets) {
-        return changeSet == null || activeChangeSets.contains(changeSet);
+        return noChangeSet() || activeChangeSets.contains(changeSet);
     }
 
 	public boolean changeSetIs(final String changeSet) {
 		return Objects.equals(this.changeSet, changeSet);
 	}
 
-    public String getChangeSet() {
-        return changeSet;
+    public boolean noChangeSet() {
+        return changeSet == null;
+    }
+
+    public int compareChangeSet(DomainSpecificValue other) {
+        return changeSet.compareTo(other.changeSet);
     }
 
     public String[] getDomains() {
         return domains;
     }
 
+    /**
+     * This method is used for finding all DomainSpecificValues, that are either default or are in a specific (partial) domain.
+     */
     public boolean patternMatches(Matcher matcher, DomainResolver resolver) {
         return isInChangeSets(resolver.getActiveChangeSets()) && (isDefault() || matcher.matches(patternStr));
     }

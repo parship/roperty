@@ -201,13 +201,13 @@ public class KeyValues {
                 if (v == null) {
                     return dv;
                 }
-                if (v.getChangeSet() == null) {
+                if (v.noChangeSet()) {
                     return dv;
                 }
-                if (dv.getChangeSet() == null) {
+                if (dv.noChangeSet()) {
                     return v;
                 }
-                return v.getChangeSet().compareTo(dv.getChangeSet()) < 0 ? v : dv;
+                return v.compareChangeSet(dv) < 0 ? v : dv;
             }));
         result.domainSpecificValues.addAll(dvPatternMap.values());
         return result;
