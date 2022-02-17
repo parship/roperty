@@ -19,6 +19,7 @@ package com.parship.roperty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -26,7 +27,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 
 /**
  * @author mfinsterwalder
@@ -57,6 +57,6 @@ public class RopertyChangeSetTest {
 
 		ropertyWithPersistence.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
 
-		verify(persistenceMock).store(eq("key"), ArgumentMatchers.any(KeyValues.class));
+		verify(persistenceMock).store(eq("key"), any(KeyValues.class), any(DomainSpecificValue.class));
 	}
 }

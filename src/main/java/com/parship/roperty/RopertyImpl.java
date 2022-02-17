@@ -171,8 +171,8 @@ public class RopertyImpl implements Roperty {
         final String trimmedKey = trimKey(key);
         LOGGER.debug("Storing value: '{}' for key: '{}' with given domains: '{}'.", value, trimmedKey, domains);
         KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
-        keyValues.put(value, domains);
-        store(trimmedKey, keyValues);
+        final DomainSpecificValue domainSpecificValue = keyValues.put(value, domains);
+        store(trimmedKey, keyValues, domainSpecificValue);
     }
 
     @Override
@@ -182,13 +182,13 @@ public class RopertyImpl implements Roperty {
         LOGGER.debug("Storing value: '{}' for key: '{}' for change set: '{}' with given domains: '{}'.", value, trimmedKey, changeSet,
             domainValues);
         KeyValues keyValues = valuesStore.getOrCreateKeyValues(trimmedKey, description);
-        keyValues.putWithChangeSet(changeSet, value, domainValues);
-        store(trimmedKey, keyValues);
+        final DomainSpecificValue domainSpecificValue = keyValues.putWithChangeSet(changeSet, value, domainValues);
+        store(trimmedKey, keyValues, domainSpecificValue);
     }
 
-    private void store(final String key, final KeyValues keyValues) {
+    private void store(final String key, final KeyValues keyValues, DomainSpecificValue domainSpecificValue) {
         if (persistence != null) {
-            persistence.store(key, keyValues);
+            persistence.store(key, keyValues, domainSpecificValue);
         }
     }
 

@@ -74,8 +74,11 @@ public class DomainSpecificValueTest {
 	public void changeSetIs() {
 		OrderedDomainPattern pattern = new OrderedDomainPattern("p", 4);
 		DomainSpecificValue dsv = DomainSpecificValue.withChangeSet(pattern, "val", "changeSet");
-		assertThat(dsv.changeSetIs("changeSet"), is(true));
-		assertThat(dsv.changeSetIs("other"), is(false));
+        assertThat(dsv.getChangeSet(), is("changeSet"));
+        assertThat(dsv.changeSetIs("changeSet"), is(true));
+        assertThat(dsv.changeSetIs("other"), is(false));
+        assertThat(dsv.changeSetIs(""), is(false));
+        assertThat(dsv.changeSetIs(null), is(false));
 	}
 
 	@Test

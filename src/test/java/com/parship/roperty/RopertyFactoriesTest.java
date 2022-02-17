@@ -63,7 +63,7 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public void store(final String key, final KeyValues keyValues) {
+            public void store(final String key, final KeyValues keyValues, final DomainSpecificValue domainSpecificValue) {
                 stringKeyValuesHashMap.put(key, keyValues);
             }
 

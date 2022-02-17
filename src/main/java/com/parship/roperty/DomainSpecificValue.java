@@ -164,6 +164,10 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
         return changeSet.compareTo(other.changeSet);
     }
 
+    public String getChangeSet() {
+        return changeSet;
+    }
+
     public String[] getDomains() {
         return domains;
     }

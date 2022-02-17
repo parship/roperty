@@ -46,7 +46,7 @@ public interface Persistence {
      */
     Collection<KeyValues> reload(Collection<KeyValues> keyValues, DomainSpecificValueFactory domainSpecificValueFactory);
 
-    void store(final String key, final KeyValues keyValues);
+    void store(final String key, final KeyValues keyValues, final DomainSpecificValue domainSpecificValue);
 
     /**
      * Remove a complete key from persistence.
