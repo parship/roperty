@@ -78,11 +78,9 @@ public class KeyValues {
     private DomainSpecificValue addOrChangeDomainSpecificValue(final String changeSet, final Object value, final String... domainValues) {
         DomainSpecificValue domainSpecificValue = domainSpecificValueFactory.create(value, changeSet, domainValues);
         if (domainSpecificValues.contains(domainSpecificValue)) {
-            for (DomainSpecificValue d : domainSpecificValues) {
-                if (d.compareTo(domainSpecificValue) == 0) {
-                    d.setValue(domainSpecificValue.getValue());
-                }
-            }
+            domainSpecificValues.stream()
+                .filter(dsv -> dsv.compareTo(domainSpecificValue) == 0)
+                .forEach(dsv -> dsv.setValue(domainSpecificValue.getValue()));
         } else {
             domainSpecificValues.add(domainSpecificValue);
         }
@@ -143,6 +141,11 @@ public class KeyValues {
         return Collections.unmodifiableSet(domainSpecificValues);
     }
 
+    public void setDomainSpecificValues(Collection<DomainSpecificValue> values) {
+        domainSpecificValues.clear();
+        domainSpecificValues.addAll(values);
+    }
+
     public void setDomainSpecificValueFactory(final DomainSpecificValueFactory domainSpecificValueFactory) {
         this.domainSpecificValueFactory = domainSpecificValueFactory;
     }
@@ -165,7 +168,7 @@ public class KeyValues {
         Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
         while (iterator.hasNext()) {
             DomainSpecificValue value = iterator.next();
-            if (value.changeSetIs(changeSet) && pattern.equals(value.getPatternStr())) {
+            if (value.changeSetIs(changeSet) && pattern.equals(value.getPattern())) {
                 iterator.remove();
                 return value;
             }
@@ -197,7 +200,7 @@ public class KeyValues {
         final Map<String, DomainSpecificValue> dvPatternMap = new HashMap<>();
         domainSpecificValues.stream()
             .filter(val -> val.patternMatches(matcher, resolver))
-            .forEach(dv -> dvPatternMap.compute(dv.getPatternStr(), (k, v) -> {
+            .forEach(dv -> dvPatternMap.compute(dv.getPattern(), (k, v) -> {
                 if (v == null) {
                     return dv;
                 }

@@ -23,19 +23,6 @@ package com.parship.roperty;
  */
 public interface DomainSpecificValueFactory {
 
-	DomainSpecificValue create(final Object value, final String changeSet, final String... domainValues);
-
-    static OrderedDomainPattern calculateOrderedDomainPattern(final String[] domainValues) {
-        StringBuilder builder = new StringBuilder(domainValues.length * 8);
-        int order = 1;
-        int i = 0;
-        for (String domainValue : domainValues) {
-            i++;
-            if (!"*".equals(domainValue)) {
-                order = order | (int)Math.pow(2, i);
-            }
-            builder.append(domainValue).append('|');
-        }
-        return new OrderedDomainPattern(builder.toString(), order);
-    }
+    DomainSpecificValue create(final Object value, final String changeSet, final String... domainValues);
+    DomainSpecificValue createFromPattern(final Object value, final String changeSet, final String pattern);
 }

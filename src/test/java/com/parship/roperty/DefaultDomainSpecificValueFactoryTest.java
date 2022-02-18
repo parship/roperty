@@ -20,7 +20,7 @@ public class DefaultDomainSpecificValueFactoryTest {
 		String value = "value";
 		DomainSpecificValue dsv = factory.create(value, null);
 		assertThat((String)dsv.getValue(), is(value));
-		assertThat(dsv.getPatternStr(), is(""));
+		assertThat(dsv.getPattern(), is(""));
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class DefaultDomainSpecificValueFactoryTest {
 		DomainSpecificValue dsv = factory.create(value, null, "DE", "de_DE");
 
 		assertThat((String)dsv.getValue(), is(value));
-		assertThat(dsv.getPatternStr(), is("DE|de_DE|"));
+		assertThat(dsv.getPattern(), is("DE|de_DE|"));
 	}
 
 	@Test

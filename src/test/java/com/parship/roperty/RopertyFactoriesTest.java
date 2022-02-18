@@ -39,7 +39,7 @@ public class RopertyFactoriesTest {
 
     @BeforeEach
     public void before() {
-        when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(DomainSpecificValue.withoutChangeSet(new OrderedDomainPattern("", 1), defaultValue));
+        when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(DomainSpecificValue.withoutChangeSet(defaultValue));
     }
 
     @Test

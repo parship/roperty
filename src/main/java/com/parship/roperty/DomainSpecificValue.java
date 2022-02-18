@@ -17,7 +17,6 @@
 
 package com.parship.roperty;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -33,38 +32,72 @@ import java.util.Objects;
  * @since 2013-04-09 18:20
  */
 public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
-	private final String patternStr;
+	private final String pattern;
 	private final int ordering;
-    private final String[] domains;
     private Object value;
 	private final Matcher matcher;
-    private String changeSet;
+    private final String changeSet;
 
-    public static DomainSpecificValue withChangeSet(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet, String... domainKeys) {
-        return new DomainSpecificValue(orderedDomainPattern, value, changeSet, domainKeys);
+    public static DomainSpecificValue withChangeSet(Object value, String changeSet, String... domainKeys) {
+        return new DomainSpecificValue(value, changeSet, domainKeys);
     }
 
-    public static DomainSpecificValue withoutChangeSet(final OrderedDomainPattern orderedDomainPattern, Object value, String... domainKeys) {
-        return new DomainSpecificValue(orderedDomainPattern, value, domainKeys);
+    public static DomainSpecificValue withoutChangeSet(Object value, String... domainKeys) {
+        return new DomainSpecificValue(value, null, domainKeys);
     }
 
-    private DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String changeSet, String... domainKeys) {
-		this(orderedDomainPattern, value, domainKeys);
-		this.changeSet = changeSet;
-	}
+    public static DomainSpecificValue withPattern(Object value, String changeSet, String pattern) {
+        if (pattern == null || pattern.trim().length() == 0)
+            return new DomainSpecificValue(value, changeSet, "", 1);
+        if (!pattern.endsWith("|")) {
+            throw new IllegalArgumentException("Pattern must end with a pipe character: '|'");
+        }
 
-	private DomainSpecificValue(final OrderedDomainPattern orderedDomainPattern, Object value, String... domainKeys) {
-        Objects.requireNonNull(orderedDomainPattern.getDomainPattern(), "\"domainPattern\" must not be null");
-        this.patternStr = orderedDomainPattern.getDomainPattern();
-		if (patternStr.contains("*")) {
-			matcher = new RegexMatcher(patternStr.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*");
-		} else {
-			matcher = new StringPrefixMatcher(orderedDomainPattern.getDomainPattern());
-		}
-		this.ordering = orderedDomainPattern.getOrder();
-        this.domains = domainKeys;
+        final String[] domainValues = pattern.split("\\|");
+        int order = 1;
+        int i = 0;
+        for (String domainValue : domainValues) {
+            i++;
+            if (!"*".equals(domainValue)) {
+                order = order | (int)Math.pow(2, i);
+            }
+        }
+        return new DomainSpecificValue(value, changeSet, pattern, order);
+    }
+
+    private DomainSpecificValue(Object value, String changeSet, String pattern, int ordering) {
+        this.ordering = ordering;
+        this.pattern = pattern;
+        this.value = value;
+        this.changeSet = changeSet;
+        this.matcher = createMatcher(pattern);
+    }
+
+	private DomainSpecificValue(Object value, String changeSet, String[] domainValues) {
+        StringBuilder builder = new StringBuilder(domainValues.length * 8);
+        int order = 1;
+        int i = 0;
+        for (String domainValue : domainValues) {
+            i++;
+            if (!"*".equals(domainValue)) {
+                order = order | (int)Math.pow(2, i);
+            }
+            builder.append(domainValue).append('|');
+        }
+        this.ordering = order;
+        this.pattern = builder.toString();
 		this.value = value;
-	}
+        this.changeSet = changeSet;
+        this.matcher = createMatcher(pattern);
+    }
+
+    private Matcher createMatcher(String pattern) {
+        if (pattern.contains("*")) {
+            return new RegexMatcher(pattern.replaceAll("\\|", "\\\\|").replaceAll("\\*", "[^|]*") + ".*");
+        } else {
+            return new StringPrefixMatcher(pattern);
+        }
+    }
 
     /**
 	 * Sort DomainSpecificValue in reverse order as specified by ordering, changeSet and patternStr.
@@ -83,7 +116,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 				if (changeSetCompare != 0)
 					return changeSetCompare;
 				else
-					return patternStr.compareTo(other.patternStr);
+					return pattern.compareTo(other.pattern);
 			}
 			if (changeSet != null) { // other.changeSet is null here
 				return -1;
@@ -91,7 +124,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 			if (other.changeSet != null) { // changeSet is null here
 				return 1;
 			}
-			return patternStr.compareTo(other.patternStr);
+			return pattern.compareTo(other.pattern);
 		}
 		return order;
 	}
@@ -104,14 +137,14 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
 		DomainSpecificValue that = (DomainSpecificValue) o;
 
 		if (ordering != that.ordering) return false;
-		if (!patternStr.equals(that.patternStr)) return false;
+		if (!pattern.equals(that.pattern)) return false;
 		if (!value.equals(that.value)) return false;
 		return Objects.equals(changeSet, that.changeSet);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = patternStr.hashCode();
+		int result = pattern.hashCode();
 		result = 31 * result + ordering;
 		result = 31 * result + value.hashCode();
 		result = 31 * result + (changeSet != null ? changeSet.hashCode() : 0);
@@ -121,19 +154,17 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
     @Override
     public String toString() {
         return "DomainSpecificValue{" +
-            "pattern=\"" + patternStr +
+            "pattern=\"" + pattern +
             "\", ordering=" + ordering +
             (changeSet != null ? ", changeSet=\"" + changeSet + '"' : "") +
-            ", value=\"" + value +
-            "\", domains=" + Arrays.toString(domains) +
-            "}";
+            ", value=\"" + value + "\"}";
     }
 
-    public String getPatternStr() {
-		return patternStr;
+    public String getPattern() {
+		return pattern;
 	}
 
-	public Object getValue() {
+    public Object getValue() {
 		return value;
 	}
 
@@ -168,18 +199,14 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
         return changeSet;
     }
 
-    public String[] getDomains() {
-        return domains;
-    }
-
     /**
      * This method is used for finding all DomainSpecificValues, that are either default or are in a specific (partial) domain.
      */
     public boolean patternMatches(Matcher matcher, DomainResolver resolver) {
-        return isInChangeSets(resolver.getActiveChangeSets()) && (isDefault() || matcher.matches(patternStr));
+        return isInChangeSets(resolver.getActiveChangeSets()) && (isDefault() || matcher.matches(pattern));
     }
 
     public boolean isDefault() {
-        return patternStr.length() == 0;
+        return pattern.length() == 0;
     }
 }

@@ -75,7 +75,7 @@ public class KeyValuesTest {
         keyValues.put("text", "domain1", "domain2");
         assertThat(keyValues.toString(), CoreMatchers.is("KeyValues{\n" +
             "\tdescription=\"description\"\n" +
-            "\tDomainSpecificValue{pattern=\"domain1|domain2|\", ordering=7, value=\"text\", domains=[domain1, domain2]}\n" +
+            "\tDomainSpecificValue{pattern=\"domain1|domain2|\", ordering=7, value=\"text\"}\n" +
             "}"));
     }
 
@@ -119,13 +119,13 @@ public class KeyValuesTest {
         Iterator<DomainSpecificValue> iterator = domainSpecificValues.iterator();
         DomainSpecificValue value = iterator.next();
         assertThat((String) value.getValue(), is("value2"));
-        assertThat(value.getPatternStr(), is("dom1|dom2|"));
+        assertThat(value.getPattern(), is("dom1|dom2|"));
         value = iterator.next();
         assertThat((String) value.getValue(), is("value*"));
-        assertThat(value.getPatternStr(), is("*|dom2|"));
+        assertThat(value.getPattern(), is("*|dom2|"));
         value = iterator.next();
         assertThat((String) value.getValue(), is("value1"));
-        assertThat(value.getPatternStr(), is("dom1|"));
+        assertThat(value.getPattern(), is("dom1|"));
     }
 
     @Test
@@ -196,7 +196,7 @@ public class KeyValuesTest {
         DefaultDomainSpecificValueFactory factoryMock = mock(DefaultDomainSpecificValueFactory.class);
         keyValues.setDomainSpecificValueFactory(factoryMock);
         String value = "value";
-        when(factoryMock.create(value, null)).thenReturn(DomainSpecificValue.withoutChangeSet(new OrderedDomainPattern("", 1), value));
+        when(factoryMock.create(value, null)).thenReturn(DomainSpecificValue.withoutChangeSet(value));
         keyValues.put(value);
         verify(factoryMock).create(value, null);
     }

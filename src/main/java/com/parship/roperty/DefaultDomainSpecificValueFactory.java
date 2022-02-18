@@ -17,8 +17,6 @@
 
 package com.parship.roperty;
 
-import static com.parship.roperty.DomainSpecificValueFactory.calculateOrderedDomainPattern;
-
 /**
  * @author mfinsterwalder
  * @since 2013-06-03 14:34
@@ -27,11 +25,11 @@ public class DefaultDomainSpecificValueFactory implements DomainSpecificValueFac
 
 	@Override
 	public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {
-		if (domainKeyParts.length == 0) {
-			return DomainSpecificValue.withChangeSet(new OrderedDomainPattern("", 1), value, changeSet, domainKeyParts);
-		}
-
-		return DomainSpecificValue.withChangeSet(calculateOrderedDomainPattern(domainKeyParts), value, changeSet, domainKeyParts);
+		return DomainSpecificValue.withChangeSet(value, changeSet, domainKeyParts);
 	}
 
+    @Override
+    public DomainSpecificValue createFromPattern(Object value, String changeSet, String pattern) {
+        return DomainSpecificValue.withPattern(value, changeSet, pattern);
+    }
 }
