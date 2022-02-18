@@ -51,7 +51,7 @@ public class TestLoggingExtension implements BeforeEachCallback, AfterEachCallba
     }
 
     @Override
-    public void beforeEach(ExtensionContext extensionContext) {
+    void beforeEach(ExtensionContext extensionContext) {
         when(appenderMock.getName()).thenReturn("MOCK");
         getRootLogger().addAppender(appenderMock);
         if (levelToSet != null) {
@@ -61,7 +61,7 @@ public class TestLoggingExtension implements BeforeEachCallback, AfterEachCallba
     }
 
     @Override
-    public void afterEach(ExtensionContext extensionContext) {
+    void afterEach(ExtensionContext extensionContext) {
         getRootLogger().detachAppender(appenderMock);
         if (levelToRestore != null) {
             getRootLogger().setLevel(levelToRestore);
@@ -72,23 +72,23 @@ public class TestLoggingExtension implements BeforeEachCallback, AfterEachCallba
         return (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     }
 
-    public void verifyLogDebug(final String expectedLog) {
+    void verifyLogDebug(final String expectedLog) {
         verifyLog(Level.DEBUG, expectedLog);
     }
 
-    public void verifyLogInfo(final String expectedLog) {
+    void verifyLogInfo(final String expectedLog) {
         verifyLog(Level.INFO, expectedLog);
     }
 
-    public void verifyLogWarn(final String expectedLog) {
+    void verifyLogWarn(final String expectedLog) {
         verifyLog(Level.WARN, expectedLog);
     }
 
-    public void verifyLogError(final String expectedLog) {
+    void verifyLogError(final String expectedLog) {
         verifyLog(Level.ERROR, expectedLog);
     }
 
-    public void verifyLog(final Level level, final CharSequence expectedLog) {
+    void verifyLog(final Level level, final CharSequence expectedLog) {
         verify(appenderMock, atLeastOnce())
             .doAppend(ArgumentMatchers.argThat(new LogArgumentMatcher(level, expectedLog)));
     }

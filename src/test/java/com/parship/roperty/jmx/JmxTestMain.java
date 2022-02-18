@@ -19,7 +19,6 @@ package com.parship.roperty.jmx;
 
 import com.parship.roperty.Roperty;
 import com.parship.roperty.RopertyImpl;
-
 import java.io.IOException;
 
 
@@ -29,14 +28,14 @@ import java.io.IOException;
  */
 public class JmxTestMain {
 
-	public static void main(String[] args) throws IOException {
-		Roperty r1 = new RopertyImpl("dom1", "dom2");
-		r1.set("key R1", "value a", null);
-		Roperty r2 = new RopertyImpl("dom1", "dom2");
-		r2.set("key R2", "value b", null);
-		r2.set("key2 R2", "value x", null);
-		Roperty r3 = new RopertyImpl("dom1", "dom2");
-		r3.set("key R3", "value c", null);
-		System.in.read();
-	}
+    public static void main(String[] args) throws IOException {
+        Roperty r1 = new RopertyImpl("dom1", "dom2");
+        r1.set("key R1", "value a", null);
+        Roperty r2 = new RopertyImpl("dom1", "dom2");
+        r2.set("key R2", "value b", null);
+        r2.set("key2 R2", "value x", null);
+        Roperty r3 = new RopertyImpl("dom1", "dom2");
+        r3.set("key R3", "value c", null);
+        System.in.read();
+    }
 }

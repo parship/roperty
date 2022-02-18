@@ -14,7 +14,7 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
     private final DomainSpecificValueFactory factory = new DomainSpecificValueFactoryWithStringInterning();
 
     @Test
-    public void factoryCreatesCorrectDSVForBaseKey() {
+    void factoryCreatesCorrectDSVForBaseKey() {
         String value = "value";
         DomainSpecificValue dsv = factory.create(value, null);
         assertThat((String) dsv.getValue(), is(value));
@@ -22,7 +22,7 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
     }
 
     @Test
-    public void factoryCreatesCorrectDSVForOverriddenKey() {
+    void factoryCreatesCorrectDSVForOverriddenKey() {
         String value = "overriddenValue";
 
         DomainSpecificValue dsv = factory.create(value, null, "DE", "de_DE");
@@ -32,7 +32,7 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
     }
 
     @Test
-    public void factorySetReverseOrderForMoreSpecificValues() {
+    void factorySetReverseOrderForMoreSpecificValues() {
         String value = "overriddenValue";
 
         DomainSpecificValue dsv = factory.create(value, null, "DE");
@@ -42,7 +42,7 @@ public class DomainSpecificValueFactoryWithStringInterningTest {
     }
 
     @Test
-    public void testInterningOfStrings() {
+    void testInterningOfStrings() {
 
         final String value1 = new String("testString");
         final String value2 = new String("testString");

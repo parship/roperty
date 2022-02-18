@@ -31,64 +31,64 @@ import org.junit.jupiter.api.Test;
  */
 public class MapBackedDomainResolverTest {
 
-	private final MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
+    private final MapBackedDomainResolver resolver = new MapBackedDomainResolver().set("dom1", "val1").set("dom2", "val2");
 
-	@Test
-	public void setAndGetDomainValues() {
-		assertThat(resolver.getDomainValue("dom1"), is("val1"));
-	}
+    @Test
+    void setAndGetDomainValues() {
+        assertThat(resolver.getDomainValue("dom1"), is("val1"));
+    }
 
-	@Test
-	public void setAndGetActiveChangeSets() {
-		resolver.addActiveChangeSets("CS1", "CS2");
-		assertThat(resolver.getActiveChangeSets(), containsInAnyOrder("CS1", "CS2"));
-		resolver.addActiveChangeSets("CS3");
-		assertThat(resolver.getActiveChangeSets(), containsInAnyOrder("CS1", "CS2", "CS3"));
-	}
+    @Test
+    void setAndGetActiveChangeSets() {
+        resolver.addActiveChangeSets("CS1", "CS2");
+        assertThat(resolver.getActiveChangeSets(), containsInAnyOrder("CS1", "CS2"));
+        resolver.addActiveChangeSets("CS3");
+        assertThat(resolver.getActiveChangeSets(), containsInAnyOrder("CS1", "CS2", "CS3"));
+    }
 
-	@Test
-	public void toStringTest() {
-		assertThat(resolver.toString(), is("com.parship.roperty.MapBackedDomainResolver with {dom1=val1, dom2=val2}"));
-	}
+    @Test
+    void toStringTest() {
+        assertThat(resolver.toString(), is("com.parship.roperty.MapBackedDomainResolver with {dom1=val1, dom2=val2}"));
+    }
 
-	@Test
-	public void resolversWithSameValuesShouldBeEqual() {
-		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
-		aResolver.set("domain", "value");
+    @Test
+    void resolversWithSameValuesShouldBeEqual() {
+        MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+        aResolver.set("domain", "value");
 
-		MapBackedDomainResolver anotherResolver = new MapBackedDomainResolver();
-		anotherResolver.set("domain", "value");
+        MapBackedDomainResolver anotherResolver = new MapBackedDomainResolver();
+        anotherResolver.set("domain", "value");
 
-		assertThat(aResolver, equalTo(anotherResolver));
-		assertThat(aResolver.hashCode(), is(anotherResolver.hashCode()));
-	}
+        assertThat(aResolver, equalTo(anotherResolver));
+        assertThat(aResolver.hashCode(), is(anotherResolver.hashCode()));
+    }
 
-	@Test
-	public void resolverShouldBeEqualToItself() {
-		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
-		assertThat(aResolver, equalTo(aResolver));
-	}
+    @Test
+    void resolverShouldBeEqualToItself() {
+        MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+        assertThat(aResolver, equalTo(aResolver));
+    }
 
-	@Test
-	public void resolverShouldNotBeEqualToNull() {
-		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
-		assertThat(aResolver, not(equalTo(null)));
-	}
+    @Test
+    void resolverShouldNotBeEqualToNull() {
+        MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+        assertThat(aResolver, not(equalTo(null)));
+    }
 
-	@Test
-	public void domainResolverOfDifferentClassShouldNotBeEqual() {
-		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
-		assertThat(aResolver, not(equalTo(new Object())));
-	}
+    @Test
+    void domainResolverOfDifferentClassShouldNotBeEqual() {
+        MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+        assertThat(aResolver, not(equalTo(new Object())));
+    }
 
-	@Test
-	public void differentResolversShouldNotBeEqual() {
-		MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
-		aResolver.set("domain", "value");
+    @Test
+    void differentResolversShouldNotBeEqual() {
+        MapBackedDomainResolver aResolver = new MapBackedDomainResolver();
+        aResolver.set("domain", "value");
 
-		MapBackedDomainResolver anotherResolver = new MapBackedDomainResolver();
-		anotherResolver.set("anotherDomain", "anotherValue");
+        MapBackedDomainResolver anotherResolver = new MapBackedDomainResolver();
+        anotherResolver.set("anotherDomain", "anotherValue");
 
-		assertThat(aResolver, not(equalTo(anotherResolver)));
-	}
+        assertThat(aResolver, not(equalTo(anotherResolver)));
+    }
 }

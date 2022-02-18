@@ -28,20 +28,20 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 public class RopertyLoggingTest {
 
     @RegisterExtension
-	private final TestLoggingExtension logExtension = new TestLoggingExtension(Level.DEBUG);
+    private final TestLoggingExtension logExtension = new TestLoggingExtension(Level.DEBUG);
 
-	private final Roperty r = new RopertyImpl();
+    private final Roperty r = new RopertyImpl();
 
-	@Test
-	public void everyGetIsLoggedOnDebugLevelDefaultValue() {
-		r.getOrDefault("key", "default");
-		logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'default'");
-	}
+    @Test
+    void everyGetIsLoggedOnDebugLevelDefaultValue() {
+        r.getOrDefault("key", "default");
+        logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'default'");
+    }
 
-	@Test
-	public void everyGetIsLoggedOnDebugLevelSetValue() {
-		r.set("key", "otherValue", null);
-		r.getOrDefault("key", "default");
-		logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'otherValue'");
-	}
+    @Test
+    void everyGetIsLoggedOnDebugLevelSetValue() {
+        r.set("key", "otherValue", null);
+        r.getOrDefault("key", "default");
+        logExtension.verifyLogDebug("Getting value for key: 'key' with given default: 'default'. Returning value: 'otherValue'");
+    }
 }

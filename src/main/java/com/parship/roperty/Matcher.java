@@ -22,5 +22,6 @@ package com.parship.roperty;
  * @since 2013-09-13 10:48
  */
 public interface Matcher {
-	boolean matches(String domainString);
+
+    boolean matches(String domainString);
 }

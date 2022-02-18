@@ -38,12 +38,13 @@ public class RopertyFactoriesTest {
     final String defaultValue = "default";
 
     @BeforeEach
-    public void before() {
-        when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(DomainSpecificValue.withoutChangeSet(defaultValue));
+    void before() {
+        when(domainSpecificValueFactoryMock.create(defaultValue, null, new String[0])).thenReturn(
+            DomainSpecificValue.withoutChangeSet(defaultValue));
     }
 
     @Test
-    public void factoriesAreUsedToCreateObjectsViaFactoryProvider() {
+    void factoriesAreUsedToCreateObjectsViaFactoryProvider() {
         RopertyImpl r = new RopertyImpl(new Persistence() {
             final Map<String, KeyValues> stringKeyValuesHashMap = new HashMap<>();
 
@@ -58,28 +59,29 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            public Collection<KeyValues> reload(final Collection<KeyValues> keyValuesMap, final DomainSpecificValueFactory domainSpecificValueFactory) {
+            public Collection<KeyValues> reload(final Collection<KeyValues> keyValuesMap,
+                final DomainSpecificValueFactory domainSpecificValueFactory) {
                 return keyValuesMap;
             }
 
             @Override
-            public void store(final String key, final KeyValues keyValues, final DomainSpecificValue domainSpecificValue) {
+            void store(final String key, final KeyValues keyValues, final DomainSpecificValue domainSpecificValue) {
                 stringKeyValuesHashMap.put(key, keyValues);
             }
 
             @Override
-            public void remove(final String key) {
+            void remove(final String key) {
             }
 
             @Override
-            public void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+            void remove(final String key, final DomainSpecificValue domainSpecificValue) {
             }
         }, domainSpecificValueFactoryMock);
         checkFactoryAccess(r);
     }
 
     @Test
-    public void factoriesAreUsedToCreateObjectsViaSet() {
+    void factoriesAreUsedToCreateObjectsViaSet() {
         RopertyImpl r = new RopertyImpl();
         r.setDomainSpecificValueFactory(domainSpecificValueFactoryMock);
         checkFactoryAccess(r);

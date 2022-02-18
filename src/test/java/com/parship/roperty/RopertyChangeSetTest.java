@@ -34,29 +34,29 @@ import org.junit.jupiter.api.Test;
  */
 public class RopertyChangeSetTest {
 
-	private final Roperty roperty = new RopertyImpl();
+    private final Roperty roperty = new RopertyImpl();
 
-	@Test
-	public void whenChangeSetsAreActiveTheValuesForTheChangeSetAreReturned() {
-		roperty.set("key", "value", "descr");
-		roperty.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
+    @Test
+    void whenChangeSetsAreActiveTheValuesForTheChangeSetAreReturned() {
+        roperty.set("key", "value", "descr");
+        roperty.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
 
-		DomainResolver resolverWithoutChangeSet = mock(DomainResolver.class);
-		assertThat(roperty.get("key", resolverWithoutChangeSet), is("value"));
+        DomainResolver resolverWithoutChangeSet = mock(DomainResolver.class);
+        assertThat(roperty.get("key", resolverWithoutChangeSet), is("value"));
 
-		DomainResolver resolver = mock(DomainResolver.class);
-		when(resolver.getActiveChangeSets()).thenReturn(Collections.singletonList("changeSet"));
-		assertThat(roperty.get("key", resolver), is("valueForChangeSet"));
-	}
+        DomainResolver resolver = mock(DomainResolver.class);
+        when(resolver.getActiveChangeSets()).thenReturn(Collections.singletonList("changeSet"));
+        assertThat(roperty.get("key", resolver), is("valueForChangeSet"));
+    }
 
-	@Test
-	public void whenSetWithChangeSetIsCalledChangeSetWillBePersisted() {
-		RopertyImpl ropertyWithPersistence = new RopertyImpl();
-		Persistence persistenceMock = mock(Persistence.class);
-		ropertyWithPersistence.setPersistence(persistenceMock);
+    @Test
+    void whenSetWithChangeSetIsCalledChangeSetWillBePersisted() {
+        RopertyImpl ropertyWithPersistence = new RopertyImpl();
+        Persistence persistenceMock = mock(Persistence.class);
+        ropertyWithPersistence.setPersistence(persistenceMock);
 
-		ropertyWithPersistence.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
+        ropertyWithPersistence.setWithChangeSet("key", "valueForChangeSet", "descr", "changeSet");
 
-		verify(persistenceMock).store(eq("key"), any(KeyValues.class), any(DomainSpecificValue.class));
-	}
+        verify(persistenceMock).store(eq("key"), any(KeyValues.class), any(DomainSpecificValue.class));
+    }
 }

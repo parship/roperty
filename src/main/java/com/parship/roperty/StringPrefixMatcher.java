@@ -23,14 +23,14 @@ package com.parship.roperty;
  */
 public class StringPrefixMatcher implements Matcher {
 
-	private final String prefixString;
+    private final String prefixString;
 
-	public StringPrefixMatcher(final String prefixString) {
-		this.prefixString = prefixString;
-	}
+    public StringPrefixMatcher(final String prefixString) {
+        this.prefixString = prefixString;
+    }
 
-	@Override
-	public boolean matches(String domainString) {
-		return prefixString.equals(domainString.substring(0, Math.min(domainString.length(), prefixString.length())));
-	}
+    @Override
+    public boolean matches(String domainString) {
+        return prefixString.equals(domainString.substring(0, Math.min(domainString.length(), prefixString.length())));
+    }
 }

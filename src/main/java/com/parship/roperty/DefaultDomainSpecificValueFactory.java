@@ -23,10 +23,10 @@ package com.parship.roperty;
  */
 public class DefaultDomainSpecificValueFactory implements DomainSpecificValueFactory {
 
-	@Override
-	public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {
-		return DomainSpecificValue.withChangeSet(value, changeSet, domainKeyParts);
-	}
+    @Override
+    public DomainSpecificValue create(final Object value, final String changeSet, final String... domainKeyParts) {
+        return DomainSpecificValue.withChangeSet(value, changeSet, domainKeyParts);
+    }
 
     @Override
     public DomainSpecificValue createFromPattern(Object value, String changeSet, String pattern) {

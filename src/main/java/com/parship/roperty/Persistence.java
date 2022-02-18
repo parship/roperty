@@ -25,9 +25,10 @@ import java.util.Collection;
  * @since 2013-05-17 13:01
  */
 public interface Persistence {
+
     /**
-     * Load all overridden values for a single key. Is called by Roperty when an unknown key is queried.
-     * Returns null, when no value is found.
+     * Load all overridden values for a single key. Is called by Roperty when an unknown key is queried. Returns null, when no value is
+     * found.
      */
     KeyValues load(final String key, DomainSpecificValueFactory domainSpecificValueFactory);
 
@@ -39,8 +40,8 @@ public interface Persistence {
     Collection<KeyValues> loadAll(DomainSpecificValueFactory domainSpecificValueFactory);
 
     /**
-     * Reload the data from persistence to synchronize changes.
-     * Reload may change the existing collection and give back a reference to the same collection passed as a parameter or it might create a new map.
+     * Reload the data from persistence to synchronize changes. Reload may change the existing collection and give back a reference to the
+     * same collection passed as a parameter or it might create a new map.
      *
      * @param keyValuesMap current keyValuesMap with keys already known
      */
@@ -50,7 +51,8 @@ public interface Persistence {
 
     /**
      * Remove a complete key from persistence.
-     * @param key       the key to remove
+     *
+     * @param key the key to remove
      */
     void remove(String key);
 

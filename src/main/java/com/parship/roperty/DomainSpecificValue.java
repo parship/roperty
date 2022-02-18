@@ -22,20 +22,19 @@ import java.util.Objects;
 
 
 /**
- * Defines a value overridden for a specific domain.
- * DomainSpecificValues are ordered according to the Roperty precedence rules for resolution of domain values.
- * DomainSpecificValues can belong to a changeSet, which allows temporary changes which take precedence, when
- * the changeSet is active and are ignored, when the changeSet is not active.
- * ChangeSets are activated by the DomainResolver.
+ * Defines a value overridden for a specific domain. DomainSpecificValues are ordered according to the Roperty precedence rules for
+ * resolution of domain values. DomainSpecificValues can belong to a changeSet, which allows temporary changes which take precedence, when
+ * the changeSet is active and are ignored, when the changeSet is not active. ChangeSets are activated by the DomainResolver.
  *
  * @author mfinsterwalder
  * @since 2013-04-09 18:20
  */
 public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
-	private final String pattern;
-	private final int ordering;
+
+    private final String pattern;
+    private final int ordering;
     private Object value;
-	private final Matcher matcher;
+    private final Matcher matcher;
     private final String changeSet;
 
     public static DomainSpecificValue withChangeSet(Object value, String changeSet, String... domainKeys) {
@@ -47,8 +46,9 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
     }
 
     public static DomainSpecificValue withPattern(Object value, String changeSet, String pattern) {
-        if (pattern == null || pattern.trim().length() == 0)
+        if (pattern == null || pattern.trim().length() == 0) {
             return new DomainSpecificValue(value, changeSet, "", 1);
+        }
         if (!pattern.endsWith("|")) {
             throw new IllegalArgumentException("Pattern must end with a pipe character: '|'");
         }
@@ -59,7 +59,7 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
         for (String domainValue : domainValues) {
             i++;
             if (!"*".equals(domainValue)) {
-                order = order | (int)Math.pow(2, i);
+                order = order | (int) Math.pow(2, i);
             }
         }
         return new DomainSpecificValue(value, changeSet, pattern, order);
@@ -73,20 +73,20 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
         this.matcher = createMatcher(pattern);
     }
 
-	private DomainSpecificValue(Object value, String changeSet, String[] domainValues) {
+    private DomainSpecificValue(Object value, String changeSet, String[] domainValues) {
         StringBuilder builder = new StringBuilder(domainValues.length * 8);
         int order = 1;
         int i = 0;
         for (String domainValue : domainValues) {
             i++;
             if (!"*".equals(domainValue)) {
-                order = order | (int)Math.pow(2, i);
+                order = order | (int) Math.pow(2, i);
             }
             builder.append(domainValue).append('|');
         }
         this.ordering = order;
         this.pattern = builder.toString();
-		this.value = value;
+        this.value = value;
         this.changeSet = changeSet;
         this.matcher = createMatcher(pattern);
     }
@@ -100,56 +100,61 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
     }
 
     /**
-	 * Sort DomainSpecificValue in reverse order as specified by ordering, changeSet and patternStr.
-	 * This ordering defines the order of resolution that Roperty uses when a key is accessed.
-	 * Values with a changeSet are ordered before values without a changeSet.
-	 * Values with a changeSet are ordered alphabetically with other changeSets. A value from changeSet "A_ChangeSet" is chosen
-     * before a value in changeSet "B_ChangeSet".
-	 * Values with the same ordering (and changeSet) are ordered by patternStr, just to define a consistent ordering.
-	 */
-	@Override
-	public int compareTo(final DomainSpecificValue other) {
-		int order = other.ordering - this.ordering;
-		if (order == 0) {
-			if (changeSet != null && other.changeSet != null) {
-				int changeSetCompare = changeSet.compareTo(other.changeSet);
-				if (changeSetCompare != 0)
-					return changeSetCompare;
-				else
-					return pattern.compareTo(other.pattern);
-			}
-			if (changeSet != null) { // other.changeSet is null here
-				return -1;
-			}
-			if (other.changeSet != null) { // changeSet is null here
-				return 1;
-			}
-			return pattern.compareTo(other.pattern);
-		}
-		return order;
-	}
+     * Sort DomainSpecificValue in reverse order as specified by ordering, changeSet and patternStr. This ordering defines the order of
+     * resolution that Roperty uses when a key is accessed. Values with a changeSet are ordered before values without a changeSet. Values
+     * with a changeSet are ordered alphabetically with other changeSets. A value from changeSet "A_ChangeSet" is chosen before a value in
+     * changeSet "B_ChangeSet". Values with the same ordering (and changeSet) are ordered by patternStr, just to define a consistent
+     * ordering.
+     */
+    @Override
+    public int compareTo(final DomainSpecificValue other) {
+        int order = other.ordering - this.ordering;
+        if (order == 0) {
+            if (changeSet != null && other.changeSet != null) {
+                int changeSetCompare = changeSet.compareTo(other.changeSet);
+                if (changeSetCompare != 0) {
+                    return changeSetCompare;
+                } else {
+                    return pattern.compareTo(other.pattern);
+                }
+            }
+            if (changeSet != null) { // other.changeSet is null here
+                return -1;
+            }
+            if (other.changeSet != null) { // changeSet is null here
+                return 1;
+            }
+            return pattern.compareTo(other.pattern);
+        }
+        return order;
+    }
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-		DomainSpecificValue that = (DomainSpecificValue) o;
+        DomainSpecificValue that = (DomainSpecificValue) o;
 
-		if (ordering != that.ordering) return false;
-		if (!pattern.equals(that.pattern)) return false;
-		if (!value.equals(that.value)) return false;
-		return Objects.equals(changeSet, that.changeSet);
-	}
+        if (ordering != that.ordering)
+            return false;
+        if (!pattern.equals(that.pattern))
+            return false;
+        if (!value.equals(that.value))
+            return false;
+        return Objects.equals(changeSet, that.changeSet);
+    }
 
-	@Override
-	public int hashCode() {
-		int result = pattern.hashCode();
-		result = 31 * result + ordering;
-		result = 31 * result + value.hashCode();
-		result = 31 * result + (changeSet != null ? changeSet.hashCode() : 0);
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = pattern.hashCode();
+        result = 31 * result + ordering;
+        result = 31 * result + value.hashCode();
+        result = 31 * result + (changeSet != null ? changeSet.hashCode() : 0);
+        return result;
+    }
 
     @Override
     public String toString() {
@@ -161,31 +166,31 @@ public class DomainSpecificValue implements Comparable<DomainSpecificValue> {
     }
 
     public String getPattern() {
-		return pattern;
-	}
+        return pattern;
+    }
 
     public Object getValue() {
-		return value;
-	}
+        return value;
+    }
 
-	public void setValue(final Object value) {
-		this.value = value;
-	}
+    public void setValue(final Object value) {
+        this.value = value;
+    }
 
     /**
      * This method is used to determine, whether this DomainSpecificValue matches the provided domain string
      */
-	public boolean patternMatches(final String domainStr) {
-		return matcher.matches(domainStr);
-	}
+    public boolean patternMatches(final String domainStr) {
+        return matcher.matches(domainStr);
+    }
 
-	public boolean isInChangeSets(final Collection<String> activeChangeSets) {
+    public boolean isInChangeSets(final Collection<String> activeChangeSets) {
         return noChangeSet() || activeChangeSets.contains(changeSet);
     }
 
-	public boolean changeSetIs(final String changeSet) {
-		return Objects.equals(this.changeSet, changeSet);
-	}
+    public boolean changeSetIs(final String changeSet) {
+        return Objects.equals(this.changeSet, changeSet);
+    }
 
     public boolean noChangeSet() {
         return changeSet == null;

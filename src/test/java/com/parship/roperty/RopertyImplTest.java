@@ -190,7 +190,9 @@ public class RopertyImplTest {
     void gettingAValueThatHasADifferentTypeGivesAClassCastException() {
         String text = "value";
         ropertyImpl.set("key", text, null);
-        assertThrows(ClassCastException.class, () -> {Integer value = ropertyImpl.get("key", resolverMock);});
+        assertThrows(ClassCastException.class, () -> {
+            Integer value = ropertyImpl.get("key", resolverMock);
+        });
     }
 
     @Test
@@ -391,7 +393,8 @@ public class RopertyImplTest {
 
         assertThat(ropertyImpl.dump().toString(), containsString("KeyValues for \"key\": KeyValues{\n"));
         assertThat(ropertyImpl.dump().toString(), containsString("\tdescription=\"\"\n"));
-        assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\""));
+        assertThat(ropertyImpl.dump().toString(),
+            containsString("\tDomainSpecificValue{pattern=\"domain1|\", ordering=3, value=\"value2\""));
         assertThat(ropertyImpl.dump().toString(), containsString("\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\""));
 
     }
@@ -403,7 +406,8 @@ public class RopertyImplTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ropertyImpl.dump(new PrintStream(os));
         String output = os.toString("UTF8");
-        assertThat(output, is("Roperty{domains=[dom1]\nKeyValues for \"key\": KeyValues{\n\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n}\n}\n"));
+        assertThat(output,
+            is("Roperty{domains=[dom1]\nKeyValues for \"key\": KeyValues{\n\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value\"}\n}\n}\n"));
     }
 
     @Test

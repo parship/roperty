@@ -17,20 +17,17 @@
 
 package com.parship.roperty.jmx;
 
+import com.parship.roperty.KeyValues;
+import com.parship.roperty.Roperty;
 import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
-
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.parship.roperty.KeyValues;
-import com.parship.roperty.Roperty;
 
 /**
  * @author mfinsterwalder
@@ -38,79 +35,79 @@ import com.parship.roperty.Roperty;
  */
 public class RopertyManager implements RopertyManagerMBean {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(RopertyManager.class);
-	private static final RopertyManager instance = new RopertyManager();
+    private static final Logger LOGGER = LoggerFactory.getLogger(RopertyManager.class);
+    private static final RopertyManager instance = new RopertyManager();
 
-	private final Map<Roperty, Roperty> roperties = new WeakHashMap<>();
+    private final Map<Roperty, Roperty> roperties = new WeakHashMap<>();
 
-	public static RopertyManager getInstance() {
-		return instance;
-	}
+    public static RopertyManager getInstance() {
+        return instance;
+    }
 
-	public RopertyManager() {
-		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-		try {
-			mbs.registerMBean(this, new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
-		} catch (InstanceAlreadyExistsException e) {
-			// nothing to do
+    public RopertyManager() {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        try {
+            mbs.registerMBean(this, new ObjectName("com.parship.roperty", "type", RopertyManagerMBean.class.getSimpleName()));
+        } catch (InstanceAlreadyExistsException e) {
+            // nothing to do
         } catch (Exception e) {
-			LOGGER.warn("Could not register MBean for Roperty", e);
-		}
-	}
+            LOGGER.warn("Could not register MBean for Roperty", e);
+        }
+    }
 
-	public void add(Roperty roperty) {
+    public void add(Roperty roperty) {
         Objects.requireNonNull(roperty, "\"roperty\" must not be null");
         roperties.put(roperty, null);
-	}
+    }
 
-	@Override
-	public String dump(String key) {
-		StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
-		for (Roperty roperty : roperties.keySet()) {
-			KeyValues keyValues = roperty.getKeyValues(key);
-			if (keyValues != null) {
-				builder.append(keyValues);
-				builder.append("\n\n");
-			}
-		}
-		return builder.toString();
-	}
+    @Override
+    public String dump(String key) {
+        StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
+        for (Roperty roperty : roperties.keySet()) {
+            KeyValues keyValues = roperty.getKeyValues(key);
+            if (keyValues != null) {
+                builder.append(keyValues);
+                builder.append("\n\n");
+            }
+        }
+        return builder.toString();
+    }
 
-	@Override
-	public String dump() {
-		StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
-		for (Roperty roperty : roperties.keySet()) {
-			builder.append(roperty.dump());
-			builder.append("\n\n");
-		}
-		return builder.toString();
-	}
+    @Override
+    public String dump() {
+        StringBuilder builder = new StringBuilder(roperties.keySet().size() * 8);
+        for (Roperty roperty : roperties.keySet()) {
+            builder.append(roperty.dump());
+            builder.append("\n\n");
+        }
+        return builder.toString();
+    }
 
-	@Override
-	public void dumpToSystemOut() {
-		for (Roperty roperty : roperties.keySet()) {
-			roperty.dump(System.out);
-			System.out.println();
-		}
-	}
+    @Override
+    public void dumpToSystemOut() {
+        for (Roperty roperty : roperties.keySet()) {
+            roperty.dump(System.out);
+            System.out.println();
+        }
+    }
 
-	@Override
-	public void reload() {
-		for (Roperty roperty : roperties.keySet()) {
-			roperty.reload();
-		}
-	}
+    @Override
+    public void reload() {
+        for (Roperty roperty : roperties.keySet()) {
+            roperty.reload();
+        }
+    }
 
-	@Override
-	public String listRoperties() {
-		return roperties.keySet().toString();
-	}
+    @Override
+    public String listRoperties() {
+        return roperties.keySet().toString();
+    }
 
-	public void reset() {
-		roperties.clear();
-	}
+    public void reset() {
+        roperties.clear();
+    }
 
-	public void remove(final Roperty roperty) {
-		roperties.remove(roperty);
-	}
+    public void remove(final Roperty roperty) {
+        roperties.remove(roperty);
+    }
 }

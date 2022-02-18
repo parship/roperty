@@ -39,19 +39,19 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void valuesAreEmptyOnInitialization() {
+    void valuesAreEmptyOnInitialization() {
         assertThat(valuesStore.getAllValues().size(), is(0));
         assertThat(valuesStore.getValuesFor("key"), nullValue());
     }
 
     @Test
-    public void cannotModifyMapFromOuterClass() {
+    void cannotModifyMapFromOuterClass() {
         assertThrows(UnsupportedOperationException.class, () -> valuesStore.getAllValues().add(mock(KeyValues.class)));
         assertThat(valuesStore.getAllValues().size(), is(0));
     }
 
     @Test
-    public void valuesShouldBeAdded() {
+    void valuesShouldBeAdded() {
         Collection<KeyValues> values = new ArrayList<>();
         values.add(keyValues);
 
@@ -64,7 +64,7 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void loadUnknownValuesFromPersistence() {
+    void loadUnknownValuesFromPersistence() {
         when(persistence.load("key", domainSpecificValueFactory)).thenReturn(keyValues);
 
         KeyValues result = valuesStore.getKeyValuesFromMapOrPersistence("key");
@@ -75,7 +75,7 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void loadKnownValuesFromMap() {
+    void loadKnownValuesFromMap() {
         Collection<KeyValues> values = new ArrayList<>();
         values.add(keyValues);
         valuesStore.setAllValues(values);
@@ -87,7 +87,7 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void valueShouldBeAdded() {
+    void valueShouldBeAdded() {
         KeyValues result = valuesStore.getOrCreateKeyValues("key", "description");
 
         assertThat(result.getDescription(), is("description"));
@@ -96,7 +96,7 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void dumpShouldBeFormatted() {
+    void dumpShouldBeFormatted() {
         valuesStore.getOrCreateKeyValues("key", "description");
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -110,7 +110,7 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void valueShouldBeRemoved() {
+    void valueShouldBeRemoved() {
         valuesStore.getOrCreateKeyValues("key", "description");
 
         KeyValues result = valuesStore.remove("key");
@@ -121,7 +121,7 @@ public class ValuesStoreTest {
     }
 
     @Test
-    public void valuesShouldBeReloaded() {
+    void valuesShouldBeReloaded() {
         Collection<KeyValues> values = new ArrayList<>();
         values.add(keyValues);
         when(persistence.reload(any(Collection.class), eq(domainSpecificValueFactory))).thenReturn(values);

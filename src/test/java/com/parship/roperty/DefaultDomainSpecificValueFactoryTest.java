@@ -7,39 +7,37 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Test;
 
 /**
- * User: mjaeckel
- * Date: 15.11.13
- * Time: 10:47
+ * User: mjaeckel Date: 15.11.13 Time: 10:47
  */
 public class DefaultDomainSpecificValueFactoryTest {
 
-	private final DomainSpecificValueFactory factory = new DefaultDomainSpecificValueFactory();
+    private final DomainSpecificValueFactory factory = new DefaultDomainSpecificValueFactory();
 
-	@Test
-	public void factoryCreatesCorrectDSVForBaseKey() {
-		String value = "value";
-		DomainSpecificValue dsv = factory.create(value, null);
-		assertThat((String)dsv.getValue(), is(value));
-		assertThat(dsv.getPattern(), is(""));
-	}
+    @Test
+    void factoryCreatesCorrectDSVForBaseKey() {
+        String value = "value";
+        DomainSpecificValue dsv = factory.create(value, null);
+        assertThat((String) dsv.getValue(), is(value));
+        assertThat(dsv.getPattern(), is(""));
+    }
 
-	@Test
-	public void factoryCreatesCorrectDSVForOverriddenKey() {
-		String value = "overriddenValue";
+    @Test
+    void factoryCreatesCorrectDSVForOverriddenKey() {
+        String value = "overriddenValue";
 
-		DomainSpecificValue dsv = factory.create(value, null, "DE", "de_DE");
+        DomainSpecificValue dsv = factory.create(value, null, "DE", "de_DE");
 
-		assertThat((String)dsv.getValue(), is(value));
-		assertThat(dsv.getPattern(), is("DE|de_DE|"));
-	}
+        assertThat((String) dsv.getValue(), is(value));
+        assertThat(dsv.getPattern(), is("DE|de_DE|"));
+    }
 
-	@Test
-	public void factorySetReverseOrderForMoreSpecificValues() {
-		String value = "overriddenValue";
+    @Test
+    void factorySetReverseOrderForMoreSpecificValues() {
+        String value = "overriddenValue";
 
-		DomainSpecificValue dsv = factory.create(value, null, "DE");
-		DomainSpecificValue moreSpecificDsv = factory.create(value, null, "DE", "de_DE");
+        DomainSpecificValue dsv = factory.create(value, null, "DE");
+        DomainSpecificValue moreSpecificDsv = factory.create(value, null, "DE", "de_DE");
 
-		assertThat(dsv.compareTo(moreSpecificDsv), greaterThan(0));
-	}
+        assertThat(dsv.compareTo(moreSpecificDsv), greaterThan(0));
+    }
 }

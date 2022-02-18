@@ -21,21 +21,22 @@ import java.util.Collection;
 
 
 /**
- * Callback interface to resolve values for the different domains for the current query to Roperty.
- * Passed as a parameter to Roperty.get-methods this interface is called for each domain configured
- * in the Roperty instance queried. Roperty will call this interface once for each domain configured.
+ * Callback interface to resolve values for the different domains for the current query to Roperty. Passed as a parameter to
+ * Roperty.get-methods this interface is called for each domain configured in the Roperty instance queried. Roperty will call this interface
+ * once for each domain configured.
  *
  * @author mfinsterwalder
  * @since 2013-03-25 08:13
  */
 public interface DomainResolver {
-	/**
-	 * This method is called by Roperty once for each configured domain.
-	 *
-	 * @param domain The domain to translate to a value
-	 * @return The value for the domain or null, when the domain should be ignored
-	 */
-	String getDomainValue(String domain);
 
-	Collection<String> getActiveChangeSets();
+    /**
+     * This method is called by Roperty once for each configured domain.
+     *
+     * @param domain The domain to translate to a value
+     * @return The value for the domain or null, when the domain should be ignored
+     */
+    String getDomainValue(String domain);
+
+    Collection<String> getActiveChangeSets();
 }

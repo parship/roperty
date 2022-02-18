@@ -37,98 +37,98 @@ import org.junit.jupiter.api.Test;
  */
 public class RopertyManagerTest {
 
-	private RopertyManager manager = RopertyManager.getInstance();
+    private RopertyManager manager = RopertyManager.getInstance();
 
-	@BeforeEach
-	public void before() {
-		manager.reset();
-	}
+    @BeforeEach
+    void before() {
+        manager.reset();
+    }
 
-	@Test
-	public void ropertyInstancesRegisterThemselvesWithTheManager() {
-		assertThat(manager.dump(), is(""));
-		new RopertyImpl();
-		assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
-	}
+    @Test
+    void ropertyInstancesRegisterThemselvesWithTheManager() {
+        assertThat(manager.dump(), is(""));
+        new RopertyImpl();
+        assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
+    }
 
-	@Test
-	public void ropertyInstancesAreRemovedFromManagerAfterDestruction() {
-		Roperty roperty = new RopertyImpl();
-		assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
-		roperty = null;
-		System.gc();
-		assertThat(manager.dump(), is(""));
-	}
+    @Test
+    void ropertyInstancesAreRemovedFromManagerAfterDestruction() {
+        Roperty roperty = new RopertyImpl();
+        assertThat(manager.dump(), is("Roperty{domains=[]\n}\n\n"));
+        roperty = null;
+        System.gc();
+        assertThat(manager.dump(), is(""));
+    }
 
-	@Test
-	public void dumpSingleKeyIsDelegatedToAllRoperties() {
-		final String key = "key";
-		Roperty roperty1 = new RopertyImpl();
-		roperty1.set(key, "value1", "descr");
-		Roperty roperty2 = new RopertyImpl();
-		roperty2.set(key, "value2", "descr");
-		String dump = manager.dump("key");
-		assertThat(dump, containsString("KeyValues{\n" +
-			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\"}\n}"));
-		assertThat(dump, containsString("KeyValues{\n" +
-			"\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\"}\n}"));
-	}
+    @Test
+    void dumpSingleKeyIsDelegatedToAllRoperties() {
+        final String key = "key";
+        Roperty roperty1 = new RopertyImpl();
+        roperty1.set(key, "value1", "descr");
+        Roperty roperty2 = new RopertyImpl();
+        roperty2.set(key, "value2", "descr");
+        String dump = manager.dump("key");
+        assertThat(dump, containsString("KeyValues{\n" +
+            "\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value1\"}\n}"));
+        assertThat(dump, containsString("KeyValues{\n" +
+            "\tdescription=\"descr\"\n\tDomainSpecificValue{pattern=\"\", ordering=1, value=\"value2\"}\n}"));
+    }
 
-	@Test
-	public void reloadIsDelegatedToAllRoperties() {
-		Roperty ropertyMock1 = mock(RopertyImpl.class);
-		manager.add(ropertyMock1);
-		Roperty ropertyMock2 = mock(RopertyImpl.class);
-		manager.add(ropertyMock2);
-		manager.reload();
-		verify(ropertyMock1).reload();
-		verify(ropertyMock2).reload();
-	}
+    @Test
+    void reloadIsDelegatedToAllRoperties() {
+        Roperty ropertyMock1 = mock(RopertyImpl.class);
+        manager.add(ropertyMock1);
+        Roperty ropertyMock2 = mock(RopertyImpl.class);
+        manager.add(ropertyMock2);
+        manager.reload();
+        verify(ropertyMock1).reload();
+        verify(ropertyMock2).reload();
+    }
 
-	@Test
-	public void removedRopertiesAreNotCalled() {
-		Roperty ropertyMock1 = mock(RopertyImpl.class);
-		manager.add(ropertyMock1);
-		Roperty ropertyMock2 = mock(RopertyImpl.class);
-		manager.add(ropertyMock2);
-		manager.reload();
-		verify(ropertyMock1).reload();
-		verify(ropertyMock2).reload();
-		manager.remove(ropertyMock1);
-		manager.reload();
-		verify(ropertyMock1).reload();
-		verify(ropertyMock2, times(2)).reload();
-	}
+    @Test
+    void removedRopertiesAreNotCalled() {
+        Roperty ropertyMock1 = mock(RopertyImpl.class);
+        manager.add(ropertyMock1);
+        Roperty ropertyMock2 = mock(RopertyImpl.class);
+        manager.add(ropertyMock2);
+        manager.reload();
+        verify(ropertyMock1).reload();
+        verify(ropertyMock2).reload();
+        manager.remove(ropertyMock1);
+        manager.reload();
+        verify(ropertyMock1).reload();
+        verify(ropertyMock2, times(2)).reload();
+    }
 
-	@Test
-	public void listRoperties() {
-		Roperty r1 = new RopertyImpl().addDomains("dom1");
-		Roperty r2 = new RopertyImpl().addDomains("dom2");
-		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
-		assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
-	}
+    @Test
+    void listRoperties() {
+        Roperty r1 = new RopertyImpl().addDomains("dom1");
+        Roperty r2 = new RopertyImpl().addDomains("dom2");
+        assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom1]}"));
+        assertThat(manager.listRoperties(), containsString("Roperty{domains=[dom2]}"));
+    }
 
-	@Test
-    public void dumpsToSystemOut() {
-	    PrintStream out = mock(PrintStream.class);
-	    System.setOut(out);
+    @Test
+    void dumpsToSystemOut() {
+        PrintStream out = mock(PrintStream.class);
+        System.setOut(out);
 
-	    Roperty roperty1 = mock(Roperty.class);
-	    manager.add(roperty1);
+        Roperty roperty1 = mock(Roperty.class);
+        manager.add(roperty1);
 
         Roperty roperty2 = mock(Roperty.class);
         manager.add(roperty2);
 
-	    manager.dumpToSystemOut();
+        manager.dumpToSystemOut();
 
-	    verify(roperty1).dump(out);
-	    verify(roperty2).dump(out);
+        verify(roperty1).dump(out);
+        verify(roperty2).dump(out);
 
-	    verify(out, times(2)).println();
+        verify(out, times(2)).println();
     }
 
     @Test
-    public void ignoresInstanceAlreadyExistsException() {
+    void ignoresInstanceAlreadyExistsException() {
         new RopertyManager();
         new RopertyManager();
     }

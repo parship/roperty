@@ -31,66 +31,69 @@ import java.util.Map;
  */
 public class MapBackedDomainResolver implements DomainResolver {
 
-	private final Map<String, String> map = new HashMap<>();
-	private final Collection<String> activeChangeSets = new HashSet<>();
+    private final Map<String, String> map = new HashMap<>();
+    private final Collection<String> activeChangeSets = new HashSet<>();
 
-	@Override
-	public String getDomainValue(final String domain) {
-		return map.get(domain);
-	}
+    @Override
+    public String getDomainValue(final String domain) {
+        return map.get(domain);
+    }
 
-	@Override
-	public Collection<String> getActiveChangeSets() {
-		return Collections.unmodifiableCollection(activeChangeSets);
-	}
+    @Override
+    public Collection<String> getActiveChangeSets() {
+        return Collections.unmodifiableCollection(activeChangeSets);
+    }
 
-	public MapBackedDomainResolver set(final String domain, final String domainValue) {
-		map.put(domain, domainValue);
-		return this;
-	}
+    public MapBackedDomainResolver set(final String domain, final String domainValue) {
+        map.put(domain, domainValue);
+        return this;
+    }
 
-	public MapBackedDomainResolver addActiveChangeSets(final String... changeSets) {
-		activeChangeSets.addAll(Arrays.asList(changeSets));
-		return this;
-	}
+    public MapBackedDomainResolver addActiveChangeSets(final String... changeSets) {
+        activeChangeSets.addAll(Arrays.asList(changeSets));
+        return this;
+    }
 
-	private void dumpMap(StringBuilder sb) {
-		sb.append('{');
-		boolean first = true;
-		for (Map.Entry<String,String> entry : map.entrySet()) {
-			if (!first) {
-				sb.append(", ");
-			}
-			sb.append(entry.getKey()).append('=').append(entry.getValue());
-			first = false;
-		}
-		sb.append('}');
-	}
+    private void dumpMap(StringBuilder sb) {
+        sb.append('{');
+        boolean first = true;
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey()).append('=').append(entry.getValue());
+            first = false;
+        }
+        sb.append('}');
+    }
 
-	public String toString() {
-		StringBuilder sb = new StringBuilder(this.getClass().getName());
-		sb.append(" with ");
-		dumpMap(sb);
-		return sb.toString();
-	}
+    public String toString() {
+        StringBuilder sb = new StringBuilder(this.getClass().getName());
+        sb.append(" with ");
+        dumpMap(sb);
+        return sb.toString();
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + map.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + map.hashCode();
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		MapBackedDomainResolver other = (MapBackedDomainResolver)obj;
-		return map.equals(other.map);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MapBackedDomainResolver other = (MapBackedDomainResolver) obj;
+        return map.equals(other.map);
+    }
 }

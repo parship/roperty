@@ -20,7 +20,7 @@ class LogArgumentMatcher implements ArgumentMatcher<ILoggingEvent> {
     @Override
     public boolean matches(final ILoggingEvent argument) {
         return argument.getLevel().equals(level)
-                && argument.getFormattedMessage().contains(expectedLog);
+            && argument.getFormattedMessage().contains(expectedLog);
     }
 
     @Override

@@ -26,14 +26,14 @@ import java.util.regex.Pattern;
  */
 public class RegexMatcher implements Matcher {
 
-	private final Pattern pattern;
+    private final Pattern pattern;
 
-	public RegexMatcher(final String regex) {
-		this.pattern = Pattern.compile(regex);
-	}
+    public RegexMatcher(final String regex) {
+        this.pattern = Pattern.compile(regex);
+    }
 
-	@Override
-	public boolean matches(String domainString) {
-		return pattern.matcher(domainString).matches();
-	}
+    @Override
+    public boolean matches(String domainString) {
+        return pattern.matcher(domainString).matches();
+    }
 }
