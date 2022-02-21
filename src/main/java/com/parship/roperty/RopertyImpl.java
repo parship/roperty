@@ -193,7 +193,7 @@ public class RopertyImpl implements Roperty {
     }
 
     private void remove(final String key, final DomainSpecificValue domainSpecificValue) {
-        if (persistence != null) {
+        if (persistence != null && domainSpecificValue != null) {
             persistence.remove(key, domainSpecificValue);
         }
     }

@@ -51,7 +51,7 @@ public class TestLoggingExtension implements BeforeEachCallback, AfterEachCallba
     }
 
     @Override
-    void beforeEach(ExtensionContext extensionContext) {
+    public void beforeEach(ExtensionContext extensionContext) {
         when(appenderMock.getName()).thenReturn("MOCK");
         getRootLogger().addAppender(appenderMock);
         if (levelToSet != null) {
@@ -61,7 +61,7 @@ public class TestLoggingExtension implements BeforeEachCallback, AfterEachCallba
     }
 
     @Override
-    void afterEach(ExtensionContext extensionContext) {
+    public void afterEach(ExtensionContext extensionContext) {
         getRootLogger().detachAppender(appenderMock);
         if (levelToRestore != null) {
             getRootLogger().setLevel(levelToRestore);

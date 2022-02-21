@@ -65,16 +65,16 @@ public class RopertyFactoriesTest {
             }
 
             @Override
-            void store(final String key, final KeyValues keyValues, final DomainSpecificValue domainSpecificValue) {
+            public void store(final String key, final KeyValues keyValues, final DomainSpecificValue domainSpecificValue) {
                 stringKeyValuesHashMap.put(key, keyValues);
             }
 
             @Override
-            void remove(final String key) {
+            public void remove(final String key) {
             }
 
             @Override
-            void remove(final String key, final DomainSpecificValue domainSpecificValue) {
+            public void remove(final String key, final DomainSpecificValue domainSpecificValue) {
             }
         }, domainSpecificValueFactoryMock);
         checkFactoryAccess(r);
