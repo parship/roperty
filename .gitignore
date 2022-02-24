@@ -1,9 +1,10 @@
 target
+.gradle
+build
 .idea
 *~
 .classpath
 .project
 *.iml
 *.prefs
-
 settings.xml
