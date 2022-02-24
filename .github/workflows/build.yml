@@ -32,7 +32,7 @@ jobs:
     - name: "Build with Gradle"
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: build -Preckon.stage=final
+        arguments: printGitStatus build -Preckon.stage=final
       env:
         GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
 
