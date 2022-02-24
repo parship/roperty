@@ -35,7 +35,7 @@ jobs:
     - name: "Publish with Gradle"
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: publish
+        arguments: reckonTagPush publish -Preckon.stage=final
       env:
         GITHUB_USER: ${{ github.actor }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
