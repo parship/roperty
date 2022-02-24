@@ -33,6 +33,8 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build -Preckon.stage=final
+      env:
+        GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
 
     - name: "Publish with Gradle"
       uses: gradle/gradle-build-action@v2
