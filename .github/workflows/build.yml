@@ -44,6 +44,7 @@ jobs:
             - name: "gradle publish"
               uses: gradle/gradle-build-action@v2
               env:
+                  GITHUB_USER: ${{ GITHUB_ACTOR }}
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
                   arguments: publish
