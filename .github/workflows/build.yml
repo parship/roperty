@@ -27,6 +27,8 @@ jobs:
           #  run: |
           #      git config user.email "actions@github.com"
           #      git config user.name "GitHub Actions"
+    - name: "git st"
+      run: "git status"
     - name: "Build with Gradle"
       uses: gradle/gradle-build-action@v2
       with:
