@@ -27,21 +27,11 @@ jobs:
           #  run: |
           #      git config user.email "actions@github.com"
           #      git config user.name "GitHub Actions"
-    - name: "git st"
-      run: "git status"
-    - name: "Gradle git status"
-      uses: gradle/gradle-build-action@v2
-      with:
-          arguments: printGitStatus
-      env:
-          GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
 
     - name: "Build with Gradle"
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: printGitStatus build -Preckon.stage=final
-      env:
-        GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
+        arguments: build -Preckon.stage=final
 
     - name: "Publish with Gradle"
       uses: gradle/gradle-build-action@v2

@@ -69,14 +69,3 @@ publishing {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
-
-tasks.register('printGitStatus') {
-    doLast {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'status'
-            standardOutput = stdout
-        }
-        println(stdout.toString().trim())
-    }
-}
