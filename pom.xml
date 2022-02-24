@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.parship</groupId>
+    <groupId>com.nitrobox</groupId>
     <artifactId>roperty</artifactId>
     <version>1.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Roperty</name>
     <description>Roperty - An advanced property management and retrieval system with hierarchical resolution of values</description>
-    <url>https://github.com/parship/roperty</url>
+    <url>https://github.com/nitrobox/roperty</url>
     <inceptionYear>2013</inceptionYear>
 
     <organization>
-        <name>PARSHIP ELITE Group</name>
-        <url>http://www.parshipelite.com/</url>
+        <name>Nitrobox GmbH</name>
+        <url>http://www.nitrobox.com/</url>
     </organization>
 
     <licenses>
@@ -25,45 +25,27 @@
     </licenses>
 
     <scm>
-        <url>git@github.com:parship/roperty.git</url>
-        <connection>scm:git:git@github.com:parship/roperty.git</connection>
-        <developerConnection>scm:git:git@github.com:parship/roperty.git</developerConnection>
+        <url>git@github.com:nitrobox/roperty.git</url>
+        <connection>scm:git:git@github.com:nitrobox/roperty.git</connection>
+        <developerConnection>scm:git:git@github.com:nitrobox/roperty.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
     <developers>
         <developer>
-            <id>jobe</id>
-            <name>Benjamin Jochheim</name>
+            <id>finsterwalder</id>
+            <name>Malte Finsterwalder</name>
             <roles>
                 <role>Application Developer</role>
             </roles>
-            <organization>PARSHIP ELITE Group</organization>
-            <organizationUrl>http://www.parshipelite.com/</organizationUrl>
-        </developer>
-        <developer>
-            <id>dheid</id>
-            <name>Daniel Heid</name>
-            <roles>
-                <role>Application Developer</role>
-            </roles>
-            <organization>PARSHIP ELITE Group</organization>
-            <organizationUrl>http://www.parshipelite.com/</organizationUrl>
+            <organization>Nitrobox GmbH</organization>
+            <organizationUrl>http://www.nitrobox.com/</organizationUrl>
         </developer>
     </developers>
 
-    <contributors>
-        <contributor>
-            <name>Malte Finsterwalder</name>
-            <roles>
-                <role>developers</role>
-            </roles>
-        </contributor>
-    </contributors>
-
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/parship/roperty/issues</url>
+        <url>https://github.com/nitrobox/roperty/issues</url>
     </issueManagement>
 
     <dependencyManagement>
