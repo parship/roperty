@@ -3,7 +3,7 @@ on:
         types: [opened, synchronize, reopened]
     push:
         branches:
-            - "**"
+            - "master"
         tags:
             - "**"
 
@@ -34,7 +34,12 @@ jobs:
               with:
                   java-version: ${{ matrix.java-version }}
 
-            - name: "mvn deploy"
-              run: "mvn --batch-mode deploy"
+            - name: "Configure Git user"
+              run: |
+                  git config user.email "actions@github.com"
+                  git config user.name "GitHub Actions"
+
+            - name: "mvn release"
+              run: "mvn --batch-mode release:prepare release:perform"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
